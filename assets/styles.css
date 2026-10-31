@@ -463,3 +463,17 @@ body:has(#revealModal.open){overflow:hidden}
 @media(prefers-reduced-motion:reduce){
  .card.foil:after,.card.holo:after{animation:none!important}
 }
+
+
+/* Garage cards: strictly square corners, including decorative layers and artwork. */
+#garage .card,
+#garage .card::before,
+#garage .card::after,
+#garage .card .art,
+#garage .card .art::before,
+#garage .card .art::after,
+#garage .card .tag,
+#garage .card .finish-name,
+#garage .card .star {
+  border-radius: 0 !important;
+}
