@@ -5,7 +5,7 @@
 ## Setup
 
 1. Create a **Free** project at [Supabase](https://supabase.com/).
-2. Open **SQL Editor** and execute [`schema.sql`](./schema.sql), then [`leaderboard-migration.sql`](./leaderboard-migration.sql), then [`cloud-saves.sql`](./cloud-saves.sql). The migration assumes no existing score above 100 or incompatible first-clear constraint.
+2. Open **SQL Editor** and execute [`schema.sql`](./schema.sql), then [`leaderboard-migration.sql`](./leaderboard-migration.sql), then [`cloud-saves.sql`](./cloud-saves.sql), then [`authoritative-game.sql`](./authoritative-game.sql). The migration assumes no existing score above 100 or incompatible first-clear constraint.
 3. Under **Authentication → URL Configuration**, add `https://kevin-oulai.github.io/cardex/` as an allowed redirect URL. Configure the site URL and email confirmation behavior.
 4. The **Project URL** and **publishable key** are already configured in `backend/client.js` for this public browser application. **Never** share or commit the `service_role` key, database password, or other secret.
 5. Implement and deploy authenticated Edge Functions for issuing booster cards, allocating unique serials, and validating daily Showdown submissions **before** switching the browser game to online mode.
@@ -49,3 +49,11 @@ The same UTC day is used for local boss fallback on every client. A server-publi
 The Profile page now uses one Supabase account for login, public display name and account-bound cloud saves. Manual JSON import/export and the standalone serial-number section have been removed. The app requires a signed-in session to open packs or enter Showdown. Existing guest saves are intentionally **not** imported into verified accounts; preserve browser data until a separate migration decision is made.
 
 **Important limits:** The cloud save is synchronized browser game state, not a server-authoritative economy. It can be modified by a technically capable user and must **never** be used to mint global serials or qualify for ranked scores. Pack issuance, rewards, recycling, balances, and Showdown still need trusted transactional RPC/Edge Function implementations. There is currently no automatic account deletion flow, and simultaneous sessions may overwrite one another's save. Do not call the migration fully complete.
+
+## Server-issued booster milestone
+
+`authoritative-game.sql` seeds the 96-vehicle server catalog, creates account wallets, and defines authenticated `cardex_get_wallet`, `cardex_open_pack`, and `cardex_publish_boss` RPCs. Pack openings are executed in database transactions, decrement server tickets, and allocate permanent serial IDs in `global_card_serials`. The frontend now calls these RPCs when available and renders issued cards with serials.
+
+**New accounts start with a fresh authoritative inventory and 10 tickets.** Browser-generated cards and currency from earlier cloud saves are not imported. The earlier `player_saves` record remains for non-authoritative profile preferences. Until server-side rewards and recycling are implemented, those actions are intentionally unavailable in server mode. The verified Showdown submission endpoint and leaderboard population remain pending.
+
+**Before public release:** Test database migrations and two independent accounts, concurrent pack requests, ticket regeneration, serial uniqueness, sign-out, and cross-device state. The migration has not been run or verified against the live Supabase project from this session. Ensure legal pages describe account data and complete publisher identification and account-deletion process.
