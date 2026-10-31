@@ -2,66 +2,61 @@
 
 **A free, mobile-first browser game about collecting real-world cars.**
 
-[**Play CARDEX**](https://kevin-oulai.github.io/cardex/) · [Source code](https://github.com/kevin-oulai/cardex) · [Report an issue](https://github.com/kevin-oulai/cardex/issues)
+[Play CARDEX](https://kevin-oulai.github.io/cardex/) · [Source](https://github.com/kevin-oulai/cardex) · [Report a bug](https://github.com/kevin-oulai/cardex/issues)
 
-CARDEX is an independent, unofficial car-card collecting project. Open themed boosters, discover cars, manage a growing Garage, and challenge a daily opponent. It runs as a static website with required Supabase accounts and a server-authoritative game backend.
+CARDEX is an independent, unofficial car-card collecting project. The static frontend runs on GitHub Pages; Supabase provides required accounts, cloud preferences, server-issued cards, the virtual economy, verified daily Showdown results, and collector profiles.
 
-> **Project status:** Backend feature implementation **complete** (31 October 2026): authenticated accounts, server-issued cards and serials, transactional game economy, verified Showdown, leaderboards, versioned cloud saves, profile privacy and account deletion. Full cross-account regression testing and legal/public-launch review are still pending. Gameplay and artwork remain under development.
+> **Development status — 31 October 2026:** Online game features are implemented, including atomic bulk booster opening, versioned cloud preferences, account deletion, privacy controls, and 15 collectible titles. Authenticated end-to-end, multi-device, accessibility, and launch/legal compliance testing remain incomplete. Treat the game as a work in progress.
 
 ## Gameplay
 
-### Boosters and collection
+### Boosters
 
-- **96 car entries** across different eras, countries, and performance categories, including special **Exotic** and **Limited** variants.
-- Four booster themes: **World Mix**, **JDM Legends**, **European Icons**, and **Motorsport**.
-- Each booster contains **five cards**; the final draw is guaranteed a rarity of **Rare or higher**.
-- Open one booster with a card-by-card reveal, or open **5 or 10 boosters** at once and go directly to a combined summary. Repeat the same booster theme from the summary.
-- Four collectible card finishes: **Standard**, **Foil**, **Holographic**, and **Collector**.
-- Earn and spend **virtual** credits and booster tickets. There are **no real-money purchases**.
-- Tickets regenerate over time, up to the in-game reserve cap. The game includes a Legendary pity/safety-net mechanic.
+- **96 car models**, eight rarity tiers (Common, Uncommon, Rare, Super Rare, Ultra Rare, Legendary, Exotic, Limited).
+- Four booster themes: **World Mix, JDM Legends, European Icons, Motorsport**.
+- **Five cards per booster**, with the final draw guaranteed **Rare or better**; Legendary pity protection applies.
+- Open one booster card by card, or open **5 or 10** in one server transaction with a combined summary. A failed batch rolls back rather than issuing a partial batch.
+- Four finishes: **Standard, Foil, Holographic, Collector**.
+- Tickets regenerate; credits and tickets are entirely virtual. Tickets can be purchased **using in-game credits**, not real money.
 
-**Base rarity weights** in the current JavaScript implementation:
-
-| Rarity | Base weight |
-| --- | ---: |
-| Common | 44.6% |
-| Uncommon | 26.8% |
-| Rare | 15.9% |
-| Super Rare | 8% |
-| Ultra Rare | 3.5% |
-| Legendary | 0.5% |
-| Exotic | 0.5% |
-| Limited | 0.2% |
-
-These are **base draw weights, not guaranteed observed pull rates**. The final-card rarity floor, theme-specific car pools, duplicate prevention within a pack, pool fallbacks, and Legendary pity can change the effective probabilities.
+Base rarity weights are defined by the server's authoritative draw implementation; the final-card rarity floor, themes, pity and other rules affect effective odds. Do not interpret raw weights as final probabilities.
 
 ### Garage
 
-- Browse owned cards, search by manufacturer/model, and filter by rarity, drivetrain, country, or card finish.
-- Sort by acquisition, rarity, name, horsepower, top speed, weight, model year, or favorites.
-- **Group identical model-and-finish copies** into one Garage tile, with a copy count, or view individual cards.
-- Filter for duplicates and recycle individual spare copies.
-- **Bulk-recycle all spare copies** after confirmation. The operation preserves one card of each **model + finish** combination; recycling is irreversible within the game and awards virtual credits.
+- Search, filter and sort owned cars; mark favorites and group duplicate model/finish copies.
+- Recycle eligible spare copies for virtual credits. Server recycling preserves one copy per model/finish and protects cards referenced by Showdown history.
+- Each issued card has a globally issued record and model-scoped serial number.
 
 ### Daily Showdown
 
-Face a daily featured car using a vehicle from your Garage. Results compare **power, top speed, and weight**; milestone rewards are earned from the best daily score. Attempts are unlimited. This is a **local, deterministic daily challenge**, not an online multiplayer competition or global leaderboard.
+- Challenge a server-published daily boss with an eligible owned car (mirror matches are prohibited).
+- Scores compare power, top speed and weight; rewards unlock at score milestones.
+- A daily leaderboard ranks verified results. A quick-select control finds the highest-scoring eligible car currently in your collection.
+- Showdown is an **online, server-verified asynchronous competition**, not live head-to-head multiplayer.
 
-### Collector Profile
+### Collector profiles, achievements and titles
 
-Customize a display name, avatar, biography, and profile theme; choose three owned cars for the showroom; maintain a wishlist across the catalog; and earn achievements. Profile and collection data are stored on your device.
+- Customize your display name, avatar, bio and profile theme; showcase three owned cars and maintain a wishlist.
+- Claim five server-verified achievements.
+- Earn **15 cosmetic collector titles** through collection size, rarity, regional/motorsport themes, claimed achievements and historical Showdown placements. Equip one title from the collapsible Profile title manager. Titles have no gameplay bonus.
+- Signed-in users can view public collector profiles; you can hide collection details and Showdown history from other players. **Leaderboard identity and results remain visible**.
+- Historical podium/title counts are calculated from stored leaderboard standings and are **not yet finalized, immutable daily awards**. Inventory-dependent titles can become locked after recycling.
 
-## Saving progress
+See [Collector Titles](docs/collector-titles.md) for requirements and semantics.
 
-CARDEX uses browser **`localStorage`** (currently the `cardex-v2` key). No account or cloud synchronization is currently implemented.
+## Accounts and saves
 
-- **Export** a JSON save from the Profile page to back up or transfer progress.
-- **Import** a JSON save to replace the current browser save.
-- Clearing browser data, using private browsing, or changing devices may remove access to locally stored progress unless you exported a backup.
+**An online account is required to play.** Authentication and authoritative gameplay run through Supabase.
 
-## Run locally
+- Server records are authoritative for card ownership, serials, wallet balances and competitive results.
+- Profile preferences and other supported state synchronize through **versioned account-bound cloud saves**. The browser keeps account-scoped local cache data for recovery; it is not an independent verified game save.
+- If another device saves newer preferences, the Profile/account UI can reload the server version and retain a browser-local backup of the conflicting local edits. There is **no automatic merge UI**.
+- The old manual local save import/export workflow has been retired. Clearing browser storage does **not** delete your account or server collection.
+- You can sign out or request permanent account deletion from account settings. Account deletion requires password reauthentication and an explicit confirmation phrase.
 
-CARDEX is a static HTML/CSS/JavaScript project. No package manager, build step, backend, or API key is required to run the game.
+## Local development
+
+No bundler is required, but **a local HTTP server and network access to Supabase are required** for the current authenticated game. Opening `index.html` directly as `file://` does not support the page-fragment fetches.
 
 ```bash
 git clone https://github.com/kevin-oulai/cardex.git
@@ -69,69 +64,66 @@ cd cardex
 python -m http.server 8000
 ```
 
-Open **http://localhost:8000** in your browser.
+Open http://localhost:8000. Some authentication redirect behavior depends on your Supabase project's configured redirect URLs. The published Supabase client uses a public/publishable key; **never commit a service-role secret**.
 
-A local HTTP server is recommended because the game fetches `car-images.json`; opening `index.html` directly as a `file://` URL may prevent that request in some browsers. An internet connection is required for remotely hosted car photographs.
+Validate the HTML structure with:
 
-## Deploy
+```bash
+node scripts/validate-pages.mjs
+```
 
-The project is published on **GitHub Pages** from the `main` branch via the repository's GitHub Actions deployment setup.
-
-1. Fork or clone the repository and make your changes.
-2. Push them to the branch configured for deployment.
-3. In **Settings → Pages**, configure **GitHub Actions** as the build/deployment source if necessary.
-4. Check the **Actions** tab for deployment status.
-
-Live site: **https://kevin-oulai.github.io/cardex/**
+A GitHub Actions workflow also checks page-fragment structural nesting and duplicate IDs. This does not replace browser or security testing.
 
 ## Project structure
 
-| Path | Purpose |
+| Path | Responsibility |
 | --- | --- |
-| `index.html` | Game UI, styling, catalog data, rules, and client-side logic |
-| `car-images.json` | Per-car image-reference catalog keyed by stable car IDs |
-| `legal.html` | Publisher/hosting information and non-affiliation notice |
-| `privacy.html` | Local storage and external-service privacy information |
-| `terms.html` | Game terms, image credits, and disclaimers |
-| `README.md` | Project documentation |
+| `index.html` | Shared app shell, navigation, dialogs, page-fragment loader |
+| `pages/boosters.html` | Booster page markup |
+| `pages/garage.html` | Garage page markup |
+| `pages/duel.html` | Showdown page markup |
+| `pages/profile.html` | Profile, achievements, titles, showroom |
+| `pages/auth.html` | Sign-in and account synchronization UI |
+| `assets/styles.css` | Shared styling |
+| `assets/game.js` | Catalog, game UI, rendering and interactions |
+| `backend/client.js` | Supabase client, auth, synchronization and RPC calls |
+| `backend/*.sql` | Database schema, migrations and authoritative game functions |
+| `car-images.json` | Provisional car image references |
+| `scripts/validate-pages.mjs` | Static structural HTML checks |
+| `docs/` | Architecture, audits, feature notes |
+| `privacy.html`, `terms.html`, `legal.html` | Public-facing policy and legal drafts |
 
-### Vehicle photography
+See [Frontend Architecture](docs/frontend-architecture.md).
 
-`car-images.json` associates image references with car IDs. It currently contains **provisional Wikipedia article references**, not a fully verified set of exact-model photos. Some displayed photos may depict a different generation, trim, or vehicle. Please report mismatches.
+## Deployment
 
-A reviewed image can be pinned in the corresponding catalog entry using an HTTPS `src` and `credit` URL. The game otherwise requests article thumbnail images from Wikipedia/Wikimedia and falls back to an icon if a photograph cannot be loaded.
+The site is published at https://kevin-oulai.github.io/cardex/ through GitHub Pages. The app loads page fragments over HTTP and relies on a separately deployed Supabase backend. Publishing frontend files alone **does not create database tables, apply SQL migrations or deploy Edge Functions**.
 
-**Important:** An image-source link is not, by itself, complete copyright clearance or attribution. Before pinning or redistributing any image, check the actual photographer, source, license, permitted uses, and attribution requirements. Record those details as part of the review. Do not assume all Wikipedia images are available for commercial reuse.
+Use GitHub Actions to monitor deployment and validation checks. After changing shared JavaScript or CSS, update the cache-busting query string in `index.html` when necessary.
 
-## AI assistance and transparency
+## Vehicle images and intellectual property
 
-CARDEX has been developed **with substantial assistance from AI**, including implementation and revisions of HTML, CSS, JavaScript, UI interactions, gameplay systems, debugging, documentation, and legal-page drafts.
+`car-images.json` includes **provisional** Wikipedia/Wikimedia image references; model accuracy, authorship, licensing and attribution have **not** been fully audited. An image-source URL does not establish a reuse license. Confirm the source, photographer, license, attribution and permitted uses before wider release.
 
-- **AI provider:** OpenAI
-- **AI assistant:** ChatGPT
-- **Model used for this README update:** **GPT-6**
-- **Earlier development:** Multiple ChatGPT-assisted iterations. The exact model used for every earlier change has **not been reliably recorded**, so this README does not attribute the entire codebase to GPT-6.
-- **Human involvement:** The project owner directs the design, selects features, tests the game, and decides what to publish. AI-generated contributions require review and testing.
+CARDEX is not affiliated with any vehicle manufacturer or tuner. Trademarks, vehicle imagery and third-party photographs remain subject to their respective owners' rights.
 
-AI assistance does **not** guarantee correctness, security, factual accuracy, legal compliance, or third-party licensing clearance. In particular, legal pages are drafts for the publisher to complete and verify, not legal advice or certification.
+The repository is public, but **public availability is not an open-source license**. Check for a valid `LICENSE` file before assuming redistribution rights.
 
-## Legal, licensing, and monetization
+## Privacy, legal status and monetization
 
-CARDEX is an **independent, unofficial project**. It is not affiliated with, sponsored by, or endorsed by any vehicle manufacturer or tuning company. Vehicle names, trademarks, designs, and photographs may be subject to third-party rights.
+- Free to play; **no real-money purchases or advertising integration** at present.
+- CARDEX uses Supabase authentication/database services, GitHub Pages hosting, and third-party image services. Refer to the [Privacy Policy](privacy.html) for the current disclosure.
+- Publisher identification/contact details, final data-retention/legal-basis disclosures and third-party image-rights review are **still incomplete**. The published legal pages are drafts requiring publisher review before a formal public launch.
+- [Legal notice](legal.html) · [Privacy policy](privacy.html) · [Terms and credits](terms.html).
 
-- **Current model:** Free to play, with **no real-money purchases** and **no advertising integration**.
-- **Future plans:** Advertising may be considered later, but any necessary privacy disclosures, cookie/tracking consent, image-license review, and publisher details must be addressed **before activation**.
-- **Legal pages:** [Legal notice](https://kevin-oulai.github.io/cardex/legal.html) · [Privacy policy](https://kevin-oulai.github.io/cardex/privacy.html) · [Terms and image credits](https://kevin-oulai.github.io/cardex/terms.html).
-- **Outstanding work:** The publisher's legally required identification/contact information is not yet complete, and the image-rights audit is ongoing.
+## AI assistance
 
-**Open-source licensing status:** This repository is publicly accessible, but **public access alone does not grant an open-source license**. Unless a valid `LICENSE` file is added, do not assume permission to copy, redistribute, or commercially reuse the code. Third-party images and marks would remain subject to their own rights even if the original code were released under an open-source license.
+CARDEX has been developed with substantial ChatGPT/OpenAI assistance across code, debugging, design, documentation and draft legal text. The project owner directs features, reviews and tests changes, and decides what to publish. The exact model used for every historical contribution has not been reliably recorded. AI assistance does not certify code quality, security, factual accuracy or legal compliance.
 
-For each future feature or external-service integration, check whether the legal notice, privacy policy, terms, attribution, or consent flows need updating.
+## Feedback
 
-## Contributing and feedback
-
-Bug reports and suggestions are welcome via [GitHub Issues](https://github.com/kevin-oulai/cardex/issues). Useful reports include the device/browser, steps to reproduce, expected behavior, and a screenshot where appropriate. Avoid sharing personal information or save files containing information you do not want to publish.
+Use [GitHub Issues](https://github.com/kevin-oulai/cardex/issues) for non-confidential bug reports or suggestions. Include reproduction steps and device/browser details where useful; do not post account credentials or personal data.
 
 ---
 
-**CARDEX** — Collect the machines that defined generations.
+**CARDEX — Collect the machines that defined generations.**
