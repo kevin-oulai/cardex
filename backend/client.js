@@ -94,14 +94,14 @@ window.cardexOpenServerPack=async(theme,quantity=1,instant=false)=>{
   }finally{packBusy=false}
 };
 
-let activeUser=null, pending=null, saving=false, revision=0, savedRevision=0;
+let activeUser=null, pending=null, saving=false, revision=0, savedRevision=0, serverSaveRevision=0, saveConflict=false;
 window.cardexCloudReady=false;
 const cacheKey=id=>'cardex-account-cache-'+id;
 async function loadCloud(id){
   window.cardexCloudReady=false;
   activeUser=id;
   text(cloudStatus,'Loading account collection…');
-  const {data,error}=await client.from('player_saves').select('state').eq('user_id',id).maybeSingle();
+  const {data,error}=await client.from('player_saves').select('state,revision').eq('user_id',id).maybeSingle();
   if(error){
     text(status,'Cloud save unavailable: '+error.message+'. Apply backend/cloud-saves.sql in Supabase.');
     text(cloudStatus,'Cloud save unavailable; gameplay locked to prevent data loss.');
@@ -109,6 +109,8 @@ async function loadCloud(id){
     return;
   }
   let remote=data?.state;
+  serverSaveRevision=Number(data?.revision||0);
+  saveConflict=false;pending=null;revision=0;savedRevision=0;
   if(!remote){
     remote={packs:10,last:Date.now(),owned:[],favorites:[],opened:0,credits:0,xp:0,pity:0,achievements:[],lastDuel:''};
     const {error:createError}=await client.from('player_saves').insert({user_id:id,state:remote});
@@ -122,20 +124,29 @@ async function loadCloud(id){
   await syncServerGame();
 }
 window.cardexCloudSave=(state)=>{
-  if(!window.cardexCloudReady||!activeUser)return;
+  if(!window.cardexCloudReady||!activeUser||saveConflict)return;
   pending=JSON.stringify(state);revision++;
   localStorage.setItem(cacheKey(activeUser),pending);
   clearTimeout(window.cardexCloudTimer);
   window.cardexCloudTimer=setTimeout(flushCloud,500);
 };
 async function flushCloud(){
-  if(saving||!pending||!activeUser)return;
+  if(saving||!pending||!activeUser||saveConflict)return;
   saving=true;
   const snapshot=pending, rev=revision, id=activeUser;
   text(cloudStatus,'Saving collection…');
-  const {error}=await client.from('player_saves').update({state:JSON.parse(snapshot),updated_at:new Date().toISOString()}).eq('user_id',id);
+  const {data,error}=await client.rpc('cardex_save_preferences',{p_state:JSON.parse(snapshot),p_expected_revision:serverSaveRevision});
   saving=false;
-  if(error){text(cloudStatus,'Cloud save failed: '+error.message+'. Changes remain in browser cache.');return}
+  if(activeUser!==id)return;
+  if(error){
+    if(error.message?.includes('SAVE_CONFLICT')){
+      saveConflict=true;
+      text(cloudStatus,'Cloud save conflict: another device changed your preferences. Your local edits are preserved in this browser. Reload to fetch the latest server version.');
+      window.cardexNotify?.('Cloud save conflict — reload to see latest account preferences');
+    }else text(cloudStatus,'Cloud save failed: '+error.message+'. Changes remain in browser cache.');
+    return;
+  }
+  serverSaveRevision=Number(data.revision);
   savedRevision=rev;
   if(revision===rev){pending=null;text(cloudStatus,'Collection saved online.')}
   else setTimeout(flushCloud,0);
@@ -202,7 +213,7 @@ try {
   window.cardexOnlineSession=()=>refreshSession().catch(console.error);
   await refreshSession();
   try{await loadPublic()}catch(e){console.warn('CARDEX leaderboard',e)}
-  client.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){activeUser=null;pending=null;window.cardexCloudReady=false;window.cardexServerGameReady=false;window.cardexLoadCloudState?.({});}setTimeout(()=>refreshSession().catch(console.error),0)});
+  client.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){activeUser=null;pending=null;saveConflict=false;window.cardexCloudReady=false;window.cardexServerGameReady=false;window.cardexLoadCloudState?.({});}setTimeout(()=>refreshSession().catch(console.error),0)});
   document.getElementById('onlineLogin').addEventListener('click',async()=>{
     const email=document.getElementById('onlineEmail').value.trim();
     const password=document.getElementById('onlinePassword').value;
