@@ -477,3 +477,31 @@ body:has(#revealModal.open){overflow:hidden}
 #garage .card .star {
   border-radius: 0 !important;
 }
+
+
+/* Mythic badge: the old oversized rotating conic layer produced a hard
+   vertical seam on narrow/mobile badges. Sweep a full-width light band instead. */
+.collector-title-badge[data-prestige="mythic"]:not([hidden])::after{
+ inset:0;
+ border-radius:inherit;
+ background:linear-gradient(105deg,
+  transparent 0%,transparent 22%,
+  #d99bff12 37%,#f4c9ff42 46%,#ffffff60 50%,
+  #a5e8ff30 55%,transparent 70%,transparent 100%);
+ background-size:240% 100%;
+ background-position:110% 0;
+ animation:mythicBadgeShine 5.5s ease-in-out infinite;
+ transform:none;
+ opacity:.85;
+ mix-blend-mode:screen;
+}
+@keyframes mythicBadgeShine{
+ 0%,14%{background-position:110% 0}
+ 62%,100%{background-position:-110% 0}
+}
+@media(prefers-reduced-motion:reduce){
+ .collector-title-badge[data-prestige="mythic"]:not([hidden])::after{
+  animation:none!important;
+  background-position:50% 0;
+ }
+}
