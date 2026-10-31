@@ -71,3 +71,9 @@ Run [`model-serials-showdown-rewards.sql`](./model-serials-showdown-rewards.sql)
 The same migration replaces the Showdown RPC to award the established milestones (20%: 100 credits; 40%: 200 credits; 60%: 1 ticket; 80%: 350 credits; 100%: 200 credits + 1 ticket) exactly once per UTC day. Claimed milestones are stored in `showdown_reward_claims` and returned via `cardex_get_showdown_status`; the UI now reads server state rather than inferring claims locally. Existing verified scores can earn their unclaimed rewards on the **next Showdown submission that day**. The migration does not automatically award rewards for past days.
 
 **Do not rerun the original `authoritative-game.sql` after this migration** because it contains an older version of the pack RPC that doesn't populate `model_serial`. Future deployments should use versioned migrations in order. The SQL and live deployment have not been verified by this assistant; test with two accounts before considering production-ready.
+
+## Rich leaderboard and public collector profiles
+
+Run [`leaderboard-profiles.sql`](./leaderboard-profiles.sql) **after** `model-serials-showdown-rewards.sql`. This adds two read-only authenticated RPCs: `cardex_daily_leaderboard(p_day)` returns the daily ranked top 100 with first 100% defeat timestamp, winning car, model serial, and collection totals; `cardex_public_collector(p_user_id)` returns a limited inspectable profile (display name, join date, collection counts, three high-tier cards, five recent verified results). Email addresses, wallet balances, account save JSON, and complete inventory are never returned. The frontend displays a migration-required message until this SQL is deployed.
+
+Public profile fields are not opt-in yet; review the privacy/terms pages and implement a visibility control if needed before wider launch. This repository migration has **not** been applied to the hosted Supabase project by GitHub commits alone.
