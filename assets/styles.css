@@ -623,3 +623,50 @@ body:has(#revealModal.open){overflow:hidden}
   will-change:auto;
  }
 }
+
+
+/* Ambient prestige motes: sparse, curved trajectories and staggered timing.
+   Text and interactions remain above the particle layer. */
+.collector-title-badge .title-particles{
+ position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:inherit;
+}
+.collector-title-badge .title-particles i{
+ position:absolute;left:calc(8% + mod(var(--p)*13,80)*1%);top:70%;
+ width:3px;height:3px;border-radius:50%;background:#fff5d7;
+ box-shadow:0 0 5px 2px var(--prestige-glow),0 0 10px var(--prestige);
+ opacity:0;animation:titleMote 5.4s ease-in-out infinite;
+ animation-delay:calc(var(--p)*-.72s);
+}
+.collector-title-badge[data-prestige="mythic"] .title-particles i{
+ width:3px;height:3px;background:#fbe4ff;
+}
+@keyframes titleMote{
+ 0%,10%,100%{opacity:0;transform:translate3d(-8px,7px,0) scale(.3)}
+ 24%{opacity:.8;transform:translate3d(0,-1px,0) scale(1)}
+ 44%{opacity:.65;transform:translate3d(11px,-9px,0) scale(.8)}
+ 67%{opacity:.38;transform:translate3d(4px,-16px,0) scale(.65)}
+ 83%{opacity:0;transform:translate3d(16px,-23px,0) scale(.2)}
+}
+/* Reveal particles orbit the card on soft cubic-like arcs, never cover buttons. */
+#revealCard .flip-effects{overflow:visible;pointer-events:none}
+#revealCard .reveal-particle{
+ --a:calc(var(--p)*30deg);
+ position:absolute;top:50%;left:50%;
+ width:4px;height:4px;border-radius:50%;
+ background:#fff5c6;box-shadow:0 0 9px 3px var(--reveal-halo,#f5ce86),0 0 18px #fff8;
+ opacity:0;transform:rotate(var(--a)) translateX(50px);
+ animation:revealOrbit 1.8s cubic-bezier(.19,.75,.25,1) both;
+ animation-delay:calc(var(--p)*38ms);
+}
+#revealCard .reveal-particle:nth-child(3n){width:2px;height:2px;background:#d1e8ff}
+#revealCard .reveal-particle:nth-child(4n){width:5px;height:5px;background:#f8c7ff}
+@keyframes revealOrbit{
+ 0%{opacity:0;transform:rotate(var(--a)) translateX(45px) translateY(12px) scale(.25)}
+ 18%{opacity:.9}
+ 48%{opacity:1;transform:rotate(calc(var(--a) + 22deg)) translateX(130px) translateY(-22px) scale(1)}
+ 100%{opacity:0;transform:rotate(calc(var(--a) + 46deg)) translateX(185px) translateY(28px) scale(.15)}
+}
+@media(prefers-reduced-motion:reduce){
+ .collector-title-badge .title-particles i,
+ #revealCard .reveal-particle{animation:none!important;display:none!important}
+}
