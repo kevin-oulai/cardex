@@ -65,20 +65,23 @@ function renderTitles(){
  const all=verifiedTitles.titles,unlocked=all.filter(t=>t.unlocked).length;
  $('titleUnlockCount').textContent=unlocked+' / '+all.length+' unlocked';
  const current=all.find(t=>t.id===verifiedTitles.equipped&&t.unlocked);
- $('equippedTitleBadge').hidden=!current;
- $('equippedTitleBadge').textContent=current?'✦ '+current.label:'';
  const titlePrestige=id=>['dynasty','mythic_curator','completionist'].includes(id)?'mythic':['champion','podium_regular','legend_keeper','archivist'].includes(id)?'legendary':['podium_finisher','track_rat','rare_hunter','euro_connoisseur','jdm_enthusiast'].includes(id)?'epic':'standard';
- $('equippedTitleBadge').dataset.prestige=current?titlePrestige(current.id):'standard';
- const badge=$('equippedTitleBadge');
- if(current&&['mythic','legendary'].includes(titlePrestige(current.id))){
-  const particleCount=titlePrestige(current.id)==='mythic'?7:4;
-  badge.insertAdjacentHTML('beforeend','<span class="title-particles" aria-hidden="true">'+Array.from({length:particleCount},(_,i)=>'<i style="--p:'+i+'"></i>').join('')+'</span>');
+ const titleBadge=t=>{
+  const prestige=titlePrestige(t.id);
+  const motes=['mythic','legendary'].includes(prestige)?'<span class="title-particles" aria-hidden="true">'+Array.from({length:prestige==='mythic'?7:4},(_,i)=>'<i style="--p:'+i+'"></i>').join('')+'</span>':'';
+  return '<span class="collector-title-badge" data-prestige="'+prestige+'">✦ '+t.label+motes+'</span>';
+ };
+ const equippedBadge=$('equippedTitleBadge');
+ equippedBadge.hidden=!current;
+ if(current){
+  equippedBadge.dataset.prestige=titlePrestige(current.id);
+  equippedBadge.innerHTML='✦ '+current.label+(['mythic','legendary'].includes(titlePrestige(current.id))?'<span class="title-particles" aria-hidden="true">'+Array.from({length:titlePrestige(current.id)==='mythic'?7:4},(_,i)=>'<i style="--p:'+i+'"></i>').join('')+'</span>':'');
  }
 
  $('titleManagerSummary').textContent=current?current.label:unlocked+' unlocked · None equipped';
  const filter=$('titleCategoryFilter').value;
  const list=all.filter(t=>!filter||t.category===filter).sort((a,b)=>Number(b.unlocked)-Number(a.unlocked)||a.label.localeCompare(b.label));
- grid.innerHTML=list.map(t=>'<article data-prestige="'+titlePrestige(t.id)+'" class="title-card '+(t.unlocked?'unlocked ':'')+(t.equipped?'equipped':'')+'"><h3>'+(t.unlocked?'✦ ':'🔒 ')+t.label+'</h3><p class="title-requirement">'+t.description+'</p><div class="title-progress" role="progressbar" aria-label="'+t.label+' progress" aria-valuemin="0" aria-valuemax="'+t.goal+'" aria-valuenow="'+Math.min(t.goal,t.progress)+'"><span style="width:'+Math.min(100,100*t.progress/Math.max(1,t.goal))+'%"></span></div><div class="title-progress-meta"><span>'+Math.min(t.goal,t.progress)+' / '+t.goal+'</span><span>'+(t.unlocked?'Unlocked':Math.floor(100*t.progress/Math.max(1,t.goal))+'%')+'</span></div><button type="button" data-equip-title="'+t.id+'" '+(!t.unlocked||t.equipped?'disabled':'')+'>'+(t.equipped?'Equipped':t.unlocked?'Equip title':'Locked')+'</button></article>').join('');
+ grid.innerHTML=list.map(t=>'<article data-prestige="'+titlePrestige(t.id)+'" class="title-card title-row '+(t.unlocked?'unlocked ':'')+(t.equipped?'equipped':'')+'"><div class="title-row-preview">'+titleBadge(t)+'</div><div class="title-row-details"><p class="title-requirement">'+t.description+'</p><div class="title-progress" role="progressbar" aria-label="'+t.label+' progress" aria-valuemin="0" aria-valuemax="'+t.goal+'" aria-valuenow="'+Math.min(t.goal,t.progress)+'"><span style="width:'+Math.min(100,100*t.progress/Math.max(1,t.goal))+'%"></span></div><div class="title-progress-meta"><span>'+Math.min(t.goal,t.progress)+' / '+t.goal+'</span><span>'+(t.unlocked?'Unlocked':Math.floor(100*t.progress/Math.max(1,t.goal))+'%')+'</span></div></div><button type="button" data-equip-title="'+t.id+'" '+(!t.unlocked||t.equipped?'disabled':'')+'>'+(t.equipped?'Equipped':t.unlocked?'Equip title':'Locked')+'</button></article>').join('');
  if(current)grid.insertAdjacentHTML('afterbegin','<button class="title-clear" data-clear-title type="button">Remove equipped title</button>');
 }
 $('titleCategoryFilter').addEventListener('change',renderTitles);
