@@ -12,7 +12,7 @@ CARDEX is an independent, unofficial car-card collecting project. The static fro
 
 ### Boosters
 
-- **96 car models**, eight rarity tiers (Common, Uncommon, Rare, Super Rare, Ultra Rare, Legendary, Exotic, Limited).
+- **192 car models**, eight rarity tiers (Common, Uncommon, Rare, Super Rare, Ultra Rare, Legendary, Exotic, Limited).
 - Four booster themes: **World Mix, JDM Legends, European Icons, Motorsport**.
 - **Five cards per booster**, with the final draw guaranteed **Rare or better**; Legendary pity protection applies.
 - Open one booster card by card, or open **5 or 10** in one server transaction with a combined summary. A failed batch rolls back rather than issuing a partial batch.
@@ -37,8 +37,8 @@ Base rarity weights are defined by the server's authoritative draw implementatio
 ### Collector profiles, achievements and titles
 
 - Customize your display name, avatar, bio and profile theme; showcase three owned cars and maintain a wishlist.
-- Claim five server-verified achievements.
-- Earn **15 cosmetic collector titles** through collection size, rarity, regional/motorsport themes, claimed achievements and historical Showdown placements. Equip one title from the collapsible Profile title manager. Titles have no gameplay bonus.
+- Claim ten server-verified achievements.
+- Earn **30 cosmetic collector titles** through collection size, rarity, regional/motorsport themes, claimed achievements and historical Showdown placements. Equip one title from the collapsible Profile title manager. Titles have no gameplay bonus.
 - Signed-in users can view public collector profiles; you can hide collection details and Showdown history from other players. **Leaderboard identity and results remain visible**.
 - Historical podium/title counts are calculated from stored leaderboard standings and are **not yet finalized, immutable daily awards**. Inventory-dependent titles can become locked after recycling.
 
