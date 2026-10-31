@@ -186,6 +186,12 @@ async function loadPublic() {
   leaderboard.querySelectorAll('[data-collector-id]').forEach(button=>button.addEventListener('click',()=>window.cardexOpenPublicProfile?.(button.dataset.collectorId)));
 
 }
+window.cardexSetPublicVisibility=async(visible)=>{
+ const {data,error}=await client.rpc('cardex_set_collection_visibility',{p_visible:visible});
+ if(error)throw error;
+ window.cardexSetProfileVisibility?.(data);
+ return data;
+};
 window.cardexFetchPublicProfile=async(userId)=>{
   const {data,error}=await client.rpc('cardex_public_collector',{p_user_id:userId});
   if(error)throw error;
@@ -198,7 +204,8 @@ async function refreshSession(){
   signedIn.hidden=!user;
   if(!user){window.cardexCloudReady=false;window.cardexServerGameReady=false;document.getElementById('accountGate').style.display='none';window.cardexShowAuth?.();text(status,'Sign in or create an account to play.');return}
   text(status,'Signed in as '+user.email+'. Your collection is linked to this account.');
-  const {data:profile}=await client.from('profiles').select('display_name').eq('id',user.id).maybeSingle();
+  const {data:profile}=await client.from('profiles').select('display_name,public_collection').eq('id',user.id).maybeSingle();
+  if(profile)window.cardexSetProfileVisibility?.(profile.public_collection!==false);
   if(profile?.display_name && window.cardexCloudReady){const input=document.getElementById('profileNameInput');if(input)input.value=profile.display_name;}
   if(activeUser!==user.id)await loadCloud(user.id);
   else if(window.cardexCloudReady)document.getElementById('accountGate').style.display='none';
