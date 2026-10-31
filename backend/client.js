@@ -122,7 +122,7 @@ async function loadCloud(id){
   }
   let remote=data?.state;
   serverSaveRevision=Number(data?.revision||0);
-  saveConflict=false;pending=null;revision=0;savedRevision=0;document.getElementById('cloudConflictActions').hidden=true;
+  saveConflict=false;pending=null;revision=0;savedRevision=0;document.getElementById('cloudConflictActions')?.setAttribute('hidden','');
   if(!remote){
     remote={packs:10,last:Date.now(),owned:[],favorites:[],opened:0,credits:0,xp:0,pity:0,achievements:[],lastDuel:''};
     const {error:createError}=await client.from('player_saves').insert({user_id:id,state:remote});
@@ -166,7 +166,7 @@ async function flushCloud(){
   if(error){
     if(error.message?.includes('SAVE_CONFLICT')){
       saveConflict=true;
-      text(cloudStatus,'Cloud save conflict: another device changed your preferences. Choose Reload server preferences below; local edits will be backed up on this device.');document.getElementById('cloudConflictActions').hidden=false;
+      text(cloudStatus,'Cloud save conflict: another device changed your preferences. Choose Reload server preferences below; local edits will be backed up on this device.');document.getElementById('cloudConflictActions')?.removeAttribute('hidden');
       window.cardexNotify?.('Cloud save conflict — reload to see latest account preferences');
     }else text(cloudStatus,'Cloud save failed: '+error.message+'. Changes remain in browser cache.');
     return;
