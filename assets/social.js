@@ -125,7 +125,7 @@ window.cardexSocialReset=()=>{state={friends:[],incoming:[],outgoing:[],notifica
 document.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;
  if(b.dataset.socialTab){switchTab(b.dataset.socialTab);return}
- if(b.dataset.viewCollector){closeInbox();openProfile(b.dataset.viewCollector);return}
+ if(b.dataset.viewCollector){const notice=b.closest('[data-notification-id]');if(notice){const id=Number(notice.dataset.notificationId);const item=state.notifications.find(n=>n.id===id);if(item&&!item.read){item.read=true;render();rpc('cardex_social_action',{p_action:'read',p_target:null,p_request:null,p_notification:id}).then(next=>{state=next;render()}).catch(err=>{console.warn('Could not mark notification as read',err);refresh()})}}closeInbox();openProfile(b.dataset.viewCollector);return}
  if(b.dataset.socialAction){action(b.dataset.socialAction,b.dataset.id,b.dataset.request,b.dataset.notification);return}
  if(b.id==='socialReadAll'||b.id==='socialPopoverReadAll')action('read_all');
  if(b.id==='socialBack')window.cardexPage?.('social');
