@@ -158,10 +158,16 @@ function paintPhotos(){
 async function loadCarPhotos(){
  if(photoLoading)return;photoLoading=true;
  try{
-  const groups=[];for(let k=0;k<photoTitles.length;k+=12)groups.push(photoTitles.slice(k,k+12).map((title,j)=>({title,id:k+j})));
+  let catalog=[];try{const res=await fetch('./car-images.json',{cache:'no-cache'});if(res.ok){const data=await res.json();if(Array.isArray(data.cars))catalog=data.cars}}catch(e){console.warn('Image catalog unavailable, using built-in references',e)}
+  const titleById=new Map(),pinned=new Set();
+  for(const entry of catalog){if(!Number.isInteger(entry.id)||entry.id<0||entry.id>=cars.length)continue;
+    if(typeof entry.src==='string'&&/^https:\/\//.test(entry.src)&&typeof entry.credit==='string'&&/^https:\/\//.test(entry.credit)){photoCache.set(entry.id,{src:entry.src,credit:entry.credit});pinned.add(entry.id)}
+    else if(typeof entry.article==='string'&&entry.article.trim())titleById.set(entry.id,entry.article.trim());
+  }
+  const groups=[];for(let k=0;k<photoTitles.length;k+=12)groups.push(photoTitles.slice(k,k+12).map((title,j)=>({title:titleById.get(k+j)||title,id:k+j})).filter(x=>!pinned.has(x.id)));paintPhotos();
   await Promise.all(groups.map(async group=>{
    try{
-    const titles=[...new Set(group.map(x=>x.title))];
+    if(!group.length)return;const titles=[...new Set(group.map(x=>x.title))];
     const api='https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&redirects=1&prop=pageimages&piprop=thumbnail%7Cname&pithumbsize=850&titles='+encodeURIComponent(titles.join('|'));
     const response=await fetch(api);if(!response.ok)throw Error('Image request failed');
     const json=await response.json();const byTitle=new Map(Object.values(json.query?.pages||{}).map(p=>[p.title,p]));
