@@ -6,7 +6,7 @@ const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const uuid=x=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(x));
 const icon=name=>'<i data-lucide="'+name+'"></i>';
 let state={friends:[],incoming:[],outgoing:[],notifications:[]},tab='friends',profileId=null,loading=false;
-function icons(){window.lucide?.createIcons({attrs:{'stroke-width':1.8}})}
+function icons(){try{window.lucide?.createIcons({attrs:{'stroke-width':1.8}})}catch(e){console.warn('Icons unavailable',e)}}
 function message(t){const el=$('socialMessage');el.hidden=!t;el.textContent=t||''}
 function avatar(name){return '<span class="social-avatar">'+esc((name||'C').slice(0,1).toUpperCase())+'</span>'}
 function relation(id){
@@ -83,9 +83,9 @@ async function openProfile(id){
   const [p,g]=await Promise.all([window.cardexFetchPublicProfile(id),rpc('cardex_social_garage',{p_user_id:id})]);
   viewedProfile=p;viewedGarage=g.private?[]:g.cards||[];
   const title=p.equipped_title?'<div class="collector-title-badge social-profile-title">✦ '+esc(p.equipped_title)+'</div>':'';
-  const avatarText=esc((p.display_name||'C').slice(0,1).toUpperCase());
+  const avatarText='🏎️';
   const head='<div class="eyebrow">COLLECTOR IDENTITY / PUBLIC PROFILE</div><h1>Profile</h1>'+
-  '<div class="profile-cover" data-theme="heritage"><div class="profile-identity"><div class="profile-avatar">'+avatarText+'</div><div><div class="eyebrow">CARDEX COLLECTOR</div><h2>'+esc(p.display_name||'Collector')+'</h2><div class="sub">Joined '+(p.joined_at?new Date(p.joined_at).toLocaleDateString('en-GB',{month:'long',year:'numeric'}):'CARDEX')+'</div></div></div>'+
+  '<div class="profile-cover" data-theme="heritage"><div class="profile-identity"><div class="profile-avatar">'+avatarText+'</div><div><div class="eyebrow">CARDEX COLLECTOR</div><h2>'+esc(p.display_name||'Collector')+'</h2><div class="sub">Driven by the chase.</div></div></div>'+
   (p.private?'':'<div class="profile-numbers"><div><strong>'+Number(p.unique_models||0)+'/192</strong><span>Discovered</span></div><div><strong>'+Number(p.cards_owned||0)+'</strong><span>Cards owned</span></div><div><strong>'+Number(p.high_tier_cards||0)+'</strong><span>Legendary+</span></div><div><strong>'+Number(p.title_count||0)+'</strong><span>Titles unlocked</span></div></div>')+'</div>'+
   title+'<div class="social-profile-actions">'+buttons({id:p.id,name:p.display_name,public:!p.private})+'</div>';
   if(p.private||g.private){$('socialProfileBody').innerHTML=head+'<div class="panel social-private">'+icon('lock')+'<h2>Private collection</h2><p>This collector has chosen not to share their Garage or Showdown history.</p></div>';icons();return}
@@ -98,6 +98,8 @@ async function openProfile(id){
  }catch(e){$('socialProfileBody').textContent='Unable to load collector: '+e.message}
 }
 window.cardexSocialOpenProfile=openProfile;
+window.cardexSocialShowInbox=()=>{window.cardexPage?.('social');switchTab('inbox');refresh()};
+window.cardexSocialShowCommunity=()=>{window.cardexPage?.('social');switchTab('friends');refresh()};
 window.cardexSocialRefresh=refresh;
 window.cardexSocialReset=()=>{state={friends:[],incoming:[],outgoing:[],notifications:[]};profileId=null;render()};
 document.addEventListener('click',e=>{
@@ -111,12 +113,14 @@ document.addEventListener('click',e=>{
  if(b.id==='socialGarageBack')window.cardexPage?.('collectorView');
  if(b.id==='socialGarageDuplicates'){duplicatesOnly=!duplicatesOnly;renderGarage()}
  if(b.id==='socialGarageGroup'){groupCopies=!groupCopies;renderGarage()}
- if(b.id==='topCommunity'){window.cardexPage?.('social');switchTab('friends');refresh()}
- if(b.id==='topInbox'){window.cardexPage?.('social');switchTab('inbox');refresh()}
+ if(b.id==='topCommunity')window.cardexSocialShowCommunity()
+ if(b.id==='topInbox')window.cardexSocialShowInbox()
  if(b.dataset.page==='social')refresh();
 });
 $('socialSearch').addEventListener('input',()=>search());
 ['socialGarageSearch','socialGarageRarity','socialGarageSort','socialGarageDrive','socialGarageCountry','socialGarageFinish'].forEach(id=>$(id).addEventListener(id==='socialGarageSearch'?'input':'change',renderGarage));
 $('socialGarageCountry').innerHTML+=(window.cardexSocialCountries||[]).map(c=>'<option>'+esc(c)+'</option>').join('');
+$('topCommunity').addEventListener('click',e=>{e.stopPropagation();window.cardexSocialShowCommunity()});
+$('topInbox').addEventListener('click',e=>{e.stopPropagation();window.cardexSocialShowInbox()});
 window.addEventListener('focus',()=>{if($('social')?.classList.contains('active'))refresh()});
 })();
