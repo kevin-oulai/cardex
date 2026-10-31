@@ -1,13 +1,13 @@
 # CARDEX online backend — Supabase
 
-**Status: database schema prepared, not deployed.** The public game still runs entirely locally until a Supabase project is configured and the authenticated/server-authoritative game flows are implemented.
+**Status: browser client configured for the Supabase project, schema execution and secure game services pending.** The game has an optional Online page for email authentication, profile name, read-only leaderboard/serials, and a server-published shared boss. Local gameplay and save files remain separate; online issuance and competitive submissions are not enabled.
 
 ## Setup
 
 1. Create a **Free** project at [Supabase](https://supabase.com/).
 2. Open **SQL Editor** and execute [`schema.sql`](./schema.sql).
 3. Under **Authentication → URL Configuration**, add `https://kevin-oulai.github.io/cardex/` as an allowed redirect URL. Configure the site URL and email confirmation behavior.
-4. Locate the **Project URL** and **publishable/anon key** in the Supabase dashboard. These are intended for browser clients; **never** share or commit the `service_role` key, database password, or other secret.
+4. The **Project URL** and **publishable key** are already configured in `backend/client.js` for this public browser application. **Never** share or commit the `service_role` key, database password, or other secret.
 5. Implement and deploy authenticated Edge Functions for issuing booster cards, allocating unique serials, and validating daily Showdown submissions **before** switching the browser game to online mode.
 
 ## Security model
@@ -31,7 +31,7 @@ Before launching accounts or collecting online results, update `privacy.html`, `
 ## Next steps
 
 1. Create and configure the Supabase project.
-2. Add frontend sign-up/sign-in/sign-out and session handling.
+2. Test the implemented sign-up/sign-in/sign-out flows after applying SQL and setting authentication URLs. Check confirmation email delivery and account profile creation.
 3. Add trusted backend pack issuance and serials.
-4. Add globally shared daily boss and validated rankings.
+4. Deploy a trusted UTC daily-boss publisher and server-validated Showdown submission; the frontend currently reads both tables but does not mint bosses or submit scores.
 5. Test with multiple accounts, malicious requests, and existing guest saves.
