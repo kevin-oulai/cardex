@@ -29,6 +29,7 @@ window.cardexOpenServerPack=async(theme,quantity=1,instant=false)=>{
   if(packBusy)return;
   packBusy=true;
   const draws=[];
+  const prior=new Set((window.cardexOwnedModelIds?.()||[]).map(Number));
   try{
     for(let i=0;i<quantity;i++){
       const {data,error}=await client.rpc('cardex_open_pack',{p_theme:theme});
@@ -39,7 +40,10 @@ window.cardexOpenServerPack=async(theme,quantity=1,instant=false)=>{
     if(walletError)throw walletError;
     const {data:cards,error:cardError}=await client.from('global_card_serials').select('id,car_id,finish,issued_at').order('id',{ascending:true}).limit(10000);
     if(cardError)throw cardError;
-    window.cardexApplyServerCards?.(cards,wallet,draws,instant);
+    // A model is NEW only if it was absent before this opening (including bulk packs).
+    const seen=new Set(prior);
+    const labeled=draws.map(d=>{const isNew=!seen.has(Number(d.id));seen.add(Number(d.id));return {...d,isNew}});
+    window.cardexApplyServerCards?.(cards,wallet,labeled,instant);
     text(cloudStatus,'Cards issued and saved online.');
   }catch(e){
     text(cloudStatus,'Pack request failed: '+e.message+'. Refresh to reconcile issued cards.');
