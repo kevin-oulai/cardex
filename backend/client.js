@@ -135,22 +135,31 @@ async function loadPublic() {
     text(shared,'Online boss active for '+today+' (UTC).');
     window.cardexRefreshShowdown?.();
   } else text(shared,'No server-published boss yet. The UTC daily boss is consistent for all browsers; verified rankings remain unavailable until server services are deployed.');
-  const {data:results,error} = await client.from('showdown_results').select('user_id,best_score,updated_at,first_cleared_at').eq('challenge_date',today).limit(500);
-  if(error){text(leaderboard,'Leaderboard unavailable: '+error.message);return}
-  if(!results?.length){text(leaderboard,'No verified online results yet. Local Showdown results are not uploaded.');return}
-  results.sort((a,b)=>{
-    const aClear=a.best_score===100&&a.first_cleared_at;
-    const bClear=b.best_score===100&&b.first_cleared_at;
-    if(!!aClear!==!!bClear)return aClear?-1:1;
-    if(aClear&&bClear)return Date.parse(a.first_cleared_at)-Date.parse(b.first_cleared_at);
-    return Number(b.best_score)-Number(a.best_score)||Date.parse(a.updated_at)-Date.parse(b.updated_at);
-  });
-  const top=results.slice(0,25);
-  const ids=[...new Set(top.map(x=>x.user_id))];
-  const {data:profiles}=await client.from('profiles').select('id,display_name').in('id',ids);
-  const names=new Map((profiles||[]).map(p=>[p.id,p.display_name]));
-  leaderboard.innerHTML='<ol>'+top.map(r=>'<li>'+escapeHTML(names.get(r.user_id)||'Collector')+' — '+Number(r.best_score)+'%'+(r.first_cleared_at?' · cleared '+new Date(r.first_cleared_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',timeZone:'UTC'})+' UTC':'')+'</li>').join('')+'</ol>';
+  const {data:results,error} = await client.rpc('cardex_daily_leaderboard',{p_day:today});
+  if(error){text(leaderboard,'Detailed rankings unavailable: '+error.message+'. Apply backend/leaderboard-profiles.sql.');return}
+  if(!results?.length){leaderboard.innerHTML='<div class="leaderboard-empty">🏁 <strong>No challengers yet</strong><span>Be the first to enter today’s verified Showdown.</span></div>';return}
+  const formatTime=(date)=>date?new Date(date).toLocaleString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit',timeZone:'UTC',hour12:false})+' UTC':'—';
+  leaderboard.innerHTML='<div class="lb-heading"><span>RANK / COLLECTOR</span><span>SCORE</span></div>'+
+    '<div class="lb-list">'+results.map((r,i)=>{
+      const cleared=r.best_score===100&&r.first_cleared_at;
+      const car=window.cardexCarLabel?.(r.car_id)||'Unknown challenger';
+      const rank=i+1;
+      return '<button type="button" class="lb-entry '+(cleared?'lb-cleared ':'')+(i<3?'lb-podium':'')+'" data-collector-id="'+escapeHTML(r.user_id)+'" aria-label="Inspect '+escapeHTML(r.display_name||'Collector')+' profile">'+
+        '<span class="lb-rank '+(i===0?'lb-gold':i===1?'lb-silver':i===2?'lb-bronze':'')+'">'+(rank<10?'0':'')+rank+'</span>'+
+        '<span class="lb-person"><strong>'+escapeHTML(r.display_name||'Collector')+'</strong><small>🏎 '+escapeHTML(car)+(r.model_serial!=null?' · #'+String(r.model_serial).padStart(6,'0'):'')+'</small>'+
+        '<small>'+(cleared?'🏁 Defeated '+formatTime(r.first_cleared_at):'Last improved '+formatTime(r.updated_at))+' · '+Number(r.unique_models||0)+' models</small></span>'+
+        '<span class="lb-score"><strong>'+Number(r.best_score)+'%</strong><small>'+(cleared?'DEFEATED':'BEST SCORE')+'</small></span>'+
+        '<span class="lb-chevron" aria-hidden="true">›</span></button>';
+    }).join('')+'</div>';
+  leaderboard.querySelectorAll('[data-collector-id]').forEach(button=>button.addEventListener('click',()=>window.cardexOpenPublicProfile?.(button.dataset.collectorId)));
+
 }
+window.cardexFetchPublicProfile=async(userId)=>{
+  const {data,error}=await client.rpc('cardex_public_collector',{p_user_id:userId});
+  if(error)throw error;
+  if(!data)throw new Error('Collector profile not found');
+  return data;
+};
 async function refreshSession(){
   const {data:{user}}=await client.auth.getUser();
   authForm.hidden=!!user;
