@@ -20,6 +20,7 @@ begin
  measures as (
   select
    (select count(*) from public.achievement_claims where user_id=target)::int achievements,
+   coalesce((select xp from public.player_wallets where user_id=target),0)::int player_xp,
    (select count(*) from public.global_card_serials where owner_id=target)::int total,
    (select count(*) from public.global_card_serials s join public.vehicle_catalog c on c.id=s.car_id where s.owner_id=target and c.rarity='Rare')::int rare_count,
    (select count(*) from public.global_card_serials s join public.vehicle_catalog c on c.id=s.car_id where s.owner_id=target and c.rarity in ('Legendary','Exotic','Limited'))::int legendary_count,
@@ -61,7 +62,12 @@ begin
    ('grand_completionist','Grand Completionist','Claim all 10 achievements','Achievements',(select achievements from measures),10),
    ('showdown_regular','Daily Driver','Enter 25 daily Showdowns','Showdown',(select showdowns from measures),25),
    ('podium_elite','Podium Elite','Finish in the daily top 3 fifteen times','Showdown',(select podiums from measures),15),
-   ('undisputed','The Undisputed','Finish daily rank #1 fifteen times','Showdown',(select victories from measures),15)
+   ('undisputed','The Undisputed','Finish daily rank #1 fifteen times','Showdown',(select victories from measures),15),
+   ('rising_star','Rising Star','Earn 1,000 XP','XP',(select player_xp from measures),1000),
+   ('road_warrior','Road Warrior','Earn 5,000 XP','XP',(select player_xp from measures),5000),
+   ('veteran_driver','Veteran Driver','Earn 15,000 XP','XP',(select player_xp from measures),15000),
+   ('asphalt_legend','Asphalt Legend','Earn 50,000 XP','XP',(select player_xp from measures),50000),
+   ('eternal_racer','Eternal Racer','Earn 100,000 XP','XP',(select player_xp from measures),100000)
   ) v(id,label,description,category,progress,goal)
  )
  select jsonb_build_object('equipped',equipped,'titles',coalesce(jsonb_agg(jsonb_build_object(
