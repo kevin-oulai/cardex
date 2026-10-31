@@ -66,17 +66,17 @@ function renderTitles(){
  const all=verifiedTitles.titles,unlocked=all.filter(t=>t.unlocked).length;
  $('titleUnlockCount').textContent=unlocked+' / '+all.length+' unlocked';
  const current=all.find(t=>t.id===verifiedTitles.equipped&&t.unlocked);
- const titlePrestige=id=>['dynasty','mythic_curator','completionist','grand_completionist','undisputed','master_collector','eternal_racer'].includes(id)?'mythic':['champion','podium_regular','legend_keeper','archivist','garage_magnate','crown_jewels','jdm_master','continental_curator','motorsport_historian','trophy_cabinet','podium_elite','asphalt_legend','veteran_driver'].includes(id)?'legendary':['podium_finisher','track_rat','rare_hunter','euro_connoisseur','jdm_enthusiast','garage_builder','rare_vault','blueprint_hoarder','showdown_regular','road_warrior','rising_star'].includes(id)?'epic':'standard';
+ const titlePrestige=id=>['grand_completionist','undisputed','master_collector','eternal_racer'].includes(id)?'ascendant':['dynasty','mythic_curator','completionist','grand_completionist','undisputed','master_collector','eternal_racer'].includes(id)?'mythic':['champion','podium_regular','legend_keeper','archivist','garage_magnate','crown_jewels','jdm_master','continental_curator','motorsport_historian','trophy_cabinet','podium_elite','asphalt_legend','veteran_driver'].includes(id)?'legendary':['podium_finisher','track_rat','rare_hunter','euro_connoisseur','jdm_enthusiast','garage_builder','rare_vault','blueprint_hoarder','showdown_regular','road_warrior','rising_star'].includes(id)?'epic':'standard';
  const titleBadge=t=>{
   const prestige=titlePrestige(t.id);
-  const motes=['mythic','legendary'].includes(prestige)?'<span class="title-particles" aria-hidden="true">'+Array.from({length:prestige==='mythic'?7:4},(_,i)=>'<i style="--p:'+i+'"></i>').join('')+'</span>':'';
+  const motes=['ascendant','mythic','legendary'].includes(prestige)?'<span class="title-particles" aria-hidden="true">'+Array.from({length:prestige==='ascendant'?12:prestige==='mythic'?7:4},(_,i)=>'<i style="--p:'+i+'"></i>').join('')+'</span>':'';
   return '<span class="collector-title-badge" data-prestige="'+prestige+'">✦ '+t.label+motes+'</span>';
  };
  const equippedBadge=$('equippedTitleBadge');
  equippedBadge.hidden=!current;
  if(current){
   equippedBadge.dataset.prestige=titlePrestige(current.id);
-  equippedBadge.innerHTML='✦ '+current.label+(['mythic','legendary'].includes(titlePrestige(current.id))?'<span class="title-particles" aria-hidden="true">'+Array.from({length:titlePrestige(current.id)==='mythic'?7:4},(_,i)=>'<i style="--p:'+i+'"></i>').join('')+'</span>':'');
+  equippedBadge.innerHTML='✦ '+current.label+(['ascendant','mythic','legendary'].includes(titlePrestige(current.id))?'<span class="title-particles" aria-hidden="true">'+Array.from({length:titlePrestige(current.id)==='ascendant'?12:titlePrestige(current.id)==='mythic'?7:4},(_,i)=>'<i style="--p:'+i+'"></i>').join('')+'</span>':'');
  }
 
  $('titleManagerSummary').textContent=current?current.label:unlocked+' unlocked · None equipped';
