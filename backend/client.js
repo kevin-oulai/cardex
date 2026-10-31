@@ -276,7 +276,7 @@ try {
   window.cardexOnlineSession=()=>refreshSession().catch(console.error);
   await refreshSession();
   try{await loadPublic()}catch(e){console.warn('CARDEX leaderboard',e)}
-  client.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){activeUser=null;pending=null;saveConflict=false;window.cardexCloudReady=false;window.cardexServerGameReady=false;window.cardexLoadCloudState?.({});}setTimeout(()=>refreshSession().catch(console.error),0)});
+  client.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){activeUser=null;pending=null;saveConflict=false;window.cardexCloudReady=false;window.cardexServerGameReady=false;window.cardexLoadCloudState?.({});window.cardexSocialReset?.();}setTimeout(()=>refreshSession().catch(console.error),0)});
   document.getElementById('onlineLogin').addEventListener('click',async()=>{
     const email=document.getElementById('onlineEmail').value.trim();
     const password=document.getElementById('onlinePassword').value;
