@@ -27,6 +27,10 @@ Verification: migration applied, function grants checked. Not yet tested in a si
 
 ## Expanded title milestones
 
-The catalog now includes 30 titles. New milestones include Garage Builder (25 cards), Garage Magnate (250), Master Collector (500), Rare Vault (25 Rare), Blueprint Hoarder (50 Rare), Crown Jewels (20 Legendary/Exotic/Limited), JDM Master (20 distinct Japanese models), Continental Curator (20 distinct European models), Motorsport Historian (12 distinct motorsport models), First Trophy (1 claimed achievement), Trophy Cabinet (7), Grand Completionist (all 10), Daily Driver (25 Showdowns), Podium Elite (15 podiums), and The Undisputed (15 wins).
+The catalog now includes 35 titles. New milestones include Garage Builder (25 cards), Garage Magnate (250), Master Collector (500), Rare Vault (25 Rare), Blueprint Hoarder (50 Rare), Crown Jewels (20 Legendary/Exotic/Limited), JDM Master (20 distinct Japanese models), Continental Curator (20 distinct European models), Motorsport Historian (12 distinct motorsport models), First Trophy (1 claimed achievement), Trophy Cabinet (7), Grand Completionist (all 10), Daily Driver (25 Showdowns), Podium Elite (15 podiums), and The Undisputed (15 wins).
 
 The original Completionist title still requires five claimed achievements, preserving its previous unlock threshold. Grand Completionist is the new ten-achievement milestone.
+
+## XP progression titles
+
+Five additional titles use the server-authoritative `player_wallets.xp` value: Rising Star (1,000 XP), Road Warrior (5,000), Veteran Driver (15,000), Asphalt Legend (50,000), and Eternal Racer (100,000). Eternal Racer and other exceptional titles use the Ascendant visual tier. XP requirements are cumulative; titles do not award gameplay advantages.
