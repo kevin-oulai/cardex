@@ -49,7 +49,9 @@ begin
      and (p_car_id is null or z.car_id=p_car_id)
      and (p_finish is null or z.finish=p_finish)
  loop
-   delete from public.global_card_serials where id=rec.id and owner_id=uid;
+   -- Preserve cards referenced by historical verified Showdown results.
+   delete from public.global_card_serials where id=rec.id and owner_id=uid
+     and not exists(select 1 from public.showdown_results where car_serial_id=rec.id);
    if found then
      n:=n+1;
      reward:=reward+(case rec.rarity when 'Common' then 10 when 'Uncommon' then 20
