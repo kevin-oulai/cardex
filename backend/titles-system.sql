@@ -5,6 +5,7 @@ returns jsonb language plpgsql stable security definer set search_path='' as $$
 declare uid uuid:=auth.uid(); target uuid:=coalesce(p_user_id,auth.uid()); equipped text; result jsonb;
 begin
  if uid is null then raise exception 'Sign in required';end if;
+ if target<>uid and not exists(select 1 from public.profiles where id=target and public_collection=true) then return null;end if;
  if not exists(select 1 from public.profiles where id=target) then return null;end if;
  select equipped_title into equipped from public.profiles where id=target;
  with ranked as (
