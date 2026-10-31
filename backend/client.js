@@ -7,7 +7,6 @@ const signedIn = document.getElementById('onlineSignedIn');
 const leaderboard = document.getElementById('onlineLeaderboard');
 const cloudStatus=document.getElementById('cloudSyncStatus');
 const shared = document.getElementById('onlineSharedBoss');
-const leaderboard = document.getElementById('onlineLeaderboard');
 const text = (el, value) => { if (el) el.textContent = value; };
 let client;
 let packBusy=false;
@@ -135,6 +134,7 @@ async function refreshSession(){
   const {data:profile}=await client.from('profiles').select('display_name').eq('id',user.id).maybeSingle();
   if(profile?.display_name && window.cardexCloudReady){const input=document.getElementById('profileNameInput');if(input)input.value=profile.display_name;}
   if(activeUser!==user.id)await loadCloud(user.id);
+  else if(window.cardexCloudReady)document.getElementById('accountGate').style.display='none';
 
 }
 try {
@@ -165,6 +165,8 @@ try {
   document.getElementById('onlineLogout').addEventListener('click',async()=>{await flushCloud();await client.auth.signOut();await refreshSession()});
   document.getElementById('onlineRefresh').addEventListener('click',async()=>{await loadPublic();await refreshSession()});
 } catch(e) {
-  text(status,'Online services unavailable. Sign-in required to play.');
+  text(status,'Online services unavailable: '+(e?.message||'Unknown error'));
+  const gate=document.getElementById('accountGate');if(gate)gate.style.display='flex';
+  text(document.getElementById('gateStatus'),'Unable to connect. Try reloading.');
   console.error('CARDEX online initialization failed',e);
 }
