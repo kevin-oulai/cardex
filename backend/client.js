@@ -10,6 +10,21 @@ const shared = document.getElementById('onlineSharedBoss');
 const text = (el, value) => { if (el) el.textContent = value; };
 let client;
 let packBusy=false;
+let showdownBusy=false;
+window.cardexSubmitShowdown=async(carId)=>{
+  if(showdownBusy)return;
+  showdownBusy=true;
+  try{
+    const {data:owned,error:ownError}=await client.from('global_card_serials').select('id').eq('car_id',carId).order('id',{ascending:true}).limit(1);
+    if(ownError)throw ownError;
+    if(!owned?.length)throw new Error('You must own a server-issued copy of this car');
+    const {data,error}=await client.rpc('cardex_submit_showdown',{p_serial_id:owned[0].id});
+    if(error)throw error;
+    window.cardexSetShowdownResult?.(data);
+    await loadPublic();
+  }catch(e){window.cardexNotify?.('Showdown unavailable: '+e.message)}
+  finally{showdownBusy=false}
+};
 window.cardexServerGameReady=false;
 window.cardexServerError='Server connection not initialized';
 async function syncServerGame(){
