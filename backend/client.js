@@ -82,8 +82,14 @@ window.cardexBuyServerTickets=(quantity=1)=>economyAction('cardex_buy_tickets',{
 window.cardexBuyServerTicket=()=>window.cardexBuyServerTickets(1);
 window.cardexRecycleServerDuplicates=(carId=null,finish=null)=>economyAction('cardex_recycle_duplicates',{p_car_id:carId,p_finish:finish},data=>window.cardexNotify?.(data.count?('Recycled '+data.count+' cards · +'+data.credits+' credits'):'No eligible duplicates (Showdown entries are protected)'));
 window.cardexClaimServerAchievement=id=>economyAction('cardex_claim_achievement',{p_id:id},async data=>{await syncAchievementClaims();window.cardexNotify?.('Achievement claimed · +'+data.credits+' credits')});
+function showBoosterError(message){
+ const el=document.getElementById('boosterError');
+ if(el){el.textContent=message;el.hidden=!message}
+ if(message)window.cardexNotify?.(message);
+}
 window.cardexOpenServerPack=async(theme,quantity=1,instant=false)=>{
-  if(packBusy)return;
+  showBoosterError('');
+  if(packBusy){showBoosterError('A booster request is already processing. Please wait.');return}
   packBusy=true;
   const draws=[];
   const prior=new Set((window.cardexOwnedModelIds?.()||[]).map(Number));
@@ -98,13 +104,14 @@ window.cardexOpenServerPack=async(theme,quantity=1,instant=false)=>{
     // A model is NEW only if it was absent before this opening (including bulk packs).
     const seen=new Set(prior);
     const labeled=draws.map(d=>{const isNew=!seen.has(Number(d.id));seen.add(Number(d.id));return {...d,isNew}});
-    window.cardexApplyServerCards?.(cards,wallet,labeled,instant);
+    if(typeof window.cardexApplyServerCards!=='function')throw new Error('Card reveal component not ready');
+    window.cardexApplyServerCards(cards,wallet,labeled,instant);
     text(cloudStatus,'Cards issued and saved online.');
   }catch(e){
     const message='Booster failed: '+(e?.message||String(e))+'. Your collection will be refreshed.';
     console.error('CARDEX booster opening',e);
     text(cloudStatus,message);
-    window.cardexNotify?.(message);
+    showBoosterError(message);
     try{await syncServerGame()}catch(syncError){console.error('CARDEX booster reconciliation',syncError);window.cardexNotify?.('Collection refresh failed. Please reload before opening another booster.')}
   }finally{packBusy=false}
 };
