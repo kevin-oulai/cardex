@@ -593,26 +593,33 @@ body:has(#revealModal.open){overflow:hidden}
 }
 
 
-/* Mythic badge shimmer: move the light physically past both edges before
-   resetting, so the animation never cuts off inside the title. */
+/* Mythic title: restore the original angled, prismatic light and relaxed
+   sweep. Travel fully beyond the right edge before the seamless reset. */
 .collector-title-badge[data-prestige="mythic"]:not([hidden])::after{
  inset:0 auto 0 -85%;
- width:75%;
+ width:70%;
  height:100%;
- background:linear-gradient(90deg,transparent 0%,#d99bff10 22%,#f4c9ff55 43%,#ffffff83 51%,#a5e8ff4a 62%,transparent 100%);
+ border-radius:0;
+ background:linear-gradient(105deg,
+  transparent 0%,transparent 18%,
+  #d99bff12 32%,#f4c9ff42 43%,#ffffff60 50%,
+  #a5e8ff30 57%,transparent 72%,transparent 100%);
  background-size:100% 100%;
  background-position:center;
- transform:none;
- animation:mythicBadgeExit 5.5s cubic-bezier(.35,0,.65,1) infinite;
+ opacity:.85;
+ mix-blend-mode:screen;
+ transform:translate3d(0,0,0) skewX(-17deg);
+ animation:mythicAngledSweep 5.5s cubic-bezier(.35,0,.65,1) infinite;
+ will-change:transform;
 }
-@keyframes mythicBadgeExit{
- 0%,12%{left:-85%;opacity:0}
- 19%{opacity:.85}
- 68%{opacity:.85}
- 76%,100%{left:110%;opacity:0}
+@keyframes mythicAngledSweep{
+ 0%,12%{transform:translate3d(0,0,0) skewX(-17deg)}
+ 76%,100%{transform:translate3d(340%,0,0) skewX(-17deg)}
 }
 @media(prefers-reduced-motion:reduce){
  .collector-title-badge[data-prestige="mythic"]:not([hidden])::after{
-  animation:none!important;left:12%;opacity:.3;
+  animation:none!important;
+  transform:translate3d(130%,0,0) skewX(-17deg);
+  will-change:auto;
  }
 }
