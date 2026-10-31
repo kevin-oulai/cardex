@@ -1000,3 +1000,24 @@ body:has(#revealModal.open){overflow:hidden}
  .top .wallet .pill{font-size:9px;padding:4px}
  .top-social-actions button{width:27px;height:27px;min-width:27px}
 }
+
+
+/* Header notification tray: anchored below the bell, independent of page navigation. */
+.top-social-actions{position:relative}
+.social-inbox-popover[hidden]{display:none!important}
+.social-inbox-popover{position:absolute;right:0;top:calc(100% + 10px);z-index:800;width:min(390px,calc(100vw - 22px));max-height:min(560px,75vh);display:flex;flex-direction:column;background:#141d2b;border:1px solid #45566d;border-radius:12px;box-shadow:0 18px 48px #000a;overflow:hidden}
+.social-popover-header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:15px 17px;border-bottom:1px solid #ffffff20}
+.social-popover-header strong{font-size:16px}
+.social-popover-header button{display:inline-flex;width:auto;height:auto;min-width:0;font-size:11px;padding:6px 9px;border-radius:5px}
+.social-popover-list{overflow-y:auto;overscroll-behavior:contain;min-height:60px;padding:8px}
+.social-popover-list>.muted{padding:20px;text-align:center}
+.social-popover-list .social-notification{border:0;border-bottom:1px solid #ffffff17;border-radius:0;padding:11px 8px;gap:10px}
+.social-popover-list .social-notification>div:nth-child(2){min-width:0}
+.social-popover-list .social-notification p{font-size:12px;line-height:1.4}
+.social-popover-list .social-person-actions{width:100%;padding-left:0;justify-content:flex-end}
+.social-popover-list .social-person-actions button{width:auto;min-width:0;height:auto;padding:6px 9px}
+.top-social-actions>button>svg{display:block;width:20px;height:20px}
+@media(max-width:700px){
+ .social-inbox-popover{right:0;top:calc(100% + 8px);max-height:65vh}
+ .top-social-actions>button>svg{width:16px;height:16px}
+}
