@@ -754,3 +754,30 @@ body:has(#revealModal.open){overflow:hidden}
   grid-column:2;grid-row:2;justify-self:start;min-width:95px;
  }
 }
+
+
+/* Title chooser rows are neutral containers; prestige belongs only to the
+   actual badge inside, not its parent row. */
+#titleManager .title-card.title-row,
+#titleManager .title-card.title-row.unlocked,
+#titleManager .title-card.title-row.unlocked[data-prestige="legendary"],
+#titleManager .title-card.title-row.unlocked[data-prestige="mythic"],
+#titleManager .title-card.title-row.equipped{
+ background:#141c24;
+ border:1px solid #34414e;
+ box-shadow:none;
+ outline:none;
+ transform:none;
+ transition:none;
+}
+#titleManager .title-card.title-row:hover{
+ transform:none;
+ box-shadow:none;
+ border-color:#435160;
+}
+#titleManager .title-card.title-row::before,
+#titleManager .title-card.title-row::after{
+ content:none;
+ display:none;
+ animation:none;
+}
