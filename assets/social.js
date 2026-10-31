@@ -27,7 +27,9 @@ function list(id,arr,empty){$(id).innerHTML=arr.length?arr.map(person).join(''):
 function render(){
  $('friendCount').textContent=state.friends.length||'';
  $('requestCount').textContent=state.incoming.length||'';
- $('inboxCount').textContent=state.notifications.filter(x=>!x.read).length||'';
+ const unread=state.notifications.filter(x=>!x.read).length;
+ $('inboxCount').textContent=unread||'';
+ const badge=$('socialNavBadge');if(badge){badge.hidden=!unread;badge.textContent=unread>99?'99+':String(unread)};
  list('socialFriends',state.friends,'No friends yet. Find collectors and send a request.');
  list('socialIncoming',state.incoming,'No incoming requests.');
  list('socialOutgoing',state.outgoing,'No outgoing requests.');
