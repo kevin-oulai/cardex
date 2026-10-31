@@ -781,3 +781,49 @@ body:has(#revealModal.open){overflow:hidden}
  display:none;
  animation:none;
 }
+
+
+/* Ascendant titles: reserved for the most demanding milestones.
+   Double spectral glints, moving aurora and orbital sparks stay on the badge,
+   never on the neutral parent row. */
+.collector-title-badge[data-prestige="ascendant"]:not([hidden]){
+ --prestige:#f7e9ff;--prestige-glow:#db8dff99;
+ background:linear-gradient(120deg,#20172e 0%,#443052 35%,#19364d 68%,#251b37 100%);
+ border:1px solid #f5caff;
+ box-shadow:inset 0 0 0 1px #a6eeff66,inset 0 1px 0 #fff9,0 0 14px #ce7bff99,0 0 36px #5ebfff55;
+ color:#fff5ff;
+ text-shadow:0 0 7px #fff,0 0 20px #c77bff;
+ animation:ascendantPulse 4.8s ease-in-out infinite;
+}
+.collector-title-badge[data-prestige="ascendant"]:not([hidden])::before{
+ content:"";position:absolute;inset:0;pointer-events:none;
+ background:repeating-linear-gradient(135deg,transparent 0 15px,#f4d9ff15 16px,transparent 18px 34px);
+ opacity:.8;animation:ascendantAurora 9s linear infinite;
+}
+.collector-title-badge[data-prestige="ascendant"]:not([hidden])::after{
+ content:"";position:absolute;inset:0 auto 0 -90%;width:68%;pointer-events:none;
+ background:linear-gradient(106deg,transparent 0%,#d5a0ff44 30%,#fff 49%,#87efffaa 56%,transparent 78%);
+ mix-blend-mode:screen;transform:skewX(-18deg);
+ animation:ascendantSweep 4.9s cubic-bezier(.22,.7,.3,1) infinite;
+}
+.collector-title-badge[data-prestige="ascendant"] .title-particles i{
+ width:3px;height:3px;background:#fff7fd;
+ box-shadow:0 0 7px 2px #e8baff,0 0 14px #7ce8ff;
+ animation-duration:4.5s;
+}
+@keyframes ascendantSweep{
+ 0%,14%{transform:translateX(0) skewX(-18deg)}
+ 75%,100%{transform:translateX(355%) skewX(-18deg)}
+}
+@keyframes ascendantAurora{
+ from{background-position:0 0}to{background-position:96px 0}
+}
+@keyframes ascendantPulse{
+ 0%,100%{filter:brightness(1)}
+ 50%{filter:brightness(1.22)}
+}
+@media(prefers-reduced-motion:reduce){
+ .collector-title-badge[data-prestige="ascendant"]:not([hidden]),
+ .collector-title-badge[data-prestige="ascendant"]:not([hidden])::before,
+ .collector-title-badge[data-prestige="ascendant"]:not([hidden])::after{animation:none!important}
+}
