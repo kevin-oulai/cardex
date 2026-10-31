@@ -505,3 +505,19 @@ body:has(#revealModal.open){overflow:hidden}
   background-position:50% 0;
  }
 }
+
+
+/* Collector titles disclosure: a consistent vector chevron, not a font glyph. */
+#titleManager .title-manager-action{
+ display:inline-flex;align-items:center;justify-content:flex-end;gap:9px;
+ color:#e0ec9b;font-size:13px;font-weight:650;white-space:nowrap;
+}
+#titleManager .title-manager-chevron{
+ display:block;flex:none;width:18px;height:18px;
+ color:currentColor;
+ transition:transform .24s cubic-bezier(.2,.75,.2,1);
+}
+#titleManager[open] .title-manager-chevron{transform:rotate(180deg)}
+@media(prefers-reduced-motion:reduce){
+ #titleManager .title-manager-chevron{transition:none}
+}
