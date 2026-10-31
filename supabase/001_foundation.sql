@@ -48,7 +48,21 @@ create policy "profile owner reads" on public.profiles for select to authenticat
 create policy "profile owner inserts" on public.profiles for insert to authenticated with check (user_id=auth.uid());
 create policy "profile owner updates" on public.profiles for update to authenticated using (user_id=auth.uid()) with check (user_id=auth.uid());
 create policy "cards owner reads" on public.owned_cards for select to authenticated using (owner_id=auth.uid());
-create policy "scores readable" on public.showdown_scores for select to anon,authenticated using (true);
+create policy "score owner reads" on public.showdown_scores for select to authenticated using (user_id=auth.uid());
+-- Public rankings expose display names, not auth user IDs or emails.
+create or replace function public.daily_leaderboard(p_date date default (now() at time zone 'UTC')::date, p_limit integer default 50)
+returns table(rank bigint, display_name text, best_score integer)
+language sql stable security definer set search_path = '' as $
+  select row_number() over(order by s.best_score desc,s.updated_at asc)::bigint,
+    coalesce(p.display_name,'Collector'),s.best_score
+  from public.showdown_scores s
+  left join public.profiles p on p.user_id=s.user_id
+  where s.boss_date=p_date
+  order by s.best_score desc,s.updated_at asc
+  limit least(greatest(coalesce(p_limit,50),1),100)
+$;
+revoke all on function public.daily_leaderboard(date,integer) from public;
+grant execute on function public.daily_leaderboard(date,integer) to anon,authenticated;
 -- Scores are computed by the DB from trusted catalog stats and server-issued cards.
 -- SECURITY DEFINER deliberately bypasses RLS only for the narrow, validated operation.
 create or replace function public.submit_showdown(p_car_serial bigint)
