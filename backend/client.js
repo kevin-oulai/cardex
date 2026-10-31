@@ -144,6 +144,7 @@ async function loadCloud(id){
   document.getElementById('accountGate').style.display='none';
   text(cloudStatus,'Collection loaded from your account.');
   await syncServerGame();
+  window.cardexSocialRefresh?.();
 }
 // Resolve a stale save by loading the authoritative server state. A copy of local edits
 // remains in the account-scoped browser cache; we never auto-upload stale economy fields.
