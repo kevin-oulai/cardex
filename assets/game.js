@@ -193,23 +193,14 @@ $('publicCollectionToggle').addEventListener('change',async e=>{const toggle=e.t
 window.cardexCarLabel=(id)=>Number.isInteger(Number(id))&&cars[Number(id)]?cars[Number(id)].make+' '+cars[Number(id)].model:null;
 const safeCollectorText=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 window.cardexOpenPublicProfile=async(userId)=>{
-  const dialog=$('collectorDialog'),body=$('collectorDialogContent');
-  $('collectorDialogName').textContent='Loading collector…';body.innerHTML='<p class="muted">Fetching public profile…</p>';
-  if(!dialog.open)dialog.showModal();
-  try{
-    const p=await window.cardexFetchPublicProfile(userId);
-    if(!dialog.open)return;
-    $('collectorDialogName').textContent=p.display_name||'Collector';
-    if(p.private){body.innerHTML='<p class="muted">This collector keeps their collection private.</p>';return}
-    const joined=p.joined_at?new Date(p.joined_at).toLocaleDateString('en-GB',{month:'long',year:'numeric'}):'Unknown';
-    body.innerHTML='<p class="muted">Collecting since '+safeCollectorText(joined)+'</p><div class="collector-stats">'+
-      '<div><strong>'+Number(p.cards_owned||0)+'</strong><small>CARDS</small></div><div><strong>'+Number(p.unique_models||0)+'</strong><small>MODELS</small></div><div><strong>'+Number(p.high_tier_cards||0)+'</strong><small>LEGENDARY+</small></div></div>'+
-      '<h3>Featured collection</h3><div class="collector-featured">'+((p.featured_cards||[]).length?p.featured_cards.map(item=>{const car=cars[Number(item.car_id)];return car?'<div class="collector-car">'+profilePhoto(car)+'<div><strong>'+safeCollectorText(car.make+' '+car.model)+'</strong><p class="sub">'+safeCollectorText(item.rarity)+' · '+safeCollectorText(item.finish)+' · #'+String(item.model_serial).padStart(6,'0')+'</p></div></div>':''}).join(''):'<p class="muted">No cards collected yet.</p>')+'</div>'+
-      '<h3>Recent Showdowns</h3>'+((p.recent_showdowns||[]).length?'<div class="collector-featured">'+p.recent_showdowns.map(x=>'<div class="reward-row"><span>'+safeCollectorText(x.challenge_date)+'</span><strong>'+Number(x.best_score)+'%</strong></div>').join('')+'</div>':'<p class="muted">No verified entries yet.</p>');
-    if(p.equipped_title){const tag=document.createElement('div');tag.className='collector-title-badge';tag.textContent='✦ '+p.equipped_title;body.prepend(tag)}
-    paintPhotos();
-  }catch(e){body.textContent='Unable to load profile: '+e.message}
+ if(window.cardexSocialOpenProfile)return window.cardexSocialOpenProfile(userId);
+ toast('Collector profiles are loading. Please try again.');
 };
+window.cardexSocialCar=id=>{
+ const c=cars[Number(id)];if(!c)return null;
+ return {name:c.make+' '+c.model,rarity:c.rarity,emoji:c.emoji,src:photoCache.get(c.id)?.src||null};
+};
+window.cardexPage=page;
 $('collectorDialogClose').onclick=()=>$('collectorDialog').close();
 $('collectorDialog').addEventListener('click',e=>{if(e.target===$('collectorDialog'))$('collectorDialog').close()});
 window.cardexNotify=toast;
