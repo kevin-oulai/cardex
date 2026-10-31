@@ -827,3 +827,11 @@ body:has(#revealModal.open){overflow:hidden}
  .collector-title-badge[data-prestige="ascendant"]:not([hidden])::before,
  .collector-title-badge[data-prestige="ascendant"]:not([hidden])::after{animation:none!important}
 }
+
+/* Persistent, readable booster errors rather than console-only failures. */
+#boosterError:not([hidden]){
+ display:block;margin:10px 0 18px;padding:13px 16px;
+ border:1px solid #f49d7b;background:#381e21;color:#ffe7dd;
+ font-size:14px;line-height:1.45;border-radius:8px;
+}
+#boosterError[hidden]{display:none!important}
