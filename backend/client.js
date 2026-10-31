@@ -129,12 +129,13 @@ async function refreshSession(){
   const {data:{user}}=await client.auth.getUser();
   authForm.hidden=!!user;
   signedIn.hidden=!user;
-  if(!user){window.cardexCloudReady=false;window.cardexServerGameReady=false;document.getElementById('accountGate').style.display='flex';text(document.getElementById('gateStatus'),'Sign in from Profile to continue.');text(status,'Sign in or create an account to play.');return}
+  if(!user){window.cardexCloudReady=false;window.cardexServerGameReady=false;document.getElementById('accountGate').style.display='none';window.cardexShowAuth?.();text(status,'Sign in or create an account to play.');return}
   text(status,'Signed in as '+user.email+'. Your collection is linked to this account.');
   const {data:profile}=await client.from('profiles').select('display_name').eq('id',user.id).maybeSingle();
   if(profile?.display_name && window.cardexCloudReady){const input=document.getElementById('profileNameInput');if(input)input.value=profile.display_name;}
   if(activeUser!==user.id)await loadCloud(user.id);
   else if(window.cardexCloudReady)document.getElementById('accountGate').style.display='none';
+  if(window.cardexCloudReady && document.getElementById('auth')?.classList.contains('active'))window.cardexShowGame?.();
 
 }
 try {
@@ -165,6 +166,7 @@ try {
   document.getElementById('onlineLogout').addEventListener('click',async()=>{await flushCloud();await client.auth.signOut();await refreshSession()});
   document.getElementById('onlineRefresh').addEventListener('click',async()=>{await loadPublic();await refreshSession()});
 } catch(e) {
+  window.cardexShowAuth?.();
   text(status,'Online services unavailable: '+(e?.message||'Unknown error'));
   const gate=document.getElementById('accountGate');if(gate)gate.style.display='flex';
   text(document.getElementById('gateStatus'),'Unable to connect. Try reloading.');
