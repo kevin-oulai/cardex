@@ -11,7 +11,7 @@ try{
   return response.text();
  }));
  host.innerHTML=sections.join('\n');
- await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='./assets/game.js?v=title-rows13';script.onload=resolve;script.onerror=()=>reject(new Error('Game script failed to load'));document.body.append(script)});
+ await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='./assets/game.js?v=content-double15';script.onload=resolve;script.onerror=()=>reject(new Error('Game script failed to load'));document.body.append(script)});
  const client=document.createElement('script');client.type='module';client.src='./backend/client.js?v=titles9-modular';document.body.append(client);
 }catch(error){
  console.error('CARDEX startup',error);
