@@ -9,6 +9,41 @@ const cloudStatus=document.getElementById('cloudSyncStatus');
 const shared = document.getElementById('onlineSharedBoss');
 const text = (el, value) => { if (el) el.textContent = value; };
 let client;
+let packBusy=false;
+window.cardexServerGameReady=false;
+async function syncServerGame(){
+  const {data:wallet,error}=await client.rpc('cardex_get_wallet');
+  if(error){window.cardexServerGameReady=false;text(cloudStatus,'Server game unavailable: '+error.message);return}
+  const {data:cards,error:cardError}=await client.from('global_card_serials').select('id,car_id,finish,issued_at').order('id',{ascending:true}).limit(10000);
+  if(cardError){window.cardexServerGameReady=false;text(cloudStatus,'Card inventory unavailable: '+cardError.message);return}
+  window.cardexServerGameReady=true;
+  window.cardexApplyServerCards?.(cards,wallet);
+  text(cloudStatus,'Account collection and server-issued cards synchronized.');
+  await client.rpc('cardex_publish_boss');
+  await loadPublic();
+}
+window.cardexOpenServerPack=async(theme,quantity=1,instant=false)=>{
+  if(packBusy)return;
+  packBusy=true;
+  const draws=[];
+  try{
+    for(let i=0;i<quantity;i++){
+      const {data,error}=await client.rpc('cardex_open_pack',{p_theme:theme});
+      if(error)throw error;
+      draws.push(...data.cards);
+    }
+    const {data:wallet,error:walletError}=await client.rpc('cardex_get_wallet');
+    if(walletError)throw walletError;
+    const {data:cards,error:cardError}=await client.from('global_card_serials').select('id,car_id,finish,issued_at').order('id',{ascending:true}).limit(10000);
+    if(cardError)throw cardError;
+    window.cardexApplyServerCards?.(cards,wallet,draws,instant);
+    text(cloudStatus,'Cards issued and saved online.');
+  }catch(e){
+    text(cloudStatus,'Pack request failed: '+e.message+'. Refresh to reconcile issued cards.');
+    await syncServerGame();
+  }finally{packBusy=false}
+};
+
 let activeUser=null, pending=null, saving=false, revision=0, savedRevision=0;
 window.cardexCloudReady=false;
 const cacheKey=id=>'cardex-account-cache-'+id;
@@ -34,6 +69,7 @@ async function loadCloud(id){
   window.cardexCloudReady=true;
   document.getElementById('accountGate').style.display='none';
   text(cloudStatus,'Collection loaded from your account.');
+  await syncServerGame();
 }
 window.cardexCloudSave=(state)=>{
   if(!window.cardexCloudReady||!activeUser)return;
@@ -90,7 +126,7 @@ async function refreshSession(){
   const {data:{user}}=await client.auth.getUser();
   authForm.hidden=!!user;
   signedIn.hidden=!user;
-  if(!user){window.cardexCloudReady=false;document.getElementById('accountGate').style.display='flex';text(document.getElementById('gateStatus'),'Sign in from Profile to continue.');text(status,'Sign in or create an account to play.');return}
+  if(!user){window.cardexCloudReady=false;window.cardexServerGameReady=false;document.getElementById('accountGate').style.display='flex';text(document.getElementById('gateStatus'),'Sign in from Profile to continue.');text(status,'Sign in or create an account to play.');return}
   text(status,'Signed in as '+user.email+'. Your collection is linked to this account.');
   const {data:profile}=await client.from('profiles').select('display_name').eq('id',user.id).maybeSingle();
   if(profile?.display_name && window.cardexCloudReady){const input=document.getElementById('profileNameInput');if(input)input.value=profile.display_name;}
@@ -105,7 +141,7 @@ try {
   window.cardexOnlineSession=()=>refreshSession().catch(console.error);
   await refreshSession();
   await loadPublic();
-  client.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){activeUser=null;pending=null;window.cardexCloudReady=false;window.cardexLoadCloudState?.({});}setTimeout(()=>refreshSession().catch(console.error),0)});
+  client.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){activeUser=null;pending=null;window.cardexCloudReady=false;window.cardexServerGameReady=false;window.cardexLoadCloudState?.({});}setTimeout(()=>refreshSession().catch(console.error),0)});
   document.getElementById('onlineLogin').addEventListener('click',async()=>{
     const email=document.getElementById('onlineEmail').value.trim();
     const password=document.getElementById('onlinePassword').value;
