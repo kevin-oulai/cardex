@@ -1,0 +1,582 @@
+{
+  "version": 1,
+  "description": "Explicit ID-keyed automotive photo catalog. Article lead photos are provisional, not necessarily exact trim. To pin a reviewed photo, add src (https image URL) and credit (file/license page).",
+  "cars": [
+    {
+      "id": 0,
+      "article": "Toyota AE86",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 1,
+      "article": "Honda Civic (fifth generation)",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 2,
+      "article": "Volkswagen Golf Mk2",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 3,
+      "article": "Ford Fiesta ST",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 4,
+      "article": "Peugeot 205",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 5,
+      "article": "Mazda MX-5 (NA)",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 6,
+      "article": "Volkswagen Golf Mk7",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 7,
+      "article": "Subaru Impreza (first generation)",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 8,
+      "article": "BMW M3",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 9,
+      "article": "Renault Clio V6 Renault Sport",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 10,
+      "article": "Mazda RX-7",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 11,
+      "article": "Mitsubishi Lancer Evolution",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 12,
+      "article": "BMW M3",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 13,
+      "article": "Honda NSX (first generation)",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 14,
+      "article": "Audi RS 2 Avant",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 15,
+      "article": "Nissan Skyline GT-R",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 16,
+      "article": "Porsche 911 GT3",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 17,
+      "article": "Lancia Delta S4",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 18,
+      "article": "Lexus LFA",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 19,
+      "article": "Ferrari F40",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 20,
+      "article": "Porsche Carrera GT",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 21,
+      "article": "Bugatti Veyron",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 22,
+      "article": "Mercedes-Benz CLK GTR",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 23,
+      "article": "McLaren F1 GTR",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 24,
+      "article": "Ferrari 250 GTO",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 25,
+      "article": "Porsche 917",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 26,
+      "article": "Toyota Supra",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 27,
+      "article": "Nissan Silvia",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 28,
+      "article": "Honda S2000",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 29,
+      "article": "Nissan 350Z",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 30,
+      "article": "Toyota GR Yaris",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 31,
+      "article": "Toyota Celica GT-Four",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 32,
+      "article": "Subaru BRZ",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 33,
+      "article": "Mitsubishi GTO",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 34,
+      "article": "Nissan 300ZX",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 35,
+      "article": "Honda Integra",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 36,
+      "article": "Toyota MR2",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 37,
+      "article": "Mazda RX-8",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 38,
+      "article": "Nissan GT-R",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 39,
+      "article": "Honda Civic Type R",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 40,
+      "article": "BMW M3",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 41,
+      "article": "BMW M5",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 42,
+      "article": "BMW M4",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 43,
+      "article": "Mercedes-Benz 190E",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 44,
+      "article": "Mercedes-AMG GT",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 45,
+      "article": "Audi Quattro",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 46,
+      "article": "Audi R8",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 47,
+      "article": "Volkswagen Scirocco",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 48,
+      "article": "Porsche 930",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 49,
+      "article": "Porsche 918 Spyder",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 50,
+      "article": "Porsche 959",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 51,
+      "article": "Porsche 911 GT1",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 52,
+      "article": "Ferrari 458",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 53,
+      "article": "Enzo Ferrari",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 54,
+      "article": "LaFerrari",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 55,
+      "article": "Lamborghini Countach",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 56,
+      "article": "Lamborghini Murciélago",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 57,
+      "article": "Lamborghini Huracán",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 58,
+      "article": "Lancia Stratos",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 59,
+      "article": "Alfa Romeo Giulia",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 60,
+      "article": "Pagani Zonda",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 61,
+      "article": "Pagani Huayra",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 62,
+      "article": "McLaren 720S",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 63,
+      "article": "McLaren P1",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 64,
+      "article": "Lotus Elise",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 65,
+      "article": "Lotus Exige",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 66,
+      "article": "Aston Martin DBS",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 67,
+      "article": "Jaguar XJ220",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 68,
+      "article": "Ford Mustang",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 69,
+      "article": "Ford GT",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 70,
+      "article": "Ford GT",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 71,
+      "article": "Chevrolet Corvette C6",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 72,
+      "article": "Chevrolet Corvette C8",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 73,
+      "article": "Dodge Viper",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 74,
+      "article": "Dodge Challenger",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 75,
+      "article": "AC Cobra",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 76,
+      "article": "Renault 5 Turbo",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 77,
+      "article": "Peugeot 206 WRC",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 78,
+      "article": "Citroën DS3 WRC",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 79,
+      "article": "Bugatti Chiron",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 80,
+      "article": "Koenigsegg Agera",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 81,
+      "article": "Koenigsegg Jesko",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 82,
+      "article": "Volvo 850",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 83,
+      "article": "Hyundai i30 N",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 84,
+      "article": "Kia Stinger",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 85,
+      "article": "Rimac Nevera",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 86,
+      "article": "Ferrari F40",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 87,
+      "article": "Ruf CTR",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 88,
+      "article": "RAUH-Welt Begriff",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 89,
+      "article": "Lamborghini Huracán STO",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 90,
+      "article": "Mercedes-Benz G 63 AMG 6x6",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 91,
+      "article": "Bugatti La Voiture Noire",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 92,
+      "article": "Lamborghini Veneno",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 93,
+      "article": "Aston Martin Valkyrie",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 94,
+      "article": "McLaren Speedtail",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 95,
+      "article": "Pagani Zonda",
+      "mode": "article",
+      "note": "Article lead photo; review exact model and trim"
+    }
+  ]
+}
