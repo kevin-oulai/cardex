@@ -101,8 +101,11 @@ window.cardexOpenServerPack=async(theme,quantity=1,instant=false)=>{
     window.cardexApplyServerCards?.(cards,wallet,labeled,instant);
     text(cloudStatus,'Cards issued and saved online.');
   }catch(e){
-    text(cloudStatus,'Pack request failed: '+e.message+'. Refresh to reconcile issued cards.');
-    await syncServerGame();
+    const message='Booster failed: '+(e?.message||String(e))+'. Your collection will be refreshed.';
+    console.error('CARDEX booster opening',e);
+    text(cloudStatus,message);
+    window.cardexNotify?.(message);
+    try{await syncServerGame()}catch(syncError){console.error('CARDEX booster reconciliation',syncError);window.cardexNotify?.('Collection refresh failed. Please reload before opening another booster.')}
   }finally{packBusy=false}
 };
 
