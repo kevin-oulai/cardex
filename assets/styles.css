@@ -1051,3 +1051,36 @@ body:has(#revealModal.open){overflow:hidden}
 .social-popover-list>.muted{color:#9baac1}
 .top-social-actions>button[aria-expanded="true"]{color:#efbb65;border-color:#efbb65;background:#efbb6515}
 @media(max-width:700px){.social-popover-header{padding:12px 14px}.social-popover-list .social-notification{padding:12px}.social-popover-list .social-notification.unread{padding-left:9px}}
+
+
+/* CARDEX social design system — matches native collector identity and garage. */
+#social,#collectorView,#collectorGarage{--social-gold:#efbb65;--social-panel:#141d2b;--social-edge:#ffffff20}
+#social .social-tabs{gap:0;border-bottom:1px solid #efbb6540;padding-bottom:0;margin:19px 0 24px;flex-wrap:nowrap}
+#social .social-tabs button{border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:#aab8cc;font-weight:750;letter-spacing:.3px;padding:12px 16px}
+#social .social-tabs button:hover{color:#f4d29b;background:#efbb650a}
+#social .social-tabs button.active{border-bottom-color:#efbb65;background:#efbb650d;color:#efbb65}
+#social .social-tabs button span:not(:empty){background:#efbb6520;color:#efbb65;border-radius:3px}
+#social .social-search{background:#0d151b;border:1px solid #ffffff30;border-radius:3px;padding:10px 13px}
+#social .social-search:focus-within{border-color:#efbb65}
+#social .social-person,#social .social-notification{background:#141d2b;border:1px solid #ffffff1d;border-radius:4px;transition:background .15s,border-color .15s}
+#social .social-person:hover{background:#1b2838;border-color:#efbb6547}
+#social .social-avatar{border-radius:3px;background:linear-gradient(135deg,#283b52,#141d2b);border:1px solid #efbb6560;color:#efbb65;font-weight:900}
+#social .social-person-info strong{color:#f5f6fa}
+#social .social-person-info span{color:#9baac1}
+#social .social-person-actions button,#collectorView .social-profile-actions button,#socialBack,#socialGarageBack{border-radius:3px;border:1px solid #ffffff30;background:#202c40;color:#f5f6fa;font-weight:750}
+#social .social-person-actions button:hover,#collectorView .social-profile-actions button:hover,#socialBack:hover,#socialGarageBack:hover{border-color:#efbb65;color:#efbb65}
+#social .social-person-actions button.primary,#collectorView .social-profile-actions button.primary{background:#efbb65;color:#1b1820;border-color:#efbb65}
+#social .social-person-actions button.primary:hover,#collectorView .social-profile-actions button.primary:hover{background:#ffd68d;color:#1b1820}
+#social .social-message:not([hidden]){border:1px solid #efbb6545;border-left:3px solid #efbb65;background:#efbb650d;border-radius:3px;color:#f2dfbd}
+#social .social-notification.unread{border-left:3px solid #efbb65;background:#efbb650c}
+#social .social-notification-icon{border-radius:3px;background:#efbb6515;color:#efbb65}
+#collectorView .social-garage-entry{background:#141d2b;border:1px solid #ffffff20;border-left:3px solid #efbb65;border-radius:3px}
+#collectorView .social-garage-entry h2{color:#f5f6fa}
+#collectorView .social-garage-entry button.primary{border-radius:3px;background:#efbb65;color:#1b1820;border-color:#efbb65;font-weight:850}
+#collectorView .social-showdown{background:#141d2b;border:1px solid #ffffff1c;border-radius:3px}
+#collectorView .social-showdown strong{color:#efbb65}
+#collectorView .social-private{background:#141d2b;border:1px solid #ffffff20;border-radius:3px}
+#collectorGarage .toolbar input,#collectorGarage .toolbar select,#collectorGarage .toolbar button{border-radius:3px}
+#collectorGarage .social-readonly-card,#collectorGarage .social-readonly-card .card{border-radius:0!important}
+#collectorGarage .social-readonly-card .garage-item-foot{color:#efbb65}
+@media(max-width:700px){#social .social-tabs button{padding:10px 5px;font-size:11px}#social .social-person{border-radius:3px}#collectorView .social-garage-entry{padding:13px}}
