@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "description": "Explicit ID-keyed automotive photo catalog. Article lead photos are provisional, not necessarily exact trim. To pin a reviewed photo, add src (https image URL) and credit (file/license page).",
+  "version": 2,
+  "description": "Provisional Wikipedia article lead photos for all 192 vehicles; exact trims and licensing to be curated later.",
   "cars": [
     {
       "id": 0,
@@ -577,6 +577,582 @@
       "article": "Pagani Zonda",
       "mode": "article",
       "note": "Article lead photo; review exact model and trim"
+    },
+    {
+      "id": 96,
+      "article": "Toyota Starlet",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 97,
+      "article": "Honda Prelude",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 98,
+      "article": "Nissan Pulsar GTI-R",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 99,
+      "article": "Mazda Familia",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 100,
+      "article": "Suzuki Swift",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 101,
+      "article": "Toyota MR2",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 102,
+      "article": "Toyota MR2",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 103,
+      "article": "Honda Integra",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 104,
+      "article": "Mitsubishi 3000GT",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 105,
+      "article": "Nissan Stagea",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 106,
+      "article": "Subaru Legacy",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 107,
+      "article": "Mazdaspeed3",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 108,
+      "article": "Toyota Chaser",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 109,
+      "article": "Nissan 300ZX",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 110,
+      "article": "Honda Civic Type R",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 111,
+      "article": "Subaru Impreza",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 112,
+      "article": "Mitsubishi Lancer Evolution",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 113,
+      "article": "Mazda RX-8",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 114,
+      "article": "Nissan Skyline GT-R",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 115,
+      "article": "Toyota Supra",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 116,
+      "article": "Honda NSX",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 117,
+      "article": "Lexus IS",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 118,
+      "article": "Nissan GT-R",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 119,
+      "article": "Toyota GR Supra A90",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 120,
+      "article": "Opel Kadett",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 121,
+      "article": "Volkswagen Scirocco",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 122,
+      "article": "BMW 3 Series (E30)",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 123,
+      "article": "Audi Coupé",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 124,
+      "article": "Mercedes-Benz 190E",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 125,
+      "article": "Volkswagen Corrado",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 126,
+      "article": "BMW M5",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 127,
+      "article": "Audi S4",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 128,
+      "article": "Mercedes-Benz C-Class (W202)",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 129,
+      "article": "Porsche 944",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 130,
+      "article": "Volkswagen Golf",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 131,
+      "article": "BMW Z3",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 132,
+      "article": "BMW M3",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 133,
+      "article": "Audi RS 4",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 134,
+      "article": "Mercedes-Benz E-Class (W211)",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 135,
+      "article": "Porsche 911",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 136,
+      "article": "BMW M2",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 137,
+      "article": "Audi TT",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 138,
+      "article": "Porsche Carrera GT",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 139,
+      "article": "Mercedes-Benz SLS AMG",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 140,
+      "article": "BMW M4",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 141,
+      "article": "Audi R8",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 142,
+      "article": "Porsche 911",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 143,
+      "article": "Mercedes-Benz 190E",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 144,
+      "article": "Fiat Panda",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 145,
+      "article": "Alfa Romeo 147",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 146,
+      "article": "Fiat Coupé",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 147,
+      "article": "Lancia Fulvia",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 148,
+      "article": "Alfa Romeo GTV and Spider",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 149,
+      "article": "Abarth 500",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 150,
+      "article": "Alfa Romeo Giulia (952)",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 151,
+      "article": "Lancia Delta",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 152,
+      "article": "Maserati GranTurismo",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 153,
+      "article": "Alfa Romeo 4C",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 154,
+      "article": "Ferrari 308 GTB/GTS",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 155,
+      "article": "Lamborghini Jalpa",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 156,
+      "article": "Ferrari 360",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 157,
+      "article": "Lamborghini Gallardo",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 158,
+      "article": "Maserati MC20",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 159,
+      "article": "Ferrari F355",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 160,
+      "article": "Alfa Romeo 8C Competizione",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 161,
+      "article": "Lancia Rally 037",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 162,
+      "article": "Enzo Ferrari (automobile)",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 163,
+      "article": "LaFerrari",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 164,
+      "article": "Lamborghini Miura",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 165,
+      "article": "Pagani Zonda",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 166,
+      "article": "Ferrari 288 GTO",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 167,
+      "article": "Lamborghini Countach",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 168,
+      "article": "Mini Hatch",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 169,
+      "article": "MG F / MG TF",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 170,
+      "article": "Ford Escort RS Cosworth",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 171,
+      "article": "Lotus Elan",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 172,
+      "article": "Rover 200 / 400",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 173,
+      "article": "Triumph TR6",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 174,
+      "article": "Lotus Elise",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 175,
+      "article": "Jaguar XK (X100)",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 176,
+      "article": "Aston Martin Vantage (2005)",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 177,
+      "article": "TVR Cerbera",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 178,
+      "article": "Lotus Exige",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 179,
+      "article": "Bentley Continental GT",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 180,
+      "article": "Aston Martin DBS V12",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 181,
+      "article": "Lotus Evora",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 182,
+      "article": "Jaguar XJ220",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 183,
+      "article": "McLaren 570S",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 184,
+      "article": "TVR Sagaris",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 185,
+      "article": "Noble M600",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 186,
+      "article": "McLaren P1",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 187,
+      "article": "McLaren Senna",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 188,
+      "article": "Aston Martin One-77",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 189,
+      "article": "Jaguar D-Type",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 190,
+      "article": "Lotus Esprit",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
+    },
+    {
+      "id": 191,
+      "article": "McLaren F1",
+      "mode": "article",
+      "note": "Wikipedia lead image fallback; exact trim and image licensing require review"
     }
   ]
 }
