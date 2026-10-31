@@ -926,3 +926,5 @@ body:has(#revealModal.open){overflow:hidden}
  .social-stats>div{padding:14px}
  .social-garage-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+.social-nav-badge:not([hidden]){display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 5px;margin-left:5px;border-radius:100px;background:#db576b;color:#fff;font-size:10px;font-weight:800;vertical-align:middle}
