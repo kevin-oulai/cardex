@@ -306,14 +306,14 @@ window.cardexRefreshShowdown=()=>{if(document.getElementById('duel').classList.c
  overlays.forEach(m=>{m.setAttribute('tabindex','-1');observer.observe(m,{attributes:true,attributeFilter:['class']})});
  document.addEventListener('keydown',e=>{
   const modal=overlays.findLast(m=>m.classList.contains('open'));if(!modal)return;
-  if(e.key==='Escape'){e.preventDefault();if(modal.id==='carModal')closeCar();else showPackSummary();return}
+  if(e.key==='Escape'){e.preventDefault();if(modal.id==='carModal')closeCar();else if($('packSummary').hidden)showPackSummary();else closeReveal();return}
   if(e.key!=='Tab')return;
   const list=focusables(modal);if(!list.length){e.preventDefault();modal.focus();return}
   const first=list[0],last=list[list.length-1];
   if(e.shiftKey&&(document.activeElement===first||!modal.contains(document.activeElement))){e.preventDefault();last.focus()}
   else if(!e.shiftKey&&(document.activeElement===last||!modal.contains(document.activeElement))){e.preventDefault();first.focus()}
  });
- overlays.forEach(modal=>modal.addEventListener('click',e=>{if(e.target===modal){if(modal.id==='carModal')closeCar();else showPackSummary()}}));
+ overlays.forEach(modal=>modal.addEventListener('click',e=>{if(e.target===modal){if(modal.id==='carModal')closeCar();else if($('packSummary').hidden)showPackSummary();else closeReveal()}}));
 })();
 
 /* Delegated feedback works for buttons rebuilt by game renders and on touch devices. */
