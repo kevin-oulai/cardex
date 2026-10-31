@@ -631,7 +631,7 @@ body:has(#revealModal.open){overflow:hidden}
  position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:inherit;
 }
 .collector-title-badge .title-particles i{
- position:absolute;left:calc(8% + mod(var(--p)*13,80)*1%);top:70%;
+ position:absolute;left:calc(8% + var(--p) * 12%);top:70%;
  width:3px;height:3px;border-radius:50%;background:#fff5d7;
  box-shadow:0 0 5px 2px var(--prestige-glow),0 0 10px var(--prestige);
  opacity:0;animation:titleMote 5.4s ease-in-out infinite;
