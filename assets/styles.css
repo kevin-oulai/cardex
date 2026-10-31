@@ -1021,3 +1021,6 @@ body:has(#revealModal.open){overflow:hidden}
  .social-inbox-popover{right:0;top:calc(100% + 8px);max-height:65vh}
  .top-social-actions>button>svg{width:16px;height:16px}
 }
+
+.social-icon{display:inline-block;vertical-align:middle;flex:none;width:17px;height:17px}
+.social-private .social-icon{width:36px;height:36px}
