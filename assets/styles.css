@@ -670,3 +670,39 @@ body:has(#revealModal.open){overflow:hidden}
  .collector-title-badge .title-particles i,
  #revealCard .reveal-particle{animation:none!important;display:none!important}
 }
+
+
+/* Title selector: title, unlock requirement, progress, then action. */
+#titleManager .title-card{
+ display:flex;flex-direction:column;align-items:stretch;gap:10px;
+ padding:18px;min-width:0;
+}
+#titleManager .title-card h3{margin:0;line-height:1.2}
+#titleManager .title-card .title-requirement{
+ margin:0;color:#c1cbd3;font-size:13px;line-height:1.5;
+ min-height:2.8em;
+}
+#titleManager .title-card .title-progress{
+ margin-top:3px;height:7px;border-radius:999px;
+ background:#0b131c;border:1px solid #60718b55;
+ overflow:hidden;
+}
+#titleManager .title-card .title-progress>span{
+ display:block;height:100%;border-radius:inherit;
+ background:linear-gradient(90deg,color-mix(in srgb,var(--prestige) 55%,#597b8b),var(--prestige));
+ box-shadow:0 0 12px var(--prestige-glow);
+}
+#titleManager .title-card .title-progress-meta{
+ display:flex;justify-content:space-between;gap:10px;
+ color:#aebdcb;font-size:11px;font-weight:700;
+ font-variant-numeric:tabular-nums;
+}
+#titleManager .title-card button{margin-top:auto}
+@media(max-width:550px){
+ #titleManager .title-card{padding:14px;gap:9px}
+ #titleManager .title-card .title-requirement{min-height:0}
+}
+/* Keep reveal particles above the card and burst, including on mobile. */
+#revealCard .flip-effects{z-index:6;overflow:visible;isolation:isolate}
+#revealCard .flip-effects .burst{z-index:0}
+#revealCard .reveal-particle{z-index:2}
