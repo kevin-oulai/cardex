@@ -591,3 +591,28 @@ body:has(#revealModal.open){overflow:hidden}
 @media(prefers-reduced-motion:reduce){
  #revealModal #packSummary .summary-card{animation:none!important}
 }
+
+
+/* Mythic badge shimmer: move the light physically past both edges before
+   resetting, so the animation never cuts off inside the title. */
+.collector-title-badge[data-prestige="mythic"]:not([hidden])::after{
+ inset:0 auto 0 -85%;
+ width:75%;
+ height:100%;
+ background:linear-gradient(90deg,transparent 0%,#d99bff10 22%,#f4c9ff55 43%,#ffffff83 51%,#a5e8ff4a 62%,transparent 100%);
+ background-size:100% 100%;
+ background-position:center;
+ transform:none;
+ animation:mythicBadgeExit 5.5s cubic-bezier(.35,0,.65,1) infinite;
+}
+@keyframes mythicBadgeExit{
+ 0%,12%{left:-85%;opacity:0}
+ 19%{opacity:.85}
+ 68%{opacity:.85}
+ 76%,100%{left:110%;opacity:0}
+}
+@media(prefers-reduced-motion:reduce){
+ .collector-title-badge[data-prestige="mythic"]:not([hidden])::after{
+  animation:none!important;left:12%;opacity:.3;
+ }
+}
