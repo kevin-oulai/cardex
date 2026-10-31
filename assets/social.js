@@ -4,9 +4,23 @@
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uuid=x=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(x));
-const icon=name=>'<i data-lucide="'+name+'"></i>';
+const iconPaths={
+'eye':'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+'user-plus':'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M20 8v6m-3-3h6"/>',
+'user-minus':'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M17 11h6"/>',
+'users':'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+'bell':'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/>',
+'check':'<path d="m5 12 4 4L19 6"/>','clock':'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+'search':'<circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/>',
+'lock':'<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+'warehouse':'<path d="M3 21V8l9-5 9 5v13M3 11h18M7 21v-6h10v6"/>',
+'arrow-right':'<path d="M5 12h14m-6-6 6 6-6 6"/>',
+'arrow-left':'<path d="M19 12H5m6-6-6 6 6 6"/>',
+'award':'<circle cx="12" cy="8" r="5"/><path d="m8 12-2 9 6-3 6 3-2-9"/>'
+};
+const icon=name=>'<svg class="social-icon" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(iconPaths[name]||iconPaths.eye)+'</svg>';
 let state={friends:[],incoming:[],outgoing:[],notifications:[]},tab='friends',profileId=null,loading=false,currentUserId=null;
-function icons(){try{window.lucide?.createIcons({attrs:{'stroke-width':1.8}})}catch(e){console.warn('Icons unavailable',e)}}
+function icons(){} // Icons are inline SVGs; no external icon library or rendering delay.
 function message(t){const el=$('socialMessage');el.hidden=!t;el.textContent=t||''}
 function avatar(name){return '<span class="social-avatar">'+esc((name||'C').slice(0,1).toUpperCase())+'</span>'}
 function relation(id){
