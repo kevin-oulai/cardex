@@ -928,3 +928,33 @@ body:has(#revealModal.open){overflow:hidden}
 }
 
 .social-nav-badge:not([hidden]){display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 5px;margin-left:5px;border-radius:100px;background:#db576b;color:#fff;font-size:10px;font-weight:800;vertical-align:middle}
+
+
+/* Social revision: match CARDEX's original profile and garage instead of a new design language. */
+.top{display:flex;align-items:center;gap:12px}
+.top-social-actions{display:flex;align-items:center;gap:6px;margin-left:auto}
+.top-social-actions button{position:relative;display:grid;place-items:center;min-width:39px;height:39px;padding:8px;border:1px solid #ffffff28;background:#18232d;color:#e4ecf5;border-radius:8px}
+.top-social-actions button:hover{background:#293a4b}
+.top-social-actions svg{width:20px;height:20px}
+.top-social-actions .social-nav-badge:not([hidden]){position:absolute;right:-6px;top:-7px;margin:0}
+#collectorView .profile-cover{margin:0 0 14px}
+#collectorView .profile-identity h2{margin:6px 0}
+#collectorView .social-profile-title{display:inline-flex;margin:0 0 18px}
+#collectorView .social-profile-actions{display:flex;gap:8px;margin:0 0 24px}
+#collectorView .social-garage-entry{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;border-radius:8px}
+#collectorView .social-garage-entry h2{margin:6px 0}
+#collectorView .social-garage-entry p{margin:4px 0}
+#collectorView .social-garage-entry button{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+#collectorView .social-private{border-radius:8px}
+#collectorView .profile-showcase{margin-top:14px}
+#collectorGarage .social-readonly-card{cursor:default}
+#collectorGarage .social-readonly-card .card{pointer-events:none}
+#collectorGarage .social-readonly-card .garage-item-foot{cursor:default}
+#collectorGarage .toolbar{margin-bottom:18px}
+@media(max-width:700px){
+ .top{flex-wrap:wrap}
+ .top-social-actions{margin-left:auto}
+ .nav{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4px!important}
+ .nav button{min-width:0!important;padding:10px 3px!important;text-align:center!important;font-size:clamp(10px,2.8vw,13px)!important;white-space:nowrap!important}
+ #collectorView .social-garage-entry button{width:100%}
+}
