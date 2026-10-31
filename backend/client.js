@@ -65,7 +65,8 @@ async function economyAction(fn,args,success){
   }catch(e){window.cardexNotify?.('Action failed: '+e.message)}
   finally{economyBusy=false}
 }
-window.cardexBuyServerTicket=()=>economyAction('cardex_buy_ticket',{},()=>window.cardexNotify?.('Purchased 1 ticket · −250 credits'));
+window.cardexBuyServerTickets=(quantity=1)=>economyAction('cardex_buy_tickets',{p_quantity:quantity},data=>window.cardexNotify?.('Purchased '+data.quantity+' ticket'+(data.quantity===1?'':'s')+' · −'+Number(data.cost).toLocaleString()+' credits'));
+window.cardexBuyServerTicket=()=>window.cardexBuyServerTickets(1);
 window.cardexRecycleServerDuplicates=(carId=null,finish=null)=>economyAction('cardex_recycle_duplicates',{p_car_id:carId,p_finish:finish},data=>window.cardexNotify?.(data.count?('Recycled '+data.count+' cards · +'+data.credits+' credits'):'No eligible duplicates (Showdown entries are protected)'));
 window.cardexClaimServerAchievement=id=>economyAction('cardex_claim_achievement',{p_id:id},async data=>{await syncAchievementClaims();window.cardexNotify?.('Achievement claimed · +'+data.credits+' credits')});
 window.cardexOpenServerPack=async(theme,quantity=1,instant=false)=>{
@@ -253,7 +254,9 @@ try {
     const {data,error}=await client.auth.signUp({email,password,options:{emailRedirectTo:'https://kevin-oulai.github.io/cardex/'}});
     if(error)text(status,error.message);else text(status,data.session?'Account created and signed in.':'Check your email to confirm your account, then sign in.');
   });
-  document.getElementById('onlineLogout').addEventListener('click',async()=>{await flushCloud();await client.auth.signOut();await refreshSession()});
+  const signOut=async()=>{await flushCloud();await client.auth.signOut();await refreshSession()};
+  document.getElementById('onlineLogout').addEventListener('click',signOut);
+  document.getElementById('profileLogout').addEventListener('click',signOut);
   document.getElementById('onlineRefresh').addEventListener('click',async()=>{await loadPublic();await refreshSession()});
 } catch(e) {
   window.cardexShowAuth?.();
