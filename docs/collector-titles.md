@@ -24,3 +24,9 @@ Inventory titles reflect cards **currently owned**, not lifetime acquisitions. R
 Public collector titles respect `profiles.public_collection`: private collectors' title progress is not returned to other accounts. The Profile screen offers title progress, category filters, and equip/unequip. Public collector details show the equipped title.
 
 Verification: migration applied, function grants checked. Not yet tested in a signed-in browser with real historical podium data.
+
+## Expanded title milestones
+
+The catalog now includes 30 titles. New milestones include Garage Builder (25 cards), Garage Magnate (250), Master Collector (500), Rare Vault (25 Rare), Blueprint Hoarder (50 Rare), Crown Jewels (20 Legendary/Exotic/Limited), JDM Master (20 distinct Japanese models), Continental Curator (20 distinct European models), Motorsport Historian (12 distinct motorsport models), First Trophy (1 claimed achievement), Trophy Cabinet (7), Grand Completionist (all 10), Daily Driver (25 Showdowns), Podium Elite (15 podiums), and The Undisputed (15 wins).
+
+The original Completionist title still requires five claimed achievements, preserving its previous unlock threshold. Grand Completionist is the new ten-achievement milestone.
