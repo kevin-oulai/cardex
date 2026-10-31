@@ -57,3 +57,9 @@ The Profile page now uses one Supabase account for login, public display name an
 **New accounts start with a fresh authoritative inventory and 10 tickets.** Browser-generated cards and currency from earlier cloud saves are not imported. The earlier `player_saves` record remains for non-authoritative profile preferences. Until server-side rewards and recycling are implemented, those actions are intentionally unavailable in server mode. The verified Showdown submission endpoint and leaderboard population remain pending.
 
 **Before public release:** Test database migrations and two independent accounts, concurrent pack requests, ticket regeneration, serial uniqueness, sign-out, and cross-device state. The migration has not been run or verified against the live Supabase project from this session. Ensure legal pages describe account data and complete publisher identification and account-deletion process.
+
+## Verified daily Showdown
+
+Run [`verified-showdown.sql`](./verified-showdown.sql) after the preceding migrations. The `cardex_submit_showdown(p_serial_id)` authenticated RPC validates card ownership from `global_card_serials`, obtains the shared UTC boss, calculates power/speed/weight percentages from the server catalog, and upserts the daily best result. The first verified 100% timestamp is preserved on subsequent attempts. The frontend now submits a server-issued card serial and refreshes the daily leaderboard.
+
+Current limitations: Showdown milestone rewards are not yet issued server-side; local progress indicators can be stale across devices. Browser cloud-save data remains untrusted for competitive ranking. Confirm the RPC exists in Supabase and test with two accounts before declaring the leaderboard production-ready.
