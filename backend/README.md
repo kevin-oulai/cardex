@@ -63,3 +63,11 @@ The Profile page now uses one Supabase account for login, public display name an
 Run [`verified-showdown.sql`](./verified-showdown.sql) after the preceding migrations. The `cardex_submit_showdown(p_serial_id)` authenticated RPC validates card ownership from `global_card_serials`, obtains the shared UTC boss, calculates power/speed/weight percentages from the server catalog, and upserts the daily best result. The first verified 100% timestamp is preserved on subsequent attempts. The frontend now submits a server-issued card serial and refreshes the daily leaderboard.
 
 Current limitations: Showdown milestone rewards are not yet issued server-side; local progress indicators can be stale across devices. Browser cloud-save data remains untrusted for competitive ranking. Confirm the RPC exists in Supabase and test with two accounts before declaring the leaderboard production-ready.
+
+## Model-scoped serials and claimed Showdown rewards
+
+Run [`model-serials-showdown-rewards.sql`](./model-serials-showdown-rewards.sql) **after** `verified-showdown.sql`. Existing cards are assigned immutable per-model numbers in original issuance order (internal ID ascending); global issuance IDs remain internal database keys. Each model starts at #1 across all players and finishes, with a unique (car_id, model_serial) constraint and transaction-safe per-model counter.
+
+The same migration replaces the Showdown RPC to award the established milestones (20%: 100 credits; 40%: 200 credits; 60%: 1 ticket; 80%: 350 credits; 100%: 200 credits + 1 ticket) exactly once per UTC day. Claimed milestones are stored in `showdown_reward_claims` and returned via `cardex_get_showdown_status`; the UI now reads server state rather than inferring claims locally. Existing verified scores can earn their unclaimed rewards on the **next Showdown submission that day**. The migration does not automatically award rewards for past days.
+
+**Do not rerun the original `authoritative-game.sql` after this migration** because it contains an older version of the pack RPC that doesn't populate `model_serial`. Future deployments should use versioned migrations in order. The SQL and live deployment have not been verified by this assistant; test with two accounts before considering production-ready.
