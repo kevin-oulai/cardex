@@ -21,7 +21,8 @@ window.cardexSubmitShowdown=async(carId)=>{
     const {data,error}=await client.rpc('cardex_submit_showdown',{p_serial_id:owned[0].id});
     if(error)throw error;
     window.cardexSetShowdownResult?.(data);
-    await loadPublic();
+    if(data.wallet)await syncServerGame();
+    else await loadPublic();
   }catch(e){window.cardexNotify?.('Showdown unavailable: '+e.message)}
   finally{showdownBusy=false}
 };
@@ -30,7 +31,7 @@ window.cardexServerError='Server connection not initialized';
 async function syncServerGame(){
   const {data:wallet,error}=await client.rpc('cardex_get_wallet');
   if(error){window.cardexServerGameReady=false;window.cardexServerError='Wallet request: '+error.message;text(cloudStatus,'Server game unavailable: '+error.message);console.error('CARDEX wallet RPC',error);return}
-  const {data:cards,error:cardError}=await client.from('global_card_serials').select('id,car_id,finish,issued_at').order('id',{ascending:true}).limit(10000);
+  const {data:cards,error:cardError}=await client.from('global_card_serials').select('id,car_id,finish,issued_at,model_serial').order('id',{ascending:true}).limit(10000);
   if(cardError){window.cardexServerGameReady=false;window.cardexServerError='Card inventory: '+cardError.message;text(cloudStatus,'Card inventory unavailable: '+cardError.message);console.error('CARDEX cards',cardError);return}
   window.cardexServerError='';
   window.cardexServerGameReady=true;
@@ -39,6 +40,12 @@ async function syncServerGame(){
   const {error:bossError}=await client.rpc('cardex_publish_boss');
   if(bossError)console.warn('CARDEX boss publish',bossError);
   try{await loadPublic()}catch(e){console.warn('CARDEX public data',e)}
+  await syncShowdownStatus();
+}
+async function syncShowdownStatus(){
+  const {data,error}=await client.rpc('cardex_get_showdown_status');
+  if(error){console.warn('Showdown status not available',error);return}
+  window.cardexSetShowdownStatus?.(data);
 }
 window.cardexOpenServerPack=async(theme,quantity=1,instant=false)=>{
   if(packBusy)return;
