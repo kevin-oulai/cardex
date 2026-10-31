@@ -28,6 +28,18 @@ window.cardexSubmitShowdown=async(carId)=>{
 };
 window.cardexServerGameReady=false;
 window.cardexServerError='Server connection not initialized';
+async function syncTitles(){
+ if(!activeUser)return;
+ const {data,error}=await client.rpc('cardex_titles',{p_user_id:activeUser});
+ if(error){console.warn('CARDEX titles unavailable',error);return}
+ window.cardexSetTitles?.(data);
+}
+window.cardexEquipTitle=async(id)=>{
+ const {data,error}=await client.rpc('cardex_equip_title',{p_title:id});
+ if(error)throw error;
+ window.cardexSetTitles?.(data);
+ return data;
+};
 async function syncServerGame(){
   const {data:wallet,error}=await client.rpc('cardex_get_wallet');
   if(error){window.cardexServerGameReady=false;window.cardexServerError='Wallet request: '+error.message;text(cloudStatus,'Server game unavailable: '+error.message);console.error('CARDEX wallet RPC',error);return}
@@ -42,6 +54,7 @@ async function syncServerGame(){
   try{await loadPublic()}catch(e){console.warn('CARDEX public data',e)}
   await syncShowdownStatus();
   await syncAchievementClaims();
+  await syncTitles();
 }
 async function syncShowdownStatus(){
   const {data,error}=await client.rpc('cardex_get_showdown_status');
