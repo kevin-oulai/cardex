@@ -741,19 +741,16 @@ body:has(#revealModal.open){overflow:hidden}
 }
 @media(max-width:680px){
  #titleManager .title-card.title-row{
-  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-columns:minmax(0,44%) minmax(0,1fr);
   column-gap:12px;row-gap:12px;
  }
- #titleManager .title-row-preview{grid-column:1/-1}
- #titleManager .title-row-details{grid-column:1;grid-row:2}
- #titleManager .title-card.title-row>button{
-  grid-column:2;grid-row:2;min-width:78px;
+ #titleManager .title-row-preview{grid-column:1;grid-row:1;align-self:center}
+ #titleManager .title-row-preview .collector-title-badge{
+  flex-shrink:1;white-space:normal;overflow-wrap:anywhere;
+  padding:8px 10px;font-size:clamp(11px,3vw,15px);
  }
-}
-@media(max-width:390px){
- #titleManager .title-card.title-row{grid-template-columns:minmax(0,1fr)}
- #titleManager .title-row-details{grid-column:1;grid-row:2}
+ #titleManager .title-row-details{grid-column:2;grid-row:1}
  #titleManager .title-card.title-row>button{
-  grid-column:1;grid-row:3;justify-self:start;
+  grid-column:2;grid-row:2;justify-self:start;min-width:95px;
  }
 }
