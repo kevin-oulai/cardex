@@ -121,11 +121,11 @@ create policy "Read own showdown claims" on public.showdown_reward_claims
 create or replace function public.cardex_showdown_reward(p_index integer)
 returns jsonb language sql immutable set search_path='' as $$
 select case p_index
- when 0 then jsonb_build_object('at',20,'credits',50,'tickets',0)
- when 1 then jsonb_build_object('at',40,'credits',100,'tickets',0)
- when 2 then jsonb_build_object('at',60,'credits',150,'tickets',1)
- when 3 then jsonb_build_object('at',80,'credits',250,'tickets',1)
- when 4 then jsonb_build_object('at',100,'credits',500,'tickets',2)
+ when 0 then jsonb_build_object('at',20,'credits',100,'tickets',0)
+ when 1 then jsonb_build_object('at',40,'credits',200,'tickets',0)
+ when 2 then jsonb_build_object('at',60,'credits',0,'tickets',1)
+ when 3 then jsonb_build_object('at',80,'credits',350,'tickets',0)
+ when 4 then jsonb_build_object('at',100,'credits',200,'tickets',1)
  else null end;
 $$;
 revoke all on function public.cardex_showdown_reward(integer) from public,anon,authenticated;
