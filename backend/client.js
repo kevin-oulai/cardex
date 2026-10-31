@@ -5,10 +5,60 @@ const status = document.getElementById('onlineStatus');
 const authForm = document.getElementById('onlineAuthForm');
 const signedIn = document.getElementById('onlineSignedIn');
 const leaderboard = document.getElementById('onlineLeaderboard');
-const serials = document.getElementById('onlineSerials');
+const cloudStatus=document.getElementById('cloudSyncStatus');
 const shared = document.getElementById('onlineSharedBoss');
 const text = (el, value) => { if (el) el.textContent = value; };
 let client;
+let activeUser=null, pending=null, saving=false, revision=0, savedRevision=0;
+window.cardexCloudReady=false;
+const cacheKey=id=>'cardex-account-cache-'+id;
+async function loadCloud(id){
+  window.cardexCloudReady=false;
+  activeUser=id;
+  text(cloudStatus,'Loading account collection…');
+  const {data,error}=await client.from('player_saves').select('state').eq('user_id',id).maybeSingle();
+  if(error){
+    text(status,'Cloud save unavailable: '+error.message+'. Apply backend/cloud-saves.sql in Supabase.');
+    text(cloudStatus,'Cloud save unavailable; gameplay locked to prevent data loss.');
+    document.getElementById('accountGate').style.display='flex';
+    return;
+  }
+  let remote=data?.state;
+  if(!remote){
+    remote={packs:10,last:Date.now(),owned:[],favorites:[],opened:0,credits:0,xp:0,pity:0,achievements:[],lastDuel:''};
+    const {error:createError}=await client.from('player_saves').insert({user_id:id,state:remote});
+    if(createError){text(status,'Unable to initialize account: '+createError.message);return}
+  }
+  localStorage.setItem(cacheKey(id),JSON.stringify(remote));
+  window.cardexLoadCloudState?.(remote);
+  window.cardexCloudReady=true;
+  document.getElementById('accountGate').style.display='none';
+  text(cloudStatus,'Collection loaded from your account.');
+}
+window.cardexCloudSave=(state)=>{
+  if(!window.cardexCloudReady||!activeUser)return;
+  pending=JSON.stringify(state);revision++;
+  localStorage.setItem(cacheKey(activeUser),pending);
+  clearTimeout(window.cardexCloudTimer);
+  window.cardexCloudTimer=setTimeout(flushCloud,500);
+};
+async function flushCloud(){
+  if(saving||!pending||!activeUser)return;
+  saving=true;
+  const snapshot=pending, rev=revision, id=activeUser;
+  text(cloudStatus,'Saving collection…');
+  const {error}=await client.from('player_saves').update({state:JSON.parse(snapshot),updated_at:new Date().toISOString()}).eq('user_id',id);
+  saving=false;
+  if(error){text(cloudStatus,'Cloud save failed: '+error.message+'. Changes remain in browser cache.');return}
+  savedRevision=rev;
+  if(revision===rev){pending=null;text(cloudStatus,'Collection saved online.')}
+  else setTimeout(flushCloud,0);
+}
+window.cardexUpdateName=async(name)=>{
+  if(!activeUser)return;
+  const {error}=await client.from('profiles').update({display_name:name}).eq('id',activeUser);
+  if(error)text(status,'Public display name update failed: '+error.message);
+};
 const dateUTC = () => new Date().toISOString().slice(0,10);
 const escapeHTML = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function loadPublic() {
@@ -40,12 +90,12 @@ async function refreshSession(){
   const {data:{user}}=await client.auth.getUser();
   authForm.hidden=!!user;
   signedIn.hidden=!user;
-  if(!user){text(status,'Guest mode — progress stays on this device.');text(serials,'Sign in to view server-issued serials.');return}
-  text(status,'Signed in as '+user.email+'. Your current local collection is not yet synced.');
+  if(!user){window.cardexCloudReady=false;document.getElementById('accountGate').style.display='flex';text(document.getElementById('gateStatus'),'Sign in from Profile to continue.');text(status,'Sign in or create an account to play.');return}
+  text(status,'Signed in as '+user.email+'. Your collection is linked to this account.');
   const {data:profile}=await client.from('profiles').select('display_name').eq('id',user.id).maybeSingle();
-  document.getElementById('onlineName').value=profile?.display_name||'Collector';
-  const {data:owned,error}=await client.from('global_card_serials').select('id,car_id,finish,issued_at').order('id',{ascending:false}).limit(30);
-  text(serials,error?'Unable to load online serials: '+error.message:owned?.length?owned.map(x=>'#'+x.id+' · Car '+x.car_id+' · '+x.finish).join(' | '):'No server-issued serials yet. Existing local cards do not have global serial numbers.');
+  if(profile?.display_name && window.cardexCloudReady){const input=document.getElementById('profileNameInput');if(input)input.value=profile.display_name;}
+  if(activeUser!==user.id)await loadCloud(user.id);
+
 }
 try {
   client=createClient(URL,PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
@@ -55,7 +105,7 @@ try {
   window.cardexOnlineSession=()=>refreshSession().catch(console.error);
   await refreshSession();
   await loadPublic();
-  client.auth.onAuthStateChange(()=>{setTimeout(()=>refreshSession().catch(console.error),0)});
+  client.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){activeUser=null;pending=null;window.cardexCloudReady=false;window.cardexLoadCloudState?.({});}setTimeout(()=>refreshSession().catch(console.error),0)});
   document.getElementById('onlineLogin').addEventListener('click',async()=>{
     const email=document.getElementById('onlineEmail').value.trim();
     const password=document.getElementById('onlinePassword').value;
@@ -72,17 +122,9 @@ try {
     const {data,error}=await client.auth.signUp({email,password,options:{emailRedirectTo:'https://kevin-oulai.github.io/cardex/'}});
     if(error)text(status,error.message);else text(status,data.session?'Account created and signed in.':'Check your email to confirm your account, then sign in.');
   });
-  document.getElementById('onlineLogout').addEventListener('click',async()=>{await client.auth.signOut();await refreshSession()});
-  document.getElementById('onlineSaveName').addEventListener('click',async()=>{
-    const name=document.getElementById('onlineName').value.trim();
-    if(!name||name.length>24){text(status,'Name must be 1–24 characters.');return}
-    const {data:{user}}=await client.auth.getUser();if(!user)return;
-    const {error}=await client.from('profiles').update({display_name:name}).eq('id',user.id);
-    text(status,error?'Name update failed: '+error.message:'Online display name saved.');
-    if(!error)await loadPublic();
-  });
+  document.getElementById('onlineLogout').addEventListener('click',async()=>{await flushCloud();await client.auth.signOut();await refreshSession()});
   document.getElementById('onlineRefresh').addEventListener('click',async()=>{await loadPublic();await refreshSession()});
 } catch(e) {
-  text(status,'Online services unavailable. Local play still works.');
+  text(status,'Online services unavailable. Sign-in required to play.');
   console.error('CARDEX online initialization failed',e);
 }
