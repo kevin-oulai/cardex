@@ -75,11 +75,9 @@ window.cardexOpenServerPack=async(theme,quantity=1,instant=false)=>{
   const draws=[];
   const prior=new Set((window.cardexOwnedModelIds?.()||[]).map(Number));
   try{
-    for(let i=0;i<quantity;i++){
-      const {data,error}=await client.rpc('cardex_open_pack',{p_theme:theme});
-      if(error)throw error;
-      draws.push(...data.cards);
-    }
+    const {data:opened,error:openError}=await client.rpc('cardex_open_packs',{p_theme:theme,p_quantity:quantity});
+    if(openError)throw openError;
+    draws.push(...opened.cards);
     const {data:wallet,error:walletError}=await client.rpc('cardex_get_wallet');
     if(walletError)throw walletError;
     const {data:cards,error:cardError}=await client.from('global_card_serials').select('id,car_id,finish,issued_at,model_serial').order('id',{ascending:true}).limit(10000);
@@ -111,7 +109,7 @@ async function loadCloud(id){
   }
   let remote=data?.state;
   serverSaveRevision=Number(data?.revision||0);
-  saveConflict=false;pending=null;revision=0;savedRevision=0;
+  saveConflict=false;pending=null;revision=0;savedRevision=0;document.getElementById('cloudConflictActions').hidden=true;
   if(!remote){
     remote={packs:10,last:Date.now(),owned:[],favorites:[],opened:0,credits:0,xp:0,pity:0,achievements:[],lastDuel:''};
     const {error:createError}=await client.from('player_saves').insert({user_id:id,state:remote});
@@ -124,6 +122,19 @@ async function loadCloud(id){
   text(cloudStatus,'Collection loaded from your account.');
   await syncServerGame();
 }
+// Resolve a stale save by loading the authoritative server state. A copy of local edits
+// remains in the account-scoped browser cache; we never auto-upload stale economy fields.
+window.cardexResolveSaveConflict=async()=>{
+ if(!activeUser||!saveConflict)return;
+ const id=activeUser;
+ const cached=localStorage.getItem(cacheKey(id));
+ if(cached)try{localStorage.setItem(cacheKey(id)+'-conflict-backup',cached)}catch{}
+ text(cloudStatus,'Reloading the latest account save…');
+ await loadCloud(id);
+ if(!window.cardexCloudReady)throw new Error('Could not reload server preferences');
+ text(cloudStatus,'Latest server save loaded. A backup of your previous local edits remains on this device.');
+ window.cardexNotify?.('Server preferences loaded. Previous local edits backed up on this device.');
+};
 window.cardexCloudSave=(state)=>{
   if(!window.cardexCloudReady||!activeUser||saveConflict)return;
   pending=JSON.stringify(state);revision++;
@@ -142,7 +153,7 @@ async function flushCloud(){
   if(error){
     if(error.message?.includes('SAVE_CONFLICT')){
       saveConflict=true;
-      text(cloudStatus,'Cloud save conflict: another device changed your preferences. Your local edits are preserved in this browser. Reload to fetch the latest server version.');
+      text(cloudStatus,'Cloud save conflict: another device changed your preferences. Choose Reload server preferences below; local edits will be backed up on this device.');document.getElementById('cloudConflictActions').hidden=false;
       window.cardexNotify?.('Cloud save conflict — reload to see latest account preferences');
     }else text(cloudStatus,'Cloud save failed: '+error.message+'. Changes remain in browser cache.');
     return;
@@ -255,6 +266,7 @@ try {
     if(error)text(status,error.message);else text(status,data.session?'Account created and signed in.':'Check your email to confirm your account, then sign in.');
   });
   const signOut=async()=>{await flushCloud();await client.auth.signOut();await refreshSession()};
+  document.getElementById('reloadCloudPreferences').addEventListener('click',async()=>{const b=document.getElementById('reloadCloudPreferences');b.disabled=true;try{await window.cardexResolveSaveConflict()}catch(e){text(cloudStatus,'Reload failed: '+e.message)}finally{b.disabled=false}});
   document.getElementById('onlineLogout').addEventListener('click',signOut);
   document.getElementById('profileLogout').addEventListener('click',signOut);
   document.getElementById('onlineRefresh').addEventListener('click',async()=>{await loadPublic();await refreshSession()});
