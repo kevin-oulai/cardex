@@ -308,3 +308,158 @@ body:has(#revealModal.open){overflow:hidden}
  #revealCard .flip-scene:before{animation:none!important}
  .title-card.unlocked[data-prestige="mythic"]:after,.collector-title-badge[data-prestige="mythic"]:not([hidden]):after{animation:none!important}
 }
+
+
+/* CARDEX / collectible redesign V4
+   Hard-edged, high-contrast collectible frames with unmistakable rarity language.
+   Finishes are an independent material layer: rarity stays legible on every finish. */
+.card{
+ --tier:#a7b1bc;--tier-hi:#e2e8ec;--tier-deep:#313c46;--tier-ink:#111920;
+ --tier-halo:#8b9aa94a;--tier-art:#24303b;--tier-pattern:linear-gradient(transparent,transparent);
+ --corner:3px;
+ border-radius:var(--corner)!important;
+ border:2px solid var(--tier)!important;
+ padding:10px 10px 11px;
+ gap:7px;
+ background:
+  var(--tier-pattern),
+  radial-gradient(ellipse at 80% 0%,var(--tier-halo),transparent 62%),
+  linear-gradient(153deg,var(--tier-deep),#101722 51%,#090f16 100%)!important;
+ box-shadow:inset 0 0 0 2px #090f17,inset 0 0 0 3px color-mix(in srgb,var(--tier) 65%,transparent),
+            0 0 0 1px #05090c,0 9px 24px #0009,0 0 19px var(--tier-halo)!important;
+ overflow:hidden;
+}
+.card:before{
+ inset:5px;border-radius:0!important;border:1px solid color-mix(in srgb,var(--tier) 57%,transparent);
+ background:
+ linear-gradient(135deg,var(--tier) 0 10px,transparent 10px),
+ linear-gradient(225deg,var(--tier) 0 10px,transparent 10px),
+ linear-gradient(315deg,var(--tier) 0 10px,transparent 10px),
+ linear-gradient(45deg,var(--tier) 0 10px,transparent 10px);
+ background-size:22px 22px;background-repeat:no-repeat;
+ background-position:top left,top right,bottom right,bottom left;
+ opacity:.66;
+}
+.card .card-engraving{font-family:Arial,Helvetica,sans-serif;font-size:8px;letter-spacing:.16em;color:var(--tier-hi);opacity:.92;padding:1px 1px 0}
+.card .card-engraving span{color:var(--tier);filter:drop-shadow(0 0 5px var(--tier))}
+.card .tag{
+ display:flex;align-items:center;gap:5px;
+ min-height:27px;padding:3px 5px;
+ border:1px solid color-mix(in srgb,var(--tier) 75%,transparent);
+ background:linear-gradient(90deg,var(--tier),color-mix(in srgb,var(--tier) 62%,#10151c));
+ color:var(--tier-ink)!important;
+ font-size:10px;font-weight:950;letter-spacing:.06em;text-shadow:none;
+ text-transform:uppercase;
+ box-shadow:0 2px 8px #0005;
+}
+.card .rarity-symbol{font-size:17px;line-height:1;min-width:18px;text-align:center}
+.card .rarity-name{white-space:nowrap;flex:1;line-height:1.15}
+.card .finish-name{
+ background:#0a121edc;color:var(--tier-hi);
+ border:1px solid color-mix(in srgb,var(--tier) 50%,transparent);
+ padding:3px 4px;font-size:8px;letter-spacing:.045em;white-space:nowrap
+}
+.card .art{
+ border-radius:0!important;
+ border:1px solid var(--tier)!important;
+ background:
+  radial-gradient(ellipse at 50% 38%,color-mix(in srgb,var(--tier) 27%,transparent),transparent 64%),
+  linear-gradient(145deg,var(--tier-art),#0b131d)!important;
+ box-shadow:inset 0 0 0 2px #0c1420,inset 0 0 30px #000a,0 0 10px var(--tier-halo)!important;
+}
+.card .art:before{content:"";position:absolute;z-index:1;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 5px,#00000010 5px 6px)}
+.card .art:after{border-radius:0!important;background:linear-gradient(180deg,#ffffff1d,transparent 22%,transparent 67%,#000b),linear-gradient(115deg,transparent 31%,#ffffff17 47%,transparent 61%)}
+.card .name{color:#f9fbff!important;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:950;line-height:1.12;min-height:37px;letter-spacing:-.02em}
+.card .spec{border-top:1px solid color-mix(in srgb,var(--tier) 48%,transparent);font-size:10px}
+.card .spec b{color:var(--tier-hi)}
+.card .foot{border-top:1px solid color-mix(in srgb,var(--tier) 34%,transparent);font-size:10px}
+.card .star{border-radius:2px!important}
+.card[data-tier="Common"]{
+ --tier:#9da9b5;--tier-hi:#e3eaf1;--tier-deep:#293540;--tier-ink:#0d1823;
+ --tier-halo:#9da9b52d;--tier-art:#253441;
+}
+.card[data-tier="Uncommon"]{
+ --tier:#29dc91;--tier-hi:#a8ffdc;--tier-deep:#153d34;--tier-ink:#06251b;
+ --tier-halo:#00e99869;--tier-art:#104536;
+ --tier-pattern:repeating-linear-gradient(135deg,transparent 0 16px,#38f9ac0c 16px 18px);
+}
+.card[data-tier="Rare"]{
+ --tier:#348bff;--tier-hi:#c4e2ff;--tier-deep:#173d75;--tier-ink:#061b42;
+ --tier-halo:#168bff8a;--tier-art:#174b80;
+ --tier-pattern:repeating-linear-gradient(120deg,transparent 0 20px,#75baff17 20px 22px);
+}
+.card[data-tier="Super Rare"]{
+ --tier:#b56aff;--tier-hi:#eed4ff;--tier-deep:#4d267d;--tier-ink:#250d42;
+ --tier-halo:#ad48ff9c;--tier-art:#4d237d;
+ --tier-pattern:repeating-linear-gradient(155deg,transparent 0 12px,#c88aff17 12px 13px);
+}
+.card[data-tier="Ultra Rare"]{
+ --tier:#ff982e;--tier-hi:#ffe4a8;--tier-deep:#783919;--tier-ink:#3a1700;
+ --tier-halo:#ff8112aa;--tier-art:#703315;
+ --tier-pattern:repeating-linear-gradient(135deg,transparent 0 14px,#ffb75d19 14px 16px);
+}
+.card[data-tier="Legendary"]{
+ --tier:#ffdb51;--tier-hi:#fff9c9;--tier-deep:#785a12;--tier-ink:#3e2b00;
+ --tier-halo:#ffc329c9;--tier-art:#775514;
+ --tier-pattern:repeating-conic-gradient(from 45deg at 50% 0%,#ffdc5b13 0deg 12deg,transparent 12deg 24deg);
+}
+.card[data-tier="Exotic"]{
+ --tier:#ff4f9e;--tier-hi:#ffe0f2;--tier-deep:#7d174e;--tier-ink:#430b27;
+ --tier-halo:#ff299dbf;--tier-art:#7c1b58;
+ --tier-pattern:repeating-linear-gradient(40deg,transparent 0 15px,#ff91cc1a 15px 17px);
+}
+.card[data-tier="Limited"]{
+ --tier:#c8fbff;--tier-hi:#ffffff;--tier-deep:#355b68;--tier-ink:#09353c;
+ --tier-halo:#8deaffdb;--tier-art:#255c6a;
+ --tier-pattern:repeating-linear-gradient(120deg,#fff1 0 1px,transparent 1px 14px);
+}
+.card[data-tier="Legendary"],.card[data-tier="Exotic"],.card[data-tier="Limited"]{
+ border-width:3px!important;
+ box-shadow:inset 0 0 0 2px #09101a,inset 0 0 0 4px var(--tier),0 0 0 1px #030609,
+ 0 12px 32px #000c,0 0 19px var(--tier-halo),0 0 35px color-mix(in srgb,var(--tier) 30%,transparent)!important;
+}
+.card[data-tier="Legendary"] .tag,.card[data-tier="Exotic"] .tag,.card[data-tier="Limited"] .tag{
+ min-height:33px;letter-spacing:.09em;font-size:11px;
+ box-shadow:0 0 15px var(--tier-halo);
+}
+.card[data-tier="Legendary"] .rarity-symbol,.card[data-tier="Exotic"] .rarity-symbol,.card[data-tier="Limited"] .rarity-symbol{font-size:23px}
+.card[data-tier="Legendary"] .art,.card[data-tier="Exotic"] .art,.card[data-tier="Limited"] .art{box-shadow:inset 0 0 0 2px #0b1220,inset 0 0 32px #0009,0 0 14px var(--tier-halo)!important}
+/* Distinct finish surfaces. No finish overrides the rarity frame. */
+.card.foil:after{
+ background:linear-gradient(108deg,transparent 18%,#ffffff12 27%,#ffffff8a 39%,#92dfff45 45%,transparent 57%),
+ radial-gradient(ellipse at var(--mx) var(--my),#ffffff55,transparent 66%);
+ background-size:240% 100%,100% 100%;mix-blend-mode:screen;opacity:.62;animation:cardFoilPass 5.5s ease-in-out infinite;
+}
+.card.holo:after{
+ background:
+ repeating-linear-gradient(120deg,#ff528526 0 9px,#56baff2d 9px 18px,#ffff6a24 18px 27px,#b770ff31 27px 36px),
+ conic-gradient(from 40deg at var(--mx) var(--my),#ff388b7d,#3ae9ff81,#fff58069,#b86aff7b,#ff388b7d);
+ background-blend-mode:screen;mix-blend-mode:screen;opacity:.65;
+ animation:cardHoloCycle 7s linear infinite;
+}
+.card.collector-finish{border-style:double!important;border-width:4px!important}
+.card.collector-finish .card-engraving{color:var(--tier-hi)}
+.card.collector-finish .finish-name{background:var(--tier-hi);color:#111722}
+.card.collector-finish:before{opacity:1}
+@keyframes cardFoilPass{0%,12%{background-position:110% 50%,center}70%,100%{background-position:-110% 50%,center}}
+@keyframes cardHoloCycle{50%{filter:hue-rotate(80deg) saturate(1.3)}}
+@media(hover:hover) and (pointer:fine){
+ .card.card-interactive{
+  box-shadow:inset 0 0 0 2px #09111b,inset 0 0 0 3px var(--tier),0 19px 42px #000d,0 0 29px var(--tier-halo)!important;
+ }
+ .card.card-interactive:after{opacity:.92}
+}
+#garage .card,#garage .card .art,#duel .card,#revealModal .card,#carModal .card{border-radius:2px!important}
+#garage .cards{gap:17px}
+#garage .card{min-height:290px}
+#revealCard .flip-face{border-radius:3px!important}
+#revealCard .flip-front .card{border-radius:2px!important}
+#revealCard .flip-back{border-radius:3px!important;border:3px solid #d9c17b}
+@media(max-width:760px){
+ #garage .cards{gap:12px}
+ .card .tag{font-size:9px}
+ .card .finish-name{font-size:7px}
+}
+@media(prefers-reduced-motion:reduce){
+ .card.foil:after,.card.holo:after{animation:none!important}
+}
