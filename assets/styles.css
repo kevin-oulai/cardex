@@ -706,3 +706,54 @@ body:has(#revealModal.open){overflow:hidden}
 #revealCard .flip-effects{z-index:6;overflow:visible;isolation:isolate}
 #revealCard .flip-effects .burst{z-index:0}
 #revealCard .reveal-particle{z-index:2}
+
+
+/* Title chooser: actual profile badge at its original size, alongside
+   unlock requirement and progress. One horizontal row per title. */
+#titleManager .titles-grid{
+ display:grid;
+ grid-template-columns:minmax(0,1fr);
+ gap:10px;
+}
+#titleManager .title-card.title-row{
+ display:grid;
+ grid-template-columns:minmax(165px,auto) minmax(0,1fr) auto;
+ align-items:center;
+ column-gap:20px;
+ row-gap:10px;
+ padding:16px;
+}
+#titleManager .title-row-preview{
+ display:flex;align-items:center;justify-content:flex-start;
+ min-width:0;
+}
+#titleManager .title-row-preview .collector-title-badge{
+ margin:0;
+ flex-shrink:0;
+ max-width:100%;
+}
+#titleManager .title-row-details{min-width:0;display:flex;flex-direction:column;gap:8px}
+#titleManager .title-row-details .title-requirement{min-height:0}
+#titleManager .title-row-details .title-progress{margin:0}
+#titleManager .title-row-details .title-progress-meta{margin:0}
+#titleManager .title-card.title-row>button{
+ margin:0;min-width:100px;align-self:center;
+}
+@media(max-width:680px){
+ #titleManager .title-card.title-row{
+  grid-template-columns:minmax(0,1fr) auto;
+  column-gap:12px;row-gap:12px;
+ }
+ #titleManager .title-row-preview{grid-column:1/-1}
+ #titleManager .title-row-details{grid-column:1;grid-row:2}
+ #titleManager .title-card.title-row>button{
+  grid-column:2;grid-row:2;min-width:78px;
+ }
+}
+@media(max-width:390px){
+ #titleManager .title-card.title-row{grid-template-columns:minmax(0,1fr)}
+ #titleManager .title-row-details{grid-column:1;grid-row:2}
+ #titleManager .title-card.title-row>button{
+  grid-column:1;grid-row:3;justify-self:start;
+ }
+}
