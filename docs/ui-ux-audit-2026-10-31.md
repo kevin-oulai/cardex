@@ -31,3 +31,18 @@ Scope: static review of `index.html` and `backend/client.js` for desktop/mobile 
 6. Two devices: concurrent cloud preferences save conflict and recovery.
 
 No database migration was needed for these interface fixes.
+
+## Follow-up implementation (same day)
+
+- **Modal focus and keyboard handling:** Custom Garage/reveal overlays now capture initial focus, contain Tab navigation, restore the invoking control, and support Escape/backdrop. Escape from an unrevealed booster shows its summary rather than discarding results; Escape from summary closes it. This is an improvement to custom modals, not a native-dialog migration.
+- **Bulk booster atomicity:** `backend/atomic-bulk-boosters.sql` deployed to Supabase. `cardex_open_packs(theme,quantity)` invokes existing server issuance in one PostgreSQL transaction for 1, 5, or 10 packs. Any failure rolls back the entire operation. Frontend calls this once per batch.
+- **Cloud-save recovery:** Profile now exposes **Reload server preferences** on a conflict. The old local cache is backed up under the account-scoped conflict-backup key, and the latest server state is loaded. **Automatic merge is intentionally not attempted** because the state includes server-authoritative wallet/inventory fields. Backup is currently a browser-local safety copy, not an in-app merge UI.
+- **Mobile legibility:** Increased minimum secondary text sizes, card names, navigation tap targets, 320–360px single-column layout, modal scroll limits and safe-area spacing.
+- **Legacy economy cleanup:** Removed unreachable offline pack generation and offline Showdown reward mutation branches; online RPCs are mandatory.
+
+## Remaining verification, not claimed as completed
+
+- Test in real browsers/devices (especially Android Chrome, Firefox and a 320px viewport), screen reader, and reduced-motion mode.
+- Verify focus return and Escape for every overlay and account deletion dialog on a live authenticated session.
+- Test the new bulk RPC with a disposable signed-in account (success, insufficient tickets, network interruption), and test conflict recovery with two devices. The database permissions and function presence were checked, but destructive gameplay tests were not run against a real account.
+- Future optional refinement: present a side-by-side diff of conflict-backup preferences and server preferences, allowing selective reapplication of safe profile fields.
