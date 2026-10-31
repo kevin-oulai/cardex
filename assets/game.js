@@ -66,7 +66,7 @@ function renderTitles(){
  const all=verifiedTitles.titles,unlocked=all.filter(t=>t.unlocked).length;
  $('titleUnlockCount').textContent=unlocked+' / '+all.length+' unlocked';
  const current=all.find(t=>t.id===verifiedTitles.equipped&&t.unlocked);
- const titlePrestige=id=>['dynasty','mythic_curator','completionist'].includes(id)?'mythic':['champion','podium_regular','legend_keeper','archivist'].includes(id)?'legendary':['podium_finisher','track_rat','rare_hunter','euro_connoisseur','jdm_enthusiast'].includes(id)?'epic':'standard';
+ const titlePrestige=id=>['dynasty','mythic_curator','completionist','grand_completionist','undisputed','master_collector'].includes(id)?'mythic':['champion','podium_regular','legend_keeper','archivist','garage_magnate','crown_jewels','jdm_master','continental_curator','motorsport_historian','trophy_cabinet','podium_elite'].includes(id)?'legendary':['podium_finisher','track_rat','rare_hunter','euro_connoisseur','jdm_enthusiast','garage_builder','rare_vault','blueprint_hoarder','showdown_regular'].includes(id)?'epic':'standard';
  const titleBadge=t=>{
   const prestige=titlePrestige(t.id);
   const motes=['mythic','legendary'].includes(prestige)?'<span class="title-particles" aria-hidden="true">'+Array.from({length:prestige==='mythic'?7:4},(_,i)=>'<i style="--p:'+i+'"></i>').join('')+'</span>':'';
