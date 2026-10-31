@@ -7,20 +7,24 @@ const signedIn = document.getElementById('onlineSignedIn');
 const leaderboard = document.getElementById('onlineLeaderboard');
 const cloudStatus=document.getElementById('cloudSyncStatus');
 const shared = document.getElementById('onlineSharedBoss');
+const leaderboard = document.getElementById('onlineLeaderboard');
 const text = (el, value) => { if (el) el.textContent = value; };
 let client;
 let packBusy=false;
 window.cardexServerGameReady=false;
+window.cardexServerError='Server connection not initialized';
 async function syncServerGame(){
   const {data:wallet,error}=await client.rpc('cardex_get_wallet');
-  if(error){window.cardexServerGameReady=false;text(cloudStatus,'Server game unavailable: '+error.message);return}
+  if(error){window.cardexServerGameReady=false;window.cardexServerError='Wallet request: '+error.message;text(cloudStatus,'Server game unavailable: '+error.message);console.error('CARDEX wallet RPC',error);return}
   const {data:cards,error:cardError}=await client.from('global_card_serials').select('id,car_id,finish,issued_at').order('id',{ascending:true}).limit(10000);
-  if(cardError){window.cardexServerGameReady=false;text(cloudStatus,'Card inventory unavailable: '+cardError.message);return}
+  if(cardError){window.cardexServerGameReady=false;window.cardexServerError='Card inventory: '+cardError.message;text(cloudStatus,'Card inventory unavailable: '+cardError.message);console.error('CARDEX cards',cardError);return}
+  window.cardexServerError='';
   window.cardexServerGameReady=true;
   window.cardexApplyServerCards?.(cards,wallet);
   text(cloudStatus,'Account collection and server-issued cards synchronized.');
-  await client.rpc('cardex_publish_boss');
-  await loadPublic();
+  const {error:bossError}=await client.rpc('cardex_publish_boss');
+  if(bossError)console.warn('CARDEX boss publish',bossError);
+  try{await loadPublic()}catch(e){console.warn('CARDEX public data',e)}
 }
 window.cardexOpenServerPack=async(theme,quantity=1,instant=false)=>{
   if(packBusy)return;
@@ -137,10 +141,10 @@ try {
   client=createClient(URL,PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   window.cardexSupabase=client;
   text(status,'Connecting to online services…');
-  window.cardexOnlineRefresh=()=>loadPublic().catch(console.error);
+  window.cardexOnlineRefresh=async()=>{if(window.cardexCloudReady)await syncServerGame();else await loadPublic()};
   window.cardexOnlineSession=()=>refreshSession().catch(console.error);
   await refreshSession();
-  await loadPublic();
+  try{await loadPublic()}catch(e){console.warn('CARDEX leaderboard',e)}
   client.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){activeUser=null;pending=null;window.cardexCloudReady=false;window.cardexServerGameReady=false;window.cardexLoadCloudState?.({});}setTimeout(()=>refreshSession().catch(console.error),0)});
   document.getElementById('onlineLogin').addEventListener('click',async()=>{
     const email=document.getElementById('onlineEmail').value.trim();
