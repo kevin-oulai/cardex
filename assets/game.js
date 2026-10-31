@@ -200,6 +200,10 @@ window.cardexSocialCar=id=>{
  const c=cars[Number(id)];if(!c)return null;
  return {name:c.make+' '+c.model,rarity:c.rarity,emoji:c.emoji,src:photoCache.get(c.id)?.src||null};
 };
+window.cardexSocialRenderCard=(id,finish)=>{const c=cars[Number(id)];return c?card(c,finish):''};
+window.cardexSocialPaintPhotos=paintPhotos;
+window.cardexSocialCountries=[...new Set(cars.map(c=>c.country))].sort();
+window.cardexSocialCarDetails=id=>cars[Number(id)]||null;
 window.cardexPage=page;
 $('collectorDialogClose').onclick=()=>$('collectorDialog').close();
 $('collectorDialog').addEventListener('click',e=>{if(e.target===$('collectorDialog'))$('collectorDialog').close()});
