@@ -141,6 +141,16 @@ button.challenger.selected{outline:2px solid var(--ui-accent);outline-offset:1px
 #toast{color:#f5f6f2;box-shadow:0 8px 25px #0009;line-height:1.4;overflow-wrap:anywhere}
 @media(max-width:760px){.toast{bottom:calc(88px + env(safe-area-inset-bottom));width:max-content;max-width:calc(100vw - 30px)}.nav button{min-height:48px}}
 @media(prefers-reduced-motion:reduce){html:focus-within{scroll-behavior:auto}button,.pack,.garage-item,.wish-tile{transition:none!important}}
+
+/* Responsive readability and safe-area layout. */
+.card .tag,.card .spec,.card .foot,.pack p,.achievement p,.sub{font-size:max(12px,0.82rem);line-height:1.45}
+.card .name{font-size:clamp(15px,1.5vw,18px);line-height:1.25}
+.nav button{font-size:13px}
+#cloudConflictActions{margin:12px 0;padding:14px;border:1px solid #d5e06c88;background:#222a20}
+#cloudConflictActions[hidden]{display:none}
+.modal .modal-inner{max-height:calc(100dvh - 36px);overflow-y:auto;overscroll-behavior:contain}
+@media(max-width:360px){.packs,.cards{grid-template-columns:1fr}.card{min-height:255px}.card .art{height:125px}.nav button{font-size:12px}.wallet{gap:3px}.wallet .pill{font-size:11px;padding:5px}}
+@media(max-width:760px){.layout{padding-bottom:calc(112px + env(safe-area-inset-bottom))}.nav{padding-bottom:max(9px,env(safe-area-inset-bottom))}}
 </style></head><body>
 <header class="top"><div class="logo">CAR<em>DEX</em></div><div class="wallet"><span class="pill">✦ Lv <b id="level">1</b></span><span class="pill">🪙 <b id="credits">0</b></span><span class="pill">🎟 <b id="packCount">10</b></span></div></header>
 <div class="layout"><nav class="nav" aria-label="Game navigation"><button class="active" data-page="boosters">Boosters</button><button data-page="garage">Garage</button><button data-page="duel">Showdown</button><button data-page="profile">Profile</button></nav><main class="content">
@@ -281,6 +291,29 @@ loadCarPhotos();
 
 window.cardexRefreshShowdown=()=>{if(document.getElementById('duel').classList.contains('active'))drawDuel()};
 
+
+/* Modal accessibility: initial focus, Escape, tab containment, and focus restoration. */
+(()=>{
+ const overlays=['carModal','revealModal'].map(id=>document.getElementById(id));
+ const origins=new WeakMap();
+ const focusables=modal=>[...modal.querySelectorAll('button:not([disabled]):not([hidden]),[href],input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])')].filter(el=>el.getClientRects().length&&!el.closest('[hidden]'));
+ const observer=new MutationObserver(records=>{for(const rec of records){const modal=rec.target;if(!overlays.includes(modal))continue;
+  if(modal.classList.contains('open')){origins.set(modal,document.activeElement);requestAnimationFrame(()=>{if(modal.classList.contains('open'))(focusables(modal)[0]||modal).focus()})}
+  else{const previous=origins.get(modal);if(previous?.isConnected)requestAnimationFrame(()=>previous.focus({preventScroll:true}))}
+ }});
+ overlays.forEach(m=>{m.setAttribute('tabindex','-1');observer.observe(m,{attributes:true,attributeFilter:['class']})});
+ document.addEventListener('keydown',e=>{
+  const modal=overlays.findLast(m=>m.classList.contains('open'));if(!modal)return;
+  if(e.key==='Escape'){e.preventDefault();if(modal.id==='carModal')closeCar();else showPackSummary();return}
+  if(e.key!=='Tab')return;
+  const list=focusables(modal);if(!list.length){e.preventDefault();modal.focus();return}
+  const first=list[0],last=list[list.length-1];
+  if(e.shiftKey&&(document.activeElement===first||!modal.contains(document.activeElement))){e.preventDefault();last.focus()}
+  else if(!e.shiftKey&&(document.activeElement===last||!modal.contains(document.activeElement))){e.preventDefault();first.focus()}
+ });
+ overlays.forEach(modal=>modal.addEventListener('click',e=>{if(e.target===modal){if(modal.id==='carModal')closeCar();else showPackSummary()}}));
+})();
+
 /* Delegated feedback works for buttons rebuilt by game renders and on touch devices. */
 (()=>{
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -317,4 +350,4 @@ window.cardexRefreshShowdown=()=>{if(document.getElementById('duel').classList.c
     layer.appendChild(fragment);
   },{passive:true});
 })();
-</script><div id="accountGate" style="display:none;position:fixed;inset:0;background:#090d15f5;z-index:900;align-items:center;justify-content:center;padding:22px"><div class="panel" style="max-width:430px;width:100%;text-align:center"><h1>CARDEX</h1><p class="muted">Sign in to access your collection. Accounts are now required for cloud saves.</p><p class="sub" id="gateStatus">Checking your session…</p><button class="primary" id="gateOpenProfile">Go to sign in</button></div></div><script>document.getElementById('gateOpenProfile').addEventListener('click',()=>{document.getElementById('accountGate').style.display='none';page('auth')});</script><script type="module" src="./backend/client.js?v=backend-complete5"></script></body></html>
+</script><div id="accountGate" style="display:none;position:fixed;inset:0;background:#090d15f5;z-index:900;align-items:center;justify-content:center;padding:22px"><div class="panel" style="max-width:430px;width:100%;text-align:center"><h1>CARDEX</h1><p class="muted">Sign in to access your collection. Accounts are now required for cloud saves.</p><p class="sub" id="gateStatus">Checking your session…</p><button class="primary" id="gateOpenProfile">Go to sign in</button></div></div><script>document.getElementById('gateOpenProfile').addEventListener('click',()=>{document.getElementById('accountGate').style.display='none';page('auth')});</script><script type="module" src="./backend/client.js?v=ux-audit6"></script></body></html>
