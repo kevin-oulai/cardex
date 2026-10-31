@@ -161,6 +161,33 @@ button.challenger.selected{outline:2px solid var(--ui-accent);outline-offset:1px
 .title-card .title-progress{height:5px;background:#35413b;border-radius:8px;overflow:hidden}.title-card .title-progress>span{display:block;height:100%;background:#d5e06c}
 .title-card .title-status{font-size:12px;color:#c9d5bf}.title-card button{margin-top:auto;min-height:42px}.title-card button:disabled{cursor:default}
 @media(max-width:390px){.titles-heading select{width:100%}.titles-grid{grid-template-columns:1fr}}
+
+/* Compact title management: collapsed until explicitly requested. */
+#equippedTitleBadge[hidden]{display:none!important}
+#titleManager{display:block;padding:0;overflow:hidden}
+#titleManager .title-manager-summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 17px;cursor:pointer;min-height:56px}
+#titleManager .title-manager-summary::-webkit-details-marker{display:none}
+#titleManager .title-manager-summary strong{font-size:15px}
+#titleManager .title-manager-summary .sub{display:block;margin-top:3px}
+#titleManager .title-manager-action{color:#e0ec9b;font-size:13px;white-space:nowrap}
+#titleManager[open] .title-manager-action span{display:inline-block;transform:rotate(180deg)}
+#titleManager .titles-heading,#titleManager .titles-grid{margin:12px 17px}
+#titleManager .title-manager-summary:focus-visible{outline:3px solid #f1e7a6;outline-offset:-3px}
+/* Only the reveal content scrolls, and only when genuinely too tall. */
+body:has(#revealModal.open){overflow:hidden}
+#revealModal.modal{overflow:hidden;padding:12px;align-items:center}
+#revealModal>.modal-inner{width:min(100%,850px);max-height:calc(100dvh - 24px);overflow-y:auto;overflow-x:hidden;scrollbar-width:none;overscroll-behavior:contain;padding:8px 6px}
+#revealModal>.modal-inner::-webkit-scrollbar{display:none}
+#revealModal #revealCard,#revealModal .flip-scene,#revealModal .flip-shell{overflow:visible}
+#revealModal .flip-scene{min-height:min(375px,calc(100dvh - 170px))}
+#revealModal .flip-shell{height:min(350px,calc(100dvh - 200px));aspect-ratio:4/5}
+#revealModal .flip-front .card{max-height:100%}
+#revealModal .summary-strip{max-height:none;overflow:visible}
+@media(max-height:650px){
+ #revealModal .flip-scene{min-height:300px}
+ #revealModal .flip-shell{height:290px;width:232px}
+ #revealModal .modal .card{min-height:0}
+}
 </style></head><body>
 <header class="top"><div class="logo">CAR<em>DEX</em></div><div class="wallet"><span class="pill">✦ Lv <b id="level">1</b></span><span class="pill">🪙 <b id="credits">0</b></span><span class="pill">🎟 <b id="packCount">10</b></span></div></header>
 <div class="layout"><nav class="nav" aria-label="Game navigation"><button class="active" data-page="boosters">Boosters</button><button data-page="garage">Garage</button><button data-page="duel">Showdown</button><button data-page="profile">Profile</button></nav><main class="content">
@@ -170,7 +197,7 @@ button.challenger.selected{outline:2px solid var(--ui-accent);outline-offset:1px
 <section class="page" id="profile"><div class="eyebrow">COLLECTOR IDENTITY / PERSONAL COLLECTION</div><h1>Profile</h1>
 <div class="profile-cover" id="profileCover"><div class="profile-identity"><div class="profile-avatar" id="profileAvatar">🏎️</div><div><div class="eyebrow">CARDEX COLLECTOR / <span id="profileLevel">LEVEL 1</span></div><h2 id="profileName">Collector</h2><div class="sub" id="profileTagline">Driven by the chase.</div></div></div><div class="profile-numbers" id="profileNumbers"></div></div>
 <div class="collector-title-badge" id="equippedTitleBadge" hidden></div>
-<div class="panel titles-panel"><div class="titles-heading"><div><div class="eyebrow">COLLECTOR PRESTIGE</div><h2 style="margin:5px 0">Titles <span class="sub" id="titleUnlockCount"></span></h2><p class="muted" style="margin:0">Earn titles through collecting, achievements and ranked Showdowns. Equip one to display on your profile.</p></div><select id="titleCategoryFilter" aria-label="Filter titles by category"><option value="">All titles</option><option value="Collection">Collection</option><option value="Rarity">Rarity</option><option value="Theme">Theme</option><option value="Achievements">Achievements</option><option value="Showdown">Showdown</option></select></div><div class="titles-grid" id="titlesGrid" aria-live="polite"><p class="muted">Loading verified titles…</p></div></div>
+<details class="panel titles-panel" id="titleManager"><summary class="title-manager-summary"><span><strong>Collector titles</strong> <span class="sub" id="titleManagerSummary">Choose a title to display</span></span><span class="title-manager-action">Change title <span aria-hidden="true">⌄</span></span></summary><div class="titles-heading"><div><div class="eyebrow">COLLECTOR PRESTIGE</div><h2 style="margin:5px 0">Titles <span class="sub" id="titleUnlockCount"></span></h2><p class="muted" style="margin:0">Earn titles through collecting, achievements and ranked Showdowns. Equip one to display on your profile.</p></div><select id="titleCategoryFilter" aria-label="Filter titles by category"><option value="">All titles</option><option value="Collection">Collection</option><option value="Rarity">Rarity</option><option value="Theme">Theme</option><option value="Achievements">Achievements</option><option value="Showdown">Showdown</option></select></div><div class="titles-grid" id="titlesGrid" aria-live="polite"><p class="muted">Loading verified titles…</p></div></div></details>
 <div class="profile-edit"><label>DISPLAY NAME<input id="profileNameInput" maxlength="24" placeholder="Collector"></label><label>AVATAR<select id="profileAvatarInput"><option value="🏎️">🏎️ Racer</option><option value="🏁">🏁 Track</option><option value="🔧">🔧 Mechanic</option><option value="🚗">🚗 Driver</option><option value="⚡">⚡ Speed</option></select></label><label>PROFILE STYLE<select id="profileThemeInput"><option value="heritage">Heritage</option><option value="ember">Ember</option><option value="midnight">Midnight</option></select></label></div>
 <div class="panel" style="margin-top:12px"><label class="sub" for="profileBioInput">COLLECTOR BIO</label><input id="profileBioInput" maxlength="90" placeholder="Driven by the chase." style="width:100%;margin:8px 0 12px;background:#0d151b;color:white;border:1px solid #ffffff30;padding:11px"><button class="primary" id="profileSave">Save profile</button><label style="display:flex;align-items:center;gap:12px;margin-top:15px;cursor:pointer"><input type="checkbox" id="publicCollectionToggle" checked style="width:20px;height:20px"><span>Show my collection and Showdown history to other players</span></label><p class="sub">Your leaderboard name, score, challenger and defeat time remain visible.</p><div class="progress" style="margin-top:17px"><div id="profileBar"></div></div><p class="sub" id="profileStats"></p></div>
 <div class="panel profile-account-actions" style="margin-top:18px"><div><div class="eyebrow">ACCOUNT SETTINGS</div><h3 style="margin:7px 0">Your CARDEX account</h3><p class="muted" style="margin:0">Sign out of this device or permanently delete your account and collection.</p></div><div class="profile-account-buttons"><button id="profileLogout">Sign out</button><button id="profileDeleteAccount" class="danger-outline">Delete account</button></div></div>
@@ -214,6 +241,7 @@ function renderTitles(){
  const current=all.find(t=>t.id===verifiedTitles.equipped&&t.unlocked);
  $('equippedTitleBadge').hidden=!current;
  $('equippedTitleBadge').textContent=current?'✦ '+current.label:'';
+ $('titleManagerSummary').textContent=current?current.label:unlocked+' unlocked · None equipped';
  const filter=$('titleCategoryFilter').value;
  const list=all.filter(t=>!filter||t.category===filter).sort((a,b)=>Number(b.unlocked)-Number(a.unlocked)||a.label.localeCompare(b.label));
  grid.innerHTML=list.map(t=>'<article class="title-card '+(t.unlocked?'unlocked ':'')+(t.equipped?'equipped':'')+'"><span class="title-category">'+t.category+'</span><h3>'+(t.unlocked?'✦ ':'🔒 ')+t.label+'</h3><p>'+t.description+'</p><div class="title-progress" role="progressbar" aria-label="'+t.label+' progress" aria-valuemin="0" aria-valuemax="'+t.goal+'" aria-valuenow="'+t.progress+'"><span style="width:'+Math.min(100,100*t.progress/t.goal)+'%"></span></div><span class="title-status">'+(t.unlocked?'Unlocked':t.progress+' / '+t.goal)+'</span><button type="button" data-equip-title="'+t.id+'" '+(!t.unlocked||t.equipped?'disabled':'')+'>'+(t.equipped?'Equipped':t.unlocked?'Equip title':'Locked')+'</button></article>').join('');
