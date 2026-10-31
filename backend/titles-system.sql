@@ -46,7 +46,22 @@ begin
    ('podium_finisher','Podium Finisher','Finish in the daily top 3 once','Showdown',(select podiums from measures),1),
    ('podium_regular','Podium Regular','Finish in the daily top 3 five times','Showdown',(select podiums from measures),5),
    ('champion','Showdown Champion','Finish daily rank #1 once','Showdown',(select victories from measures),1),
-   ('dynasty','The Dynasty','Finish daily rank #1 five times','Showdown',(select victories from measures),5)
+   ('dynasty','The Dynasty','Finish daily rank #1 five times','Showdown',(select victories from measures),5),
+   ('garage_builder','Garage Builder','Own 25 cards','Collection',(select total from measures),25),
+   ('garage_magnate','Garage Magnate','Own 250 cards','Collection',(select total from measures),250),
+   ('master_collector','Master Collector','Own 500 cards','Collection',(select total from measures),500),
+   ('rare_vault','Rare Vault','Own 25 Rare cards','Rarity',(select rare_count from measures),25),
+   ('blueprint_hoarder','Blueprint Hoarder','Own 50 Rare cards','Rarity',(select rare_count from measures),50),
+   ('crown_jewels','Crown Jewels','Own 20 Legendary, Exotic or Limited cards','Rarity',(select legendary_count from measures),20),
+   ('jdm_master','JDM Master','Collect 20 different Japanese models','Theme',(select jdm_count from measures),20),
+   ('continental_curator','Continental Curator','Collect 20 different European models','Theme',(select europe_count from measures),20),
+   ('motorsport_historian','Motorsport Historian','Collect 12 different motorsport models','Theme',(select motorsport_count from measures),12),
+   ('first_trophy','First Trophy','Claim 1 achievement','Achievements',(select achievements from measures),1),
+   ('trophy_cabinet','Trophy Cabinet','Claim 7 achievements','Achievements',(select achievements from measures),7),
+   ('grand_completionist','Grand Completionist','Claim all 10 achievements','Achievements',(select achievements from measures),10),
+   ('showdown_regular','Daily Driver','Enter 25 daily Showdowns','Showdown',(select showdowns from measures),25),
+   ('podium_elite','Podium Elite','Finish in the daily top 3 fifteen times','Showdown',(select podiums from measures),15),
+   ('undisputed','The Undisputed','Finish daily rank #1 fifteen times','Showdown',(select victories from measures),15)
   ) v(id,label,description,category,progress,goal)
  )
  select jsonb_build_object('equipped',equipped,'titles',coalesce(jsonb_agg(jsonb_build_object(
