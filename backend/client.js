@@ -237,6 +237,10 @@ window.cardexFetchPublicProfile=async(userId)=>{
   const {data,error}=await client.rpc('cardex_public_collector',{p_user_id:userId});
   if(error)throw error;
   if(!data)throw new Error('Collector profile not found');
+  if(!data.private){
+    const {data:titles,error:titleError}=await client.rpc('cardex_titles',{p_user_id:userId});
+    if(!titleError&&titles){const equipped=titles.titles?.find(t=>t.id===titles.equipped&&t.unlocked);data.equipped_title=equipped?.label||null;data.title_count=titles.titles?.filter(t=>t.unlocked).length||0}
+  }
   return data;
 };
 async function refreshSession(){
