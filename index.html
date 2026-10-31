@@ -312,6 +312,7 @@ window.cardexOpenPublicProfile=async(userId)=>{
       '<div><strong>'+Number(p.cards_owned||0)+'</strong><small>CARDS</small></div><div><strong>'+Number(p.unique_models||0)+'</strong><small>MODELS</small></div><div><strong>'+Number(p.high_tier_cards||0)+'</strong><small>LEGENDARY+</small></div></div>'+
       '<h3>Featured collection</h3><div class="collector-featured">'+((p.featured_cards||[]).length?p.featured_cards.map(item=>{const car=cars[Number(item.car_id)];return car?'<div class="collector-car">'+profilePhoto(car)+'<div><strong>'+safeCollectorText(car.make+' '+car.model)+'</strong><p class="sub">'+safeCollectorText(item.rarity)+' · '+safeCollectorText(item.finish)+' · #'+String(item.model_serial).padStart(6,'0')+'</p></div></div>':''}).join(''):'<p class="muted">No cards collected yet.</p>')+'</div>'+
       '<h3>Recent Showdowns</h3>'+((p.recent_showdowns||[]).length?'<div class="collector-featured">'+p.recent_showdowns.map(x=>'<div class="reward-row"><span>'+safeCollectorText(x.challenge_date)+'</span><strong>'+Number(x.best_score)+'%</strong></div>').join('')+'</div>':'<p class="muted">No verified entries yet.</p>');
+    if(p.equipped_title){const tag=document.createElement('div');tag.className='collector-title-badge';tag.textContent='✦ '+p.equipped_title;body.prepend(tag)}
     paintPhotos();
   }catch(e){body.textContent='Unable to load profile: '+e.message}
 };
