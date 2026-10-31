@@ -1,6 +1,6 @@
 <section class="page social-page" id="social">
 <div class="eyebrow">COLLECTOR NETWORK</div><h1>Community</h1><p class="muted">Connect with collectors, browse public garages and manage requests.</p>
-<div class="social-tabs" role="tablist"><button class="active" data-social-tab="friends">Friends <span id="friendCount"></span></button><button data-social-tab="discover">Find collectors</button><button data-social-tab="requests">Requests <span id="requestCount"></span></button><button data-social-tab="inbox">Inbox <span id="inboxCount"></span></button></div>
+<div class="social-tabs" role="tablist"><button class="active" data-social-tab="friends">Friends <span id="friendCount"></span></button><button data-social-tab="discover">Find collectors</button><button data-social-tab="requests">Requests <span id="requestCount"></span></button></div>
 <div id="socialMessage" role="status" class="social-message" hidden></div>
 <div data-social-panel="friends"><h2>Friends</h2><div id="socialFriends" class="social-people"></div></div>
 <div data-social-panel="discover" hidden><h2>Find collectors</h2><label class="social-search"><i data-lucide="search"></i><input id="socialSearch" autocomplete="off" placeholder="Search collector name (at least 2 characters)"></label><div id="socialResults" class="social-people"><p class="muted">Search for a collector to send a friend request.</p></div></div>
@@ -10,4 +10,18 @@
 <section class="page social-page" id="collectorView">
 <button id="socialBack" class="social-back"><i data-lucide="arrow-left"></i> Back to community</button>
 <div id="socialProfileBody" aria-live="polite"><p class="muted">Loading collector profile…</p></div>
+</section>
+<section class="page" id="collectorGarage">
+<button id="socialGarageBack" class="social-back"><i data-lucide="arrow-left"></i> Collector profile</button>
+<div class="eyebrow">COLLECTION / PUBLIC GARAGE</div><h1 id="socialGarageName">Garage</h1><p class="muted" id="socialGarageSummary"></p>
+<div class="toolbar" id="socialGarageFilters">
+<input id="socialGarageSearch" placeholder="Search make or model" aria-label="Search collector garage">
+<select id="socialGarageRarity"><option value="">All rarities</option><option>Common</option><option>Uncommon</option><option>Rare</option><option>Super Rare</option><option>Ultra Rare</option><option>Legendary</option><option>Exotic</option><option>Limited</option></select>
+<select id="socialGarageSort"><option value="newest">Recently acquired</option><option value="rarity">Rarity</option><option value="name">Name</option><option value="power">Power ↓</option><option value="powerAsc">Power ↑</option><option value="speed">Speed ↓</option><option value="speedAsc">Speed ↑</option><option value="weight">Weight ↓</option><option value="light">Lightest first</option><option value="year">Newest model</option><option value="oldest">Oldest model</option></select>
+<select id="socialGarageDrive"><option value="">All drivetrains</option><option>RWD</option><option>FWD</option><option>AWD</option></select>
+<select id="socialGarageCountry"><option value="">All countries</option></select>
+<select id="socialGarageFinish"><option value="">All finishes</option><option>Standard</option><option>Foil</option><option>Holographic</option><option>Collector</option></select>
+<button id="socialGarageDuplicates">Duplicates only</button><button id="socialGarageGroup">Group copies: ON</button>
+</div>
+<div class="cards" id="socialGarageGrid"></div>
 </section>
