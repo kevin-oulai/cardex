@@ -19,14 +19,22 @@ async function loadPublic() {
     window.cardexSharedBoss = {date:today,id:boss.car_id};
     text(shared,'Online boss active for '+today+' (UTC).');
     window.cardexRefreshShowdown?.();
-  } else text(shared,'No online boss published for today yet. Local Showdown remains available.');
-  const {data:results,error} = await client.from('showdown_results').select('user_id,best_score,updated_at').eq('challenge_date',today).order('best_score',{ascending:false}).order('updated_at',{ascending:true}).limit(25);
+  } else text(shared,'No server-published boss yet. The UTC daily boss is consistent for all browsers; verified rankings remain unavailable until server services are deployed.');
+  const {data:results,error} = await client.from('showdown_results').select('user_id,best_score,updated_at,first_cleared_at').eq('challenge_date',today).limit(500);
   if(error){text(leaderboard,'Leaderboard unavailable: '+error.message);return}
   if(!results?.length){text(leaderboard,'No verified online results yet. Local Showdown results are not uploaded.');return}
-  const ids=[...new Set(results.map(x=>x.user_id))];
+  results.sort((a,b)=>{
+    const aClear=a.best_score===100&&a.first_cleared_at;
+    const bClear=b.best_score===100&&b.first_cleared_at;
+    if(!!aClear!==!!bClear)return aClear?-1:1;
+    if(aClear&&bClear)return Date.parse(a.first_cleared_at)-Date.parse(b.first_cleared_at);
+    return Number(b.best_score)-Number(a.best_score)||Date.parse(a.updated_at)-Date.parse(b.updated_at);
+  });
+  const top=results.slice(0,25);
+  const ids=[...new Set(top.map(x=>x.user_id))];
   const {data:profiles}=await client.from('profiles').select('id,display_name').in('id',ids);
   const names=new Map((profiles||[]).map(p=>[p.id,p.display_name]));
-  leaderboard.innerHTML='<ol>'+results.map(r=>'<li>'+escapeHTML(names.get(r.user_id)||'Collector')+' — '+Number(r.best_score)+' pts</li>').join('')+'</ol>';
+  leaderboard.innerHTML='<ol>'+top.map(r=>'<li>'+escapeHTML(names.get(r.user_id)||'Collector')+' — '+Number(r.best_score)+'%'+(r.first_cleared_at?' · cleared '+new Date(r.first_cleared_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',timeZone:'UTC'})+' UTC':'')+'</li>').join('')+'</ol>';
 }
 async function refreshSession(){
   const {data:{user}}=await client.auth.getUser();
@@ -43,6 +51,8 @@ try {
   client=createClient(URL,PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   window.cardexSupabase=client;
   text(status,'Connecting to online services…');
+  window.cardexOnlineRefresh=()=>loadPublic().catch(console.error);
+  window.cardexOnlineSession=()=>refreshSession().catch(console.error);
   await refreshSession();
   await loadPublic();
   client.auth.onAuthStateChange(()=>{setTimeout(()=>refreshSession().catch(console.error),0)});
@@ -73,6 +83,6 @@ try {
   });
   document.getElementById('onlineRefresh').addEventListener('click',async()=>{await loadPublic();await refreshSession()});
 } catch(e) {
-  text(status,'Online services unavailable. Offline play still works.');
+  text(status,'Online services unavailable. Local play still works.');
   console.error('CARDEX online initialization failed',e);
 }
