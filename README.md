@@ -4,9 +4,9 @@
 
 [**Play CARDEX**](https://kevin-oulai.github.io/cardex/) · [Source code](https://github.com/kevin-oulai/cardex) · [Report an issue](https://github.com/kevin-oulai/cardex/issues)
 
-CARDEX is an independent, unofficial car-card collecting project. Open themed boosters, discover cars, manage a growing Garage, and challenge a daily opponent. It runs as a static website, without an account or a game server.
+CARDEX is an independent, unofficial car-card collecting project. Open themed boosters, discover cars, manage a growing Garage, and challenge a daily opponent. It runs as a static website with required Supabase accounts and a server-authoritative game backend.
 
-> **Project status:** Actively developed prototype. Features, vehicle specifications, imagery, and balancing may change. Mobile behavior and individual images have not all been independently verified.
+> **Project status:** Backend feature implementation **complete** (31 October 2026): authenticated accounts, server-issued cards and serials, transactional game economy, verified Showdown, leaderboards, versioned cloud saves, profile privacy and account deletion. Full cross-account regression testing and legal/public-launch review are still pending. Gameplay and artwork remain under development.
 
 ## Gameplay
 
