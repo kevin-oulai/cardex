@@ -61,7 +61,6 @@ async function openProfile(id){
 }
 window.cardexSocialOpenProfile=openProfile;
 window.cardexSocialRefresh=refresh;
-window.cardexSocialCar=id=>null;
 document.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;
  if(b.dataset.socialTab){switchTab(b.dataset.socialTab);return}
