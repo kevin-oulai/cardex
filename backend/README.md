@@ -1,5 +1,8 @@
 # CARDEX online backend — Supabase
 
+> **Backend implementation: COMPLETE (31 October 2026).** Supabase Auth, authoritative pack issuance, model-scoped serials, daily Showdown and reward claims, leaderboard/public profiles, credits/tickets/recycling/achievements, versioned cloud preferences, profile privacy and self-service account deletion are deployed. Database smoke checks pass. **Production QA and legal publication review remain separate release gates**: do not interpret implementation complete as independently certified, load-tested or GDPR-compliant.
+
+
 **Status: browser client configured for the Supabase project, schema execution and secure game services pending.** The game integrates optional online authentication and serial-number viewing into **Profile**, and a read-only daily leaderboard into **Showdown**; there is no separate Online tab. Local gameplay and save files remain separate; online issuance and competitive submissions are not enabled.
 
 ## Setup
@@ -89,3 +92,21 @@ Remaining release tasks: implement self-service account deletion and data retent
 The UI now uses short button press animations and a bounded particle burst, disabled when the user requests reduced motion. `versioned-saves.sql` is deployed: preferences updates now use `cardex_save_preferences` with a revision check, rejecting stale concurrent saves instead of silently overwriting a different device. A conflict is displayed in the UI and the local browser cache retains unsaved edits until reload. This is conflict detection, **not automatic merge**. `collector-privacy.sql` is deployed: collectors can hide collection totals, featured cards, and recent Showdowns from others. Leaderboard scores, selected car and first-clear time remain public.
 
 **Still outstanding:** self-service account deletion, end-to-end authenticated multi-device and multi-account regression tests, automated test coverage, and review of legacy local economy paths. These are not represented as completed.
+
+## Account deletion and final backend validation
+
+The deployed Supabase Edge Function `cardex-delete-account` lives in [`functions/delete-account/index.ts`](./functions/delete-account/index.ts). It verifies the caller's JWT, requires password reauthentication and exact `DELETE MY ACCOUNT` confirmation, then deletes the caller via Supabase Admin Auth. All CARDEX user-linked tables have ON DELETE CASCADE, so associated active game records are removed. The function uses Supabase-managed server secrets; never place a service-role key in GitHub Pages code. This action is irreversible. Do **not** test against an account you wish to keep.
+
+The production database was checked for RLS on all public tables, missing/duplicate model serials, anonymous execution of CARDEX RPCs, and direct cloud-save UPDATE policies; all reported zero failures. `operational-indexes.sql` added indexes for collector history, verified-card references and duplicate recycling. Repeatable SQL is in [`smoke-checks.sql`](./smoke-checks.sql).
+
+**Release QA checklist (requires actual signed-in browser sessions):**
+1. Register two test accounts; open boosters concurrently; verify ticket deductions and distinct model serials.
+2. Submit a Showdown from one account; confirm the other cannot use that card; verify no repeat rewards.
+3. Claim achievements twice; second attempt must fail without adding credits.
+4. Buy tickets, recycle duplicate cards, refresh and compare balances and inventory.
+5. Open two sessions for one account; change preferences on both; confirm the stale save reports a conflict.
+6. Hide public collection on one account and inspect it from the other; leaderboard result should remain visible.
+7. Create a **disposable** test account; delete it with the password confirmation and verify it can no longer sign in and its active game records are removed.
+8. Verify email confirmation, password reset and provider email delivery. Review Auth password-leak protection settings.
+
+These interactive checks have **not** been performed automatically because no disposable test credentials were provided. The Supabase security advisor still flags intentional authenticated SECURITY DEFINER RPCs and recommends enabling leaked-password protection. The publisher's legal identity/contact details and privacy retention review remain incomplete, so public-launch compliance is not certified.
