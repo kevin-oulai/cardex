@@ -5,7 +5,7 @@
 ## Setup
 
 1. Create a **Free** project at [Supabase](https://supabase.com/).
-2. Open **SQL Editor** and execute [`schema.sql`](./schema.sql), then [`leaderboard-migration.sql`](./leaderboard-migration.sql). The migration assumes no existing score above 100 or incompatible first-clear constraint.
+2. Open **SQL Editor** and execute [`schema.sql`](./schema.sql), then [`leaderboard-migration.sql`](./leaderboard-migration.sql), then [`cloud-saves.sql`](./cloud-saves.sql). The migration assumes no existing score above 100 or incompatible first-clear constraint.
 3. Under **Authentication → URL Configuration**, add `https://kevin-oulai.github.io/cardex/` as an allowed redirect URL. Configure the site URL and email confirmation behavior.
 4. The **Project URL** and **publishable key** are already configured in `backend/client.js` for this public browser application. **Never** share or commit the `service_role` key, database password, or other secret.
 5. Implement and deploy authenticated Edge Functions for issuing booster cards, allocating unique serials, and validating daily Showdown submissions **before** switching the browser game to online mode.
@@ -43,3 +43,9 @@ For each UTC day: **verified 100% boss clears rank first in order of their first
 The same UTC day is used for local boss fallback on every client. A server-published boss row overrides the fallback when present. The global boss and verified rankings are not yet guaranteed operational until trusted server endpoints are deployed.
 
 **Launch blocker:** The website is deployed to GitHub Pages, but the game economy is still local. Accounts alone do not establish online ownership or a secure competitive leaderboard. Do not describe local card inventory, serial issuance, or scores as fully synchronized until server-authoritative services are deployed and tested.
+
+## Cloud account transition (31 October 2026)
+
+The Profile page now uses one Supabase account for login, public display name and account-bound cloud saves. Manual JSON import/export and the standalone serial-number section have been removed. The app requires a signed-in session to open packs or enter Showdown. Existing guest saves are intentionally **not** imported into verified accounts; preserve browser data until a separate migration decision is made.
+
+**Important limits:** The cloud save is synchronized browser game state, not a server-authoritative economy. It can be modified by a technically capable user and must **never** be used to mint global serials or qualify for ranked scores. Pack issuance, rewards, recycling, balances, and Showdown still need trusted transactional RPC/Edge Function implementations. There is currently no automatic account deletion flow, and simultaneous sessions may overwrite one another's save. Do not call the migration fully complete.
