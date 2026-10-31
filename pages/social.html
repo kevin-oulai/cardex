@@ -1,0 +1,13 @@
+<section class="page social-page" id="social">
+<div class="eyebrow">COLLECTOR NETWORK</div><h1>Community</h1><p class="muted">Connect with collectors, browse public garages and manage requests.</p>
+<div class="social-tabs" role="tablist"><button class="active" data-social-tab="friends">Friends <span id="friendCount"></span></button><button data-social-tab="discover">Find collectors</button><button data-social-tab="requests">Requests <span id="requestCount"></span></button><button data-social-tab="inbox">Inbox <span id="inboxCount"></span></button></div>
+<div id="socialMessage" role="status" class="social-message" hidden></div>
+<div data-social-panel="friends"><h2>Friends</h2><div id="socialFriends" class="social-people"></div></div>
+<div data-social-panel="discover" hidden><h2>Find collectors</h2><label class="social-search"><i data-lucide="search"></i><input id="socialSearch" autocomplete="off" placeholder="Search collector name (at least 2 characters)"></label><div id="socialResults" class="social-people"><p class="muted">Search for a collector to send a friend request.</p></div></div>
+<div data-social-panel="requests" hidden><h2>Friend requests</h2><h3>Received</h3><div id="socialIncoming" class="social-people"></div><h3>Sent</h3><div id="socialOutgoing" class="social-people"></div></div>
+<div data-social-panel="inbox" hidden><div class="social-heading"><h2>Notifications</h2><button id="socialReadAll">Mark all as read</button></div><div id="socialInbox" class="social-inbox"></div></div>
+</section>
+<section class="page social-page" id="collectorView">
+<button id="socialBack" class="social-back"><i data-lucide="arrow-left"></i> Back to community</button>
+<div id="socialProfileBody" aria-live="polite"><p class="muted">Loading collector profile…</p></div>
+</section>
