@@ -41,12 +41,33 @@ async function syncServerGame(){
   if(bossError)console.warn('CARDEX boss publish',bossError);
   try{await loadPublic()}catch(e){console.warn('CARDEX public data',e)}
   await syncShowdownStatus();
+  await syncAchievementClaims();
 }
 async function syncShowdownStatus(){
   const {data,error}=await client.rpc('cardex_get_showdown_status');
   if(error){console.warn('Showdown status not available',error);return}
   window.cardexSetShowdownStatus?.(data);
 }
+let economyBusy=false;
+async function syncAchievementClaims(){
+  const {data,error}=await client.rpc('cardex_get_achievement_claims');
+  if(error){console.warn('Achievement claims unavailable',error);return}
+  window.cardexSetAchievementClaims?.(data||[]);
+}
+async function economyAction(fn,args,success){
+  if(economyBusy)return;
+  economyBusy=true;
+  try{
+    const {data,error}=await client.rpc(fn,args||{});
+    if(error)throw error;
+    await syncServerGame();
+    success(data);
+  }catch(e){window.cardexNotify?.('Action failed: '+e.message)}
+  finally{economyBusy=false}
+}
+window.cardexBuyServerTicket=()=>economyAction('cardex_buy_ticket',{},()=>window.cardexNotify?.('Purchased 1 ticket · −250 credits'));
+window.cardexRecycleServerDuplicates=(carId=null,finish=null)=>economyAction('cardex_recycle_duplicates',{p_car_id:carId,p_finish:finish},data=>window.cardexNotify?.(data.count?('Recycled '+data.count+' cards · +'+data.credits+' credits'):'No eligible duplicates (Showdown entries are protected)'));
+window.cardexClaimServerAchievement=id=>economyAction('cardex_claim_achievement',{p_id:id},async data=>{await syncAchievementClaims();window.cardexNotify?.('Achievement claimed · +'+data.credits+' credits')});
 window.cardexOpenServerPack=async(theme,quantity=1,instant=false)=>{
   if(packBusy)return;
   packBusy=true;
@@ -60,7 +81,7 @@ window.cardexOpenServerPack=async(theme,quantity=1,instant=false)=>{
     }
     const {data:wallet,error:walletError}=await client.rpc('cardex_get_wallet');
     if(walletError)throw walletError;
-    const {data:cards,error:cardError}=await client.from('global_card_serials').select('id,car_id,finish,issued_at').order('id',{ascending:true}).limit(10000);
+    const {data:cards,error:cardError}=await client.from('global_card_serials').select('id,car_id,finish,issued_at,model_serial').order('id',{ascending:true}).limit(10000);
     if(cardError)throw cardError;
     // A model is NEW only if it was absent before this opening (including bulk packs).
     const seen=new Set(prior);
