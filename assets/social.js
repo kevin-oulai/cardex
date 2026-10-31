@@ -46,19 +46,55 @@ async function search(){const q=$('socialSearch').value.trim(),seq=++searchSeq;i
 async function action(act,id,request,notification){
  try{const args={p_action:act,p_target:uuid(id)?id:null,p_request:request?Number(request):null,p_notification:notification?Number(notification):null};state=await rpc('cardex_social_action',args);render();if(tab==='discover')await search();if(profileId)await openProfile(profileId);message(act==='send'?'Friend request sent.':act==='accept'?'Friend request accepted.':act==='remove'?'Friend removed.':'Updated.')}catch(e){message('Action failed: '+e.message)}
 }
-const cardPhoto=(id)=>{const c=window.cardexSocialCar?.(id);return c?.src?'<img loading="lazy" src="'+esc(c.src)+'" alt="">':'<span class="social-car-fallback">'+esc(c?.emoji||'🚗')+'</span>'};
+let viewedGarage=[],viewedProfile=null,duplicatesOnly=false,groupCopies=true;
+const rarityOrder=['Common','Uncommon','Rare','Super Rare','Ultra Rare','Legendary','Exotic','Limited'];
+function renderGarage(){
+ const q=$('socialGarageSearch').value.trim().toLowerCase(),rarity=$('socialGarageRarity').value,drive=$('socialGarageDrive').value,country=$('socialGarageCountry').value,finish=$('socialGarageFinish').value,sort=$('socialGarageSort').value;
+ const counts=new Map(viewedGarage.map(x=>[x.car_id+'|'+x.finish,x.copies]));
+ let arr=viewedGarage.filter(x=>{
+  const c=window.cardexSocialCarDetails?.(x.car_id);return c&&(!duplicatesOnly||x.copies>1)&&(!rarity||c.rarity===rarity)&&(!drive||c.drive===drive)&&(!country||c.country===country)&&(!finish||x.finish===finish)&&(c.make+' '+c.model).toLowerCase().includes(q)
+ });
+ arr.sort((a,b)=>{const x=window.cardexSocialCarDetails(a.car_id),y=window.cardexSocialCarDetails(b.car_id);
+ switch(sort){
+ case 'name':return (x.make+x.model).localeCompare(y.make+y.model);
+ case 'power':return y.hp-x.hp;case 'powerAsc':return x.hp-y.hp;
+ case 'speed':return y.speed-x.speed;case 'speedAsc':return x.speed-y.speed;
+ case 'weight':return y.weight-x.weight;case 'light':return x.weight-y.weight;
+ case 'year':return y.year-x.year;case 'oldest':return x.year-y.year;
+ case 'rarity':return rarityOrder.indexOf(y.rarity)-rarityOrder.indexOf(x.rarity);
+ default:return 0;
+ }});
+ $('socialGarageGroup').textContent='Group copies: '+(groupCopies?'ON':'OFF');
+ $('socialGarageDuplicates').textContent=duplicatesOnly?'✓ Duplicates only':'Duplicates only';
+ const expanded=groupCopies?arr:arr.flatMap(x=>Array.from({length:Math.min(x.copies,500)},()=>({...x,copies:1})));
+ $('socialGarageGrid').innerHTML=expanded.length?expanded.map(x=>'<div class="garage-item social-readonly-card">'+window.cardexSocialRenderCard(x.car_id,x.finish)+'<span class="garage-item-foot">'+(x.copies>1?'×'+x.copies+' · ':'')+'VIEW ONLY <span>↗</span></span></div>').join(''):'<div class="empty">No cars match your filters.</div>';
+ $('socialGarageSummary').textContent=viewedGarage.reduce((n,x)=>n+x.copies,0)+' cards · '+new Set(viewedGarage.map(x=>x.car_id)).size+' / 192 models discovered';
+ window.cardexSocialPaintPhotos?.();
+}
+function openGarage(){
+ if(!viewedProfile||viewedProfile.private)return;
+ $('socialGarageName').textContent=(viewedProfile.display_name||'Collector')+'’s Garage';
+ window.cardexPage?.('collectorGarage');renderGarage();icons();
+}
 async function openProfile(id){
  if(!uuid(id))return;profileId=id;window.cardexPage?.('collectorView');
  $('socialProfileBody').innerHTML='<p class="muted">Loading collector profile…</p>';
  try{
   const [p,g]=await Promise.all([window.cardexFetchPublicProfile(id),rpc('cardex_social_garage',{p_user_id:id})]);
-  const title=p.equipped_title?'<span class="social-equipped-title">'+icon('award')+' '+esc(p.equipped_title)+'</span>':'';
-  const head='<div class="social-cover"><div class="social-cover-pattern"></div><div class="social-profile-heading">'+avatar(p.display_name)+'<div><div class="eyebrow">CARDEX COLLECTOR</div><h1>'+esc(p.display_name||'Collector')+'</h1>'+title+'<p class="muted">Joined '+(p.joined_at?new Date(p.joined_at).toLocaleDateString('en-GB',{month:'long',year:'numeric'}):'CARDEX')+'</p></div></div><div class="social-profile-actions">'+buttons({id:p.id,name:p.display_name,public:!p.private})+'</div></div>';
-  if(p.private||g.private){$('socialProfileBody').innerHTML=head+'<div class="social-private">'+icon('lock')+'<h2>Private garage</h2><p>This collector has chosen not to share their collection or Showdown history.</p></div>';icons();return}
-  const stats='<div class="social-stats"><div><strong>'+Number(p.cards_owned||0)+'</strong><span>Cards owned</span></div><div><strong>'+Number(p.unique_models||0)+'</strong><span>Unique models</span></div><div><strong>'+Number(p.high_tier_cards||0)+'</strong><span>Legendary+</span></div><div><strong>'+Number(p.title_count||0)+'</strong><span>Titles unlocked</span></div></div>';
-  const garage=(g.cards||[]).map(x=>{const c=window.cardexSocialCar?.(x.car_id);return '<article class="social-garage-card">'+cardPhoto(x.car_id)+'<div class="social-garage-info"><span class="social-rarity">'+esc(c?.rarity||'')+'</span><strong>'+esc(c?.name||'Car #'+x.car_id)+'</strong><span>'+esc(x.finish)+' · '+Number(x.copies)+' owned</span></div></article>'}).join('');
+  viewedProfile=p;viewedGarage=g.private?[]:g.cards||[];
+  const title=p.equipped_title?'<div class="collector-title-badge social-profile-title">✦ '+esc(p.equipped_title)+'</div>':'';
+  const avatarText=esc((p.display_name||'C').slice(0,1).toUpperCase());
+  const head='<div class="eyebrow">COLLECTOR IDENTITY / PUBLIC PROFILE</div><h1>Profile</h1>'+
+  '<div class="profile-cover" data-theme="heritage"><div class="profile-identity"><div class="profile-avatar">'+avatarText+'</div><div><div class="eyebrow">CARDEX COLLECTOR</div><h2>'+esc(p.display_name||'Collector')+'</h2><div class="sub">Joined '+(p.joined_at?new Date(p.joined_at).toLocaleDateString('en-GB',{month:'long',year:'numeric'}):'CARDEX')+'</div></div></div>'+
+  (p.private?'':'<div class="profile-numbers"><div><strong>'+Number(p.unique_models||0)+'/192</strong><span>Discovered</span></div><div><strong>'+Number(p.cards_owned||0)+'</strong><span>Cards owned</span></div><div><strong>'+Number(p.high_tier_cards||0)+'</strong><span>Legendary+</span></div><div><strong>'+Number(p.title_count||0)+'</strong><span>Titles unlocked</span></div></div>')+'</div>'+
+  title+'<div class="social-profile-actions">'+buttons({id:p.id,name:p.display_name,public:!p.private})+'</div>';
+  if(p.private||g.private){$('socialProfileBody').innerHTML=head+'<div class="panel social-private">'+icon('lock')+'<h2>Private collection</h2><p>This collector has chosen not to share their Garage or Showdown history.</p></div>';icons();return}
+  const featured=(p.featured_cards||[]).map((x,i)=>{const c=window.cardexSocialCarDetails?.(x.car_id);return c?'<div class="showcase-slot"><div class="slot-label">DISPLAY 0'+(i+1)+'</div><div class="art" data-car-photo="'+x.car_id+'" data-fallback="'+esc(c.emoji)+'">'+esc(c.emoji)+'</div><div class="slot-name">'+esc(c.make+' '+c.model)+'</div><span class="sub">'+esc(x.finish)+' · #'+esc(x.model_serial)+'</span></div>':''}).join('');
   const recent=(p.recent_showdowns||[]).map(x=>'<div class="social-showdown"><span>'+esc(x.challenge_date)+'</span><strong>'+Number(x.best_score)+'%</strong></div>').join('');
-  $('socialProfileBody').innerHTML=head+stats+'<div class="social-heading"><h2>Garage <small>('+Number(p.unique_models||0)+' models)</small></h2></div><div class="social-garage-grid">'+(garage||'<p class="muted">No cards yet.</p>')+'</div><h2>Recent Showdowns</h2><div class="social-showdowns">'+(recent||'<p class="muted">No entries yet.</p>')+'</div>';icons();
+  $('socialProfileBody').innerHTML=head+'<div class="social-garage-entry panel"><div><div class="eyebrow">COLLECTION</div><h2>Garage</h2><p class="muted">Explore '+esc(p.display_name||'this collector')+'’s cards with the familiar CARDEX filters and card layout.</p></div><button class="primary" id="socialOpenGarage">'+icon('warehouse')+' Inspect garage '+icon('arrow-right')+'</button></div>'+
+  '<h2>Showroom <span class="sub">/ Featured cars</span></h2><div class="profile-showcase">'+(featured||'<p class="muted">No featured cars yet.</p>')+'</div>'+
+  '<h2>Recent Showdowns</h2><div class="social-showdowns">'+(recent||'<p class="muted">No verified entries yet.</p>')+'</div>';
+  window.cardexSocialPaintPhotos?.();icons();
  }catch(e){$('socialProfileBody').textContent='Unable to load collector: '+e.message}
 }
 window.cardexSocialOpenProfile=openProfile;
@@ -71,8 +107,16 @@ document.addEventListener('click',e=>{
  if(b.dataset.socialAction){action(b.dataset.socialAction,b.dataset.id,b.dataset.request,b.dataset.notification);return}
  if(b.id==='socialReadAll')action('read_all');
  if(b.id==='socialBack')window.cardexPage?.('social');
+ if(b.id==='socialOpenGarage')openGarage();
+ if(b.id==='socialGarageBack')window.cardexPage?.('collectorView');
+ if(b.id==='socialGarageDuplicates'){duplicatesOnly=!duplicatesOnly;renderGarage()}
+ if(b.id==='socialGarageGroup'){groupCopies=!groupCopies;renderGarage()}
+ if(b.id==='topCommunity'){window.cardexPage?.('social');switchTab('friends');refresh()}
+ if(b.id==='topInbox'){window.cardexPage?.('social');switchTab('inbox');refresh()}
  if(b.dataset.page==='social')refresh();
 });
 $('socialSearch').addEventListener('input',()=>search());
+['socialGarageSearch','socialGarageRarity','socialGarageSort','socialGarageDrive','socialGarageCountry','socialGarageFinish'].forEach(id=>$(id).addEventListener(id==='socialGarageSearch'?'input':'change',renderGarage));
+$('socialGarageCountry').innerHTML+=(window.cardexSocialCountries||[]).map(c=>'<option>'+esc(c)+'</option>').join('');
 window.addEventListener('focus',()=>{if($('social')?.classList.contains('active'))refresh()});
 })();
