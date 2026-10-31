@@ -131,7 +131,7 @@ async function loadCarPhotos(){
     if(typeof entry.src==='string'&&/^https:\/\//.test(entry.src)&&typeof entry.credit==='string'&&/^https:\/\//.test(entry.credit)){photoCache.set(entry.id,{src:entry.src,credit:entry.credit});pinned.add(entry.id)}
     else if(typeof entry.article==='string'&&entry.article.trim())titleById.set(entry.id,entry.article.trim());
   }
-  const groups=[];for(let k=0;k<photoTitles.length;k+=12)groups.push(photoTitles.slice(k,k+12).map((title,j)=>({title:titleById.get(k+j)||title,id:k+j})).filter(x=>!pinned.has(x.id)));paintPhotos();
+  const groups=[];for(let k=0;k<cars.length;k+=12)groups.push(cars.slice(k,k+12).map((car,j)=>({title:titleById.get(k+j)||photoTitles[k+j]||car.make+' '+car.model,id:k+j})).filter(x=>!pinned.has(x.id)));paintPhotos();
   await Promise.all(groups.map(async group=>{
    try{
     if(!group.length)return;const titles=[...new Set(group.map(x=>x.title))];
