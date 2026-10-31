@@ -151,6 +151,22 @@ async function flushCloud(){
   if(revision===rev){pending=null;text(cloudStatus,'Collection saved online.')}
   else setTimeout(flushCloud,0);
 }
+window.cardexDeleteAccount=async(password,confirmation)=>{
+ if(!activeUser||!window.cardexCloudReady)throw new Error('Sign in first');
+ if(confirmation!=='DELETE MY ACCOUNT')throw new Error('Confirmation phrase does not match');
+ // Persist any pending preference changes before the irreversible operation.
+ await flushCloud();
+ const {data,error}=await client.functions.invoke('cardex-delete-account',{body:{password,confirmation}});
+ if(error)throw new Error(data?.error||error.message||'Account deletion failed');
+ if(!data?.deleted)throw new Error(data?.error||'Account deletion was not confirmed');
+ const deletedId=activeUser;
+ activeUser=null;pending=null;saveConflict=false;
+ localStorage.removeItem(cacheKey(deletedId));
+ window.cardexCloudReady=false;window.cardexServerGameReady=false;
+ window.cardexLoadCloudState?.({});
+ await client.auth.signOut({scope:'local'});
+ await refreshSession();
+};
 window.cardexUpdateName=async(name)=>{
   if(!activeUser)return;
   const {error}=await client.from('profiles').update({display_name:name}).eq('id',activeUser);
