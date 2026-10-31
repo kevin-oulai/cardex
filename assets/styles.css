@@ -1024,3 +1024,30 @@ body:has(#revealModal.open){overflow:hidden}
 
 .social-icon{display:inline-block;vertical-align:middle;flex:none;width:17px;height:17px}
 .social-private .social-icon{width:36px;height:36px}
+
+
+/* Collector inbox — use CARDEX's dark graphite, warm gold and square-edged panels. */
+.social-inbox-popover{
+ background:linear-gradient(160deg,#1a2633 0%,#101822 60%,#0e141c 100%);
+ border:1px solid #b99a603f;border-top:2px solid #efbb65;
+ border-radius:4px;box-shadow:0 20px 55px #000b,0 0 0 1px #ffffff08;
+}
+.social-popover-header{padding:15px 17px;background:#ffffff05;border-bottom:1px solid #ffffff18}
+.social-popover-header strong{font-size:14px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;color:#f4d29b}
+.social-popover-header button{background:transparent;color:#efbb65;border:1px solid #efbb6540;border-radius:3px;font-weight:750;letter-spacing:.25px}
+.social-popover-header button:hover{background:#efbb651c;border-color:#efbb65}
+.social-popover-list{padding:0}
+.social-popover-list .social-notification{position:relative;background:transparent;border-bottom:1px solid #ffffff12;padding:14px 16px;gap:12px;transition:background .15s}
+.social-popover-list .social-notification:hover{background:#ffffff09}
+.social-popover-list .social-notification.unread{background:linear-gradient(90deg,#efbb6514,transparent 85%);border-left:3px solid #efbb65;padding-left:13px}
+.social-popover-list .social-notification.unread:before{content:"";position:absolute;top:18px;right:13px;width:6px;height:6px;border-radius:50%;background:#efbb65;box-shadow:0 0 9px #efbb6570}
+.social-popover-list .social-notification-icon{background:#efbb6512;border:1px solid #efbb6533;color:#efbb65;border-radius:4px;padding:9px}
+.social-popover-list .social-notification strong{color:#f4f2ec;font-size:13px}
+.social-popover-list .social-notification p{color:#aebaca}
+.social-popover-list .social-notification small{color:#8292a5;font-size:10px}
+.social-popover-list .social-person-actions{gap:6px}
+.social-popover-list .social-person-actions button{border-radius:3px;border:1px solid #ffffff25;background:#202b39;color:#e8edf4;font-weight:750;font-size:11px}
+.social-popover-list .social-person-actions button:hover{border-color:#efbb65;color:#efbb65}
+.social-popover-list>.muted{color:#9baac1}
+.top-social-actions>button[aria-expanded="true"]{color:#efbb65;border-color:#efbb65;background:#efbb6515}
+@media(max-width:700px){.social-popover-header{padding:12px 14px}.social-popover-list .social-notification{padding:12px}.social-popover-list .social-notification.unread{padding-left:9px}}
