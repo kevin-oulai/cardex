@@ -1,12 +1,13 @@
 /* CARDEX boot, routing and app shell. */
 import * as api from './api.js';
-import { S, on, signedIn, signedOut, syncWallet, syncInventory, syncSocial, unreadCount, setNotifier } from './store.js';
+import { S, on, signedIn, signedOut, syncWallet, syncInventory, syncSocial, unreadCount, setNotifier, claimable } from './store.js';
 import { levelProgress, TICKET_CAP_FREE, REFILL_MS } from './catalog.js';
 import { $, $$, esc, friendly, relTime, timeLeft, isUuid } from './util.js';
 import { icon, toast, sheet, busy } from './ui.js';
 import { countTo } from './fx.js';
 import { play, isMuted, setMuted, onMute } from './sfx.js';
 import { initPhotos } from './photos.js';
+import { maybeStartTutorial } from './tutorial.js';
 
 import packs from './views/packs.js';
 import garage from './views/garage.js';
@@ -109,6 +110,13 @@ function renderInbox() {
       <span><b>${esc(x.actor_name || 'A collector')}</b> ${esc(x.message)}<small>${relTime(x.created_at)}</small></span></button>`).join('') : '<p class="muted pad">Nothing yet.</p>'}</div>`;
 }
 on('social', renderInbox);
+on('achievements', () => {
+  const n = claimable(), tab = $('.tabbar [data-tab="profile"]');
+  let b = tab.querySelector('.tab-badge');
+  if (!b) { b = document.createElement('span'); b.className = 'tab-badge'; tab.append(b); }
+  b.hidden = !n; b.textContent = n;
+  tab.title = n ? `${n} achievement${n === 1 ? '' : 's'} to claim` : '';
+});
 const closeInbox = () => { inbox.hidden = true; inboxBtn.setAttribute('aria-expanded', 'false'); };
 inboxBtn.addEventListener('click', (e) => {
   e.stopPropagation();
@@ -141,6 +149,7 @@ async function enter(user) {
       lastSync = Date.now();
       showShell(true);
       mount();
+      maybeStartTutorial(go);
     } catch (e) {
       sessionUser = null;
       console.error('CARDEX sign-in sync', e);

@@ -67,7 +67,7 @@ export const openPacks = (theme, quantity) => rpc('cardex_open_packs', { p_theme
 export const buyTickets = (quantity) => rpc('cardex_buy_tickets', { p_quantity: quantity });
 export const recycle = (carId = null, finish = null) => rpc('cardex_recycle_duplicates', { p_car_id: carId, p_finish: finish });
 export const claimAchievement = (id) => rpc('cardex_claim_achievement', { p_id: id });
-export const achievementClaims = () => rpc('cardex_get_achievement_claims');
+export const achievements = () => rpc('cardex_achievements');
 export const titles = (uid) => rpc('cardex_titles', { p_user_id: uid });
 export const equipTitle = (id) => rpc('cardex_equip_title', { p_title: id });
 

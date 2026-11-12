@@ -28,6 +28,7 @@ try {
   const cars = JSON.parse(readFileSync(join(root, 'car-images.json'), 'utf8')).cars;
   const catalog = (readFileSync(join(root, 'assets/js/catalog-data.js'), 'utf8').match(/^\[".*\],?$/gm) || []).length;
   if (cars.length !== catalog || cars.some((e, i) => e.id !== i)) fail(`car-images.json must list ids 0..${catalog - 1} (has ${cars.length})`);
+  cars.forEach((e) => { if (!/^https:\/\/upload\.wikimedia\.org\//.test(e.src || '') || !/^https:\/\/commons\.wikimedia\.org\//.test(e.credit || '')) fail(`car-images.json: car ${e.id} needs a Commons src and credit`); });
 } catch (e) { fail('car-images.json: ' + e.message); }
 if (failed) process.exit(1);
 console.log(`CARDEX check passed: ${modules.length} modules, index.html references OK`);

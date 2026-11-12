@@ -42,37 +42,7 @@ export const levelProgress = (xp) => {
   return { level: l, into: xp - a, span: b - a, pct: (xp - a) / (b - a) };
 };
 
-export const ACHIEVEMENTS = [
-  ['First Ignition', 'Open your first booster', 100],
-  ['Getting Started', 'Collect 10 different cars', 150],
-  ['Collector', 'Collect 20 different cars', 300],
-  ['Pack Hunter', 'Open 25 boosters', 400],
-  ['Legendary Encounter', 'Own a Legendary car', 500],
-  ['Road Trip', 'Open 50 boosters', 650],
-  ['Full Garage', 'Collect 50 different cars', 750],
-  ['JDM Specialist', 'Collect 12 different Japanese cars', 600],
-  ['Rare Obsession', 'Own 15 Rare-or-better cards', 700],
-  ['Supercar Royalty', 'Own 3 Legendary, Exotic or Limited cards', 900],
-].map(([name, desc, credits], id) => ({ id, name, desc, credits }));
-
-/** Local progress estimate for each achievement → {value, goal}. */
-export function achievementProgress(id, cards, opened) {
-  const models = (f = () => true) => new Set(cards.filter((o) => f(CARS[o.id])).map((o) => o.id)).size;
-  const count = (f) => cards.filter((o) => f(CARS[o.id])).length;
-  switch (id) {
-    case 0: return { value: opened, goal: 1 };
-    case 1: return { value: models(), goal: 10 };
-    case 2: return { value: models(), goal: 20 };
-    case 3: return { value: opened, goal: 25 };
-    case 4: return { value: count((c) => c.rarity === 'Legendary'), goal: 1 };
-    case 5: return { value: opened, goal: 50 };
-    case 6: return { value: models(), goal: 50 };
-    case 7: return { value: models((c) => c.country === 'Japan'), goal: 12 };
-    case 8: return { value: count((c) => tierIndex(c.rarity) >= 2), goal: 15 };
-    case 9: return { value: count((c) => isHighTier(c.rarity)), goal: 3 };
-  }
-  return { value: 0, goal: 1 };
-}
+export const TITLE_TIERS = ['standard', 'epic', 'legendary', 'mythic', 'ascendant'];
 
 export const MILESTONES = [
   { at: 20, credits: 100 }, { at: 40, credits: 200 }, { at: 60, tickets: 1 },

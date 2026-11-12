@@ -1,25 +1,21 @@
 import * as api from '../api.js';
-import { S, emit, updatePrefs, syncClaims, syncTitles, ownedModels, signedOut } from '../store.js';
-import { CARS, TIER_COLOR, ACHIEVEMENTS, AVATARS, PROFILE_THEMES, achievementProgress, levelProgress } from '../catalog.js';
+import { S, emit, updatePrefs, syncAchievements, syncTitles, ownedModels, signedOut, claimable } from '../store.js';
+import { CARS, AVATARS, PROFILE_THEMES, TITLE_TIERS, levelProgress } from '../catalog.js';
+import { titleBadge, celebrate, TIER } from '../titles.js';
 import { icon, toast, sheet, busy, card } from '../ui.js';
 import { esc, num, friendly } from '../util.js';
 import { paint } from '../photos.js';
-import { burstAt, confetti } from '../fx.js';
+import { burstAt } from '../fx.js';
 import { play } from '../sfx.js';
 import { cover, showroom } from './collector.js';
+import { startTutorial, tutorialEvent } from '../tutorial.js';
 
-const PRESTIGE = {
-  ascendant: ['grand_completionist', 'undisputed', 'master_collector', 'eternal_racer'],
-  mythic: ['dynasty', 'mythic_curator', 'completionist'],
-  legendary: ['champion', 'podium_regular', 'legend_keeper', 'archivist', 'garage_magnate', 'crown_jewels', 'jdm_master', 'continental_curator', 'motorsport_historian', 'trophy_cabinet', 'podium_elite', 'asphalt_legend', 'veteran_driver'],
-  epic: ['podium_finisher', 'track_rat', 'rare_hunter', 'euro_connoisseur', 'jdm_enthusiast', 'garage_builder', 'rare_vault', 'blueprint_hoarder', 'showdown_regular', 'road_warrior', 'rising_star'],
-};
-const prestige = (id) => Object.keys(PRESTIGE).find((k) => PRESTIGE[k].includes(id)) || 'standard';
+const ACH_ICON = { Boosters: 'packs', Cardex: 'book', Rarity: 'star', Finishes: 'bolt', Regions: 'flag', Showdown: 'trophy', Community: 'users' };
+const achTier = (credits) => (credits >= 5000 ? 'ascendant' : credits >= 1500 ? 'mythic' : credits >= 700 ? 'legendary' : credits >= 300 ? 'epic' : 'standard');
 
 export default {
   title: 'Profile',
   mount({ el, watch }) {
-    let titleCat = '';
     el.innerHTML = `<div class="cover-host"></div>
       <div class="profile-grid">
         <section class="panel edit"><h2 class="h3">Identity</h2>
@@ -34,12 +30,12 @@ export default {
         </section>
         <section class="panel"><div class="row between"><h2 class="h3">Showroom</h2><span class="small muted">Shown on your public profile</span></div><div class="showroom-host"></div></section>
       </div>
-      <section class="panel"><div class="row between"><h2 class="h3">Achievements <small class="muted" data-ach-count></small></h2></div><div class="achievements"></div></section>
-      <section class="panel"><div class="row between wrap"><h2 class="h3">Titles <small class="muted" data-title-count></small></h2>
-        <select class="input sm" data-title-cat aria-label="Title category"><option value="">All</option>${['Collection', 'Rarity', 'Theme', 'Achievements', 'XP', 'Showdown'].map((c) => `<option>${c}</option>`).join('')}</select></div>
-        <div class="titles"></div></section>
+      <section class="panel" id="achievements"><div class="row between wrap"><h2 class="h3">Achievements <small class="muted" data-ach-count></small></h2>
+        <button class="btn primary sm" data-claim-all hidden>${icon('coin')} Claim all</button></div><div class="achievements"></div></section>
+      <section class="panel" id="titles"><div class="row between wrap"><h2 class="h3">Titles <small class="muted" data-title-count></small></h2><span class="small muted">Cosmetic. Shown on your profile.</span></div>
+        <div class="title-stage"></div><div class="titles"></div></section>
       <section class="panel account"><h2 class="h3">Account</h2><p class="small muted" data-email></p>
-        <div class="row gap wrap"><button class="btn" data-signout>${icon('logout')} Sign out</button><button class="btn danger ghost" data-delete>${icon('trash')} Delete account</button></div></section>`;
+        <div class="row gap wrap"><button class="btn" data-tour>${icon('bolt')} Replay tutorial</button><button class="btn" data-signout>${icon('logout')} Sign out</button><button class="btn danger ghost" data-delete>${icon('trash')} Delete account</button></div></section>`;
 
     const form = el.querySelector('[data-identity]');
     let draft = null;
@@ -48,7 +44,7 @@ export default {
       const lp = levelProgress(w.xp);
       const t = S.titles?.titles?.find((x) => x.id === S.titles.equipped && x.unlocked);
       el.querySelector('.cover-host').innerHTML = cover({
-        name: draft?.name ?? S.profile?.display_name, avatar: draft?.avatar ?? c.avatar, bio: draft?.bio ?? c.bio, theme: draft?.theme ?? c.theme, title: t?.label,
+        name: draft?.name ?? S.profile?.display_name, avatar: draft?.avatar ?? c.avatar, bio: draft?.bio ?? c.bio, theme: draft?.theme ?? c.theme, title: t,
         stats: [[lp.level, 'level'], [`${ownedModels().size}<small>/${CARS.length}</small>`, 'models'], [num(S.cards.length), 'cards'], [num(w.opened), 'boosters']],
       });
     }
@@ -69,35 +65,49 @@ export default {
       paint(el.querySelector('.showroom-host'));
     }
     function drawAchievements() {
-      const claimed = new Set(S.claims);
-      el.querySelector('[data-ach-count]').textContent = `${claimed.size}/${ACHIEVEMENTS.length}`;
-      el.querySelector('.achievements').innerHTML = ACHIEVEMENTS.map((a) => {
-        const p = achievementProgress(a.id, S.cards, S.wallet?.opened || 0), done = claimed.has(a.id), ready = !done && p.value >= p.goal;
-        return `<div class="ach ${done ? 'done' : ''} ${ready ? 'ready' : ''}">
-          <span class="ach-ico">${done ? icon('check') : icon('trophy')}</span>
-          <div><b>${esc(a.name)}</b><small>${esc(a.desc)}</small><i class="bar"><span style="width:${Math.min(100, (100 * p.value) / p.goal)}%"></span></i></div>
-          ${done ? '<span class="small muted">Claimed</span>' : `<button class="btn sm ${ready ? 'primary' : ''}" data-claim="${a.id}" ${ready ? '' : 'disabled'}>${ready ? 'Claim' : Math.min(p.value, p.goal) + '/' + p.goal}<small class="mono">+${a.credits}</small></button>`}</div>`;
+      const list = S.achievements;
+      const box = el.querySelector('.achievements');
+      if (!list.length) { box.innerHTML = '<p class="muted">Loading achievements…</p>'; return; }
+      const done = list.filter((a) => a.claimed).length, ready = claimable();
+      el.querySelector('[data-ach-count]').textContent = `${done}/${list.length}`;
+      el.querySelector('[data-claim-all]').hidden = ready < 2;
+      const cats = [...new Set(list.map((a) => a.category))];
+      box.innerHTML = cats.map((cat) => {
+        const items = list.filter((a) => a.category === cat);
+        const got = items.filter((a) => a.claimed).length;
+        return `<div class="ach-track"><div class="ach-cat">${icon(ACH_ICON[cat] || 'trophy')}<b>${esc(cat)}</b><span class="mono small">${got}/${items.length}</span></div><div class="ach-row">${items.map((a) => {
+          const ok = a.progress >= a.goal, pct = Math.min(100, (100 * a.progress) / a.goal);
+          const state = a.claimed ? 'done' : ok ? 'ready' : 'locked';
+          return `<div class="ach ${state} a-${achTier(a.credits)}" style="--p:${pct}">
+            <span class="ach-medal"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16"/><circle cx="18" cy="18" r="16" class="arc"/></svg>${a.claimed ? icon('check') : icon(ACH_ICON[cat] || 'trophy')}</span>
+            <div class="ach-text"><b>${esc(a.name)}</b><small>${esc(a.description)}</small></div>
+            ${a.claimed ? `<span class="ach-paid mono">+${num(a.credits)}</span>` : ok ? `<button class="btn sm primary" data-claim="${a.id}">Claim <small class="mono">+${num(a.credits)}</small></button>` : `<span class="ach-prog mono">${num(a.progress)}/${num(a.goal)}</span>`}</div>`;
+        }).join('')}</div></div>`;
       }).join('');
     }
     function drawTitles() {
-      const box = el.querySelector('.titles');
+      const box = el.querySelector('.titles'), stage = el.querySelector('.title-stage');
       if (!S.titles?.titles) { box.innerHTML = '<p class="muted">Loading titles…</p>'; return; }
-      const all = S.titles.titles;
+      const all = S.titles.titles, eq = all.find((t) => t.id === S.titles.equipped && t.unlocked);
       el.querySelector('[data-title-count]').textContent = `${all.filter((t) => t.unlocked).length}/${all.length}`;
-      const list = all.filter((t) => !titleCat || t.category === titleCat).sort((a, b) => Number(b.unlocked) - Number(a.unlocked) || (b.progress / b.goal) - (a.progress / a.goal));
-      box.innerHTML = list.map((t) => {
-        const eq = t.id === S.titles.equipped;
-        return `<div class="title-row p-${prestige(t.id)} ${t.unlocked ? 'unlocked' : ''} ${eq ? 'equipped' : ''}">
-          <span class="title-badge">${esc(t.label)}</span><small class="muted">${esc(t.description)}</small>
-          <i class="bar"><span style="width:${Math.min(100, (100 * t.progress) / Math.max(1, t.goal))}%"></span></i>
-          <button class="btn sm ${eq ? 'on' : ''}" data-equip="${eq ? '' : esc(t.id)}" ${t.unlocked ? '' : 'disabled'}>${eq ? 'Unequip' : t.unlocked ? 'Equip' : `${Math.min(t.progress, t.goal)}/${t.goal}`}</button></div>`;
+      stage.innerHTML = eq ? `<div class="equipped-title t-${esc(eq.tier)}">${titleBadge(eq, { size: 'lg' })}<button class="btn ghost sm" data-equip="">Unequip</button></div>`
+        : '<div class="equipped-title empty"><span class="muted">No title equipped — pick one you’ve unlocked below.</span></div>';
+      box.innerHTML = TITLE_TIERS.map((tier) => {
+        const items = all.filter((t) => t.tier === tier);
+        if (!items.length) return '';
+        return `<div class="title-tier"><h3 style="--c:${TIER[tier].color}">${TIER[tier].name} <small class="mono">${items.filter((t) => t.unlocked).length}/${items.length}</small></h3><div class="title-grid">${items.map((t) => {
+          const isEq = t.id === S.titles.equipped;
+          return `<button class="title-tile ${t.unlocked ? 'unlocked' : ''} ${isEq ? 'on' : ''}" ${t.unlocked && !isEq ? `data-equip="${esc(t.id)}"` : 'disabled'} aria-label="${esc(t.label)}${t.unlocked ? '' : ' (locked)'}">
+            ${titleBadge(t, { size: 'md', locked: !t.unlocked })}<small>${esc(t.description)}</small>
+            ${t.unlocked ? `<span class="tt-state">${isEq ? 'Equipped' : 'Equip'}</span>` : `<i class="bar"><span style="width:${Math.min(100, (100 * t.progress) / Math.max(1, t.goal))}%"></span></i><span class="tt-state mono">${num(t.progress)}/${num(t.goal)}</span>`}</button>`;
+        }).join('')}</div></div>`;
       }).join('');
     }
     drawForm(); drawCover(); drawShowroom(); drawAchievements(); drawTitles();
-    syncClaims().catch(() => {}); syncTitles().catch(() => {});
+    syncAchievements().catch(() => {}); syncTitles().catch(() => {});
     watch(['wallet', 'cards', 'titles'], drawCover);
     watch(['cards', 'prefs'], drawShowroom);
-    watch(['cards', 'claims', 'wallet'], drawAchievements);
+    watch(['achievements'], drawAchievements);
     watch(['titles'], drawTitles);
 
     form.addEventListener('input', (e) => {
@@ -128,29 +138,42 @@ export default {
       try { const v = await api.setVisibility(t.checked); S.profile.public_collection = v !== false; toast(t.checked ? 'Garage is public' : 'Garage is private', 'success'); }
       catch (er) { t.checked = !t.checked; toast(friendly(er), 'error'); } finally { t.disabled = false; }
     });
-    el.querySelector('[data-title-cat]').addEventListener('change', (e) => { titleCat = e.target.value; drawTitles(); });
 
     el.addEventListener('click', async (e) => {
       const slot = e.target.closest('.plinth[data-slot]');
       if (slot) return pickShowroom(Number(slot.dataset.slot));
       const c = e.target.closest('[data-claim]');
-      if (c) return busy(c, async () => {
-        try {
-          const r = await api.claimAchievement(Number(c.dataset.claim));
-          if (r.wallet) { S.wallet = r.wallet; emit('wallet'); }
-          play('coin'); burstAt(c, { color: ['#ffb000', '#fff'], count: 28 });
-          toast(`Achievement claimed · +${num(r.credits)} credits`, 'reward');
-          await syncClaims(); syncTitles().catch(() => {});
-        } catch (er) { toast(friendly(er), 'error'); }
-      });
+      if (c) return busy(c, () => claim([Number(c.dataset.claim)], c));
+      const all = e.target.closest('[data-claim-all]');
+      if (all) return busy(all, () => claim(S.achievements.filter((a) => !a.claimed && a.progress >= a.goal).map((a) => a.id), all));
       const eq = e.target.closest('[data-equip]');
       if (eq) return busy(eq, async () => {
-        try { S.titles = await api.equipTitle(eq.dataset.equip || null); emit('titles'); if (eq.dataset.equip) { play('success'); confetti([TIER_COLOR.Legendary, '#fff']); } toast(eq.dataset.equip ? 'Title equipped' : 'Title removed', 'success'); }
-        catch (er) { toast(friendly(er), 'error'); }
+        try {
+          S.titles = await api.equipTitle(eq.dataset.equip || null); emit('titles');
+          const t = S.titles.titles.find((x) => x.id === eq.dataset.equip);
+          if (t) celebrate(t); else toast('Title removed', 'success');
+        } catch (er) { toast(friendly(er), 'error'); }
       });
       if (e.target.closest('[data-signout]')) return busy(e.target.closest('button'), async () => { try { await api.auth.signOut(); } catch { signedOut(); } });
       if (e.target.closest('[data-delete]')) deleteFlow();
+      if (e.target.closest('[data-tour]')) startTutorial(window.cardexGo);
     });
+    async function claim(ids, btn) {
+      let total = 0;
+      for (const id of ids) {
+        try {
+          const r = await api.claimAchievement(id);
+          total += r.credits;
+          if (r.wallet) { S.wallet = r.wallet; emit('wallet'); }
+        } catch (er) { toast(friendly(er), 'error'); break; }
+      }
+      if (total) {
+        play('coin'); if (btn.isConnected) burstAt(btn, { color: ['#ffb000', '#fff'], count: 34 });
+        toast(`${ids.length > 1 ? ids.length + ' achievements' : 'Achievement'} claimed · +${num(total)} credits`, 'reward');
+        tutorialEvent('claimed');
+      }
+      await syncAchievements(); syncTitles().catch(() => {});
+    }
     el.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.plinth[data-slot]')) { e.preventDefault(); pickShowroom(Number(e.target.dataset.slot)); } });
   },
 };
