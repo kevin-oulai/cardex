@@ -6,6 +6,7 @@ import { reveal, packArt } from '../reveal.js';
 import { friendly, num, plural } from '../util.js';
 import { burstAt } from '../fx.js';
 import { play } from '../sfx.js';
+import { tutorialEvent } from '../tutorial.js';
 
 let opening = false;
 /** Open boosters through the server, then play the reveal. Shared by Packs and the reveal's "open again". */
@@ -31,8 +32,10 @@ export async function openBooster(theme, quantity, go) {
     toast('Booster failed: ' + friendly(e), 'error', 5000);
     syncInventory().catch(() => {});
   } finally { opening = false; }
+  if (action) tutorialEvent('packOpened');
   if (action === 'again') return openBooster(theme, quantity, go);
   if (action === 'garage') go('garage');
+  return action;
 }
 
 export default {

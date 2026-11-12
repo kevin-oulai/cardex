@@ -6,6 +6,7 @@ import { esc, num, plural, friendly, local, debounce } from '../util.js';
 import { photo, paint } from '../photos.js';
 import { burstAt } from '../fx.js';
 import { play } from '../sfx.js';
+import { tutorialEvent } from '../tutorial.js';
 
 const FINISH_RANK = { Standard: 0, Foil: 1, Holographic: 2, Collector: 3 };
 export const SORTS = {
@@ -206,6 +207,7 @@ export function inspect(id, finish, go) {
     cls: 'wide', label: c.name,
     onOpen: (d, close) => {
       paint(d);
+      tutorialEvent('inspect');
       d.addEventListener('click', (e) => {
         const a = e.target.closest('[data-a]')?.dataset.a;
         const slot = e.target.closest('[data-slot]');

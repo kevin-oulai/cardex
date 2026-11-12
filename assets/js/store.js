@@ -10,7 +10,7 @@ export const S = {
   wallet: null,        // { tickets, credits, xp, opened, pity, last_refill }
   cards: [],           // [{ sid, id, finish, serial, at }]
   prefs: { collector: {}, favorites: [] },
-  claims: [],          // achievement ids
+  achievements: [],    // [{ id, name, description, category, goal, progress, credits, claimed }]
   showdown: { date: utcDay(), best: 0, claimed: [] },
   bossId: null,
   titles: null,
@@ -40,6 +40,7 @@ function sanitizePrefs(raw = {}) {
       wishlist: ids(c.wishlist, CARS.length),
     },
     favorites: ids(raw.favorites, CARS.length),
+    tutorial: raw.tutorial === 'done' || Number.isInteger(raw.tutorial) ? raw.tutorial : null,
   };
 }
 const flush = debounce(async () => {
@@ -48,6 +49,7 @@ const flush = debounce(async () => {
   try {
     const res = await api.savePrefs({ v: 2, ...S.prefs }, revision);
     revision = Number(res.revision);
+    syncAchievements().catch(() => {});
   } catch (e) {
     if (/SAVE_CONFLICT/.test(e.message)) {
       const fresh = await api.loadPrefs(S.user.id);
@@ -75,6 +77,7 @@ export async function syncInventory() {
   S.wallet = wallet;
   S.cards = cards.filter((o) => CARS[o.car_id]).map(mapCard);
   emit('wallet', 'cards');
+  if (S.synced) syncAchievements().catch(() => {});
 }
 export async function syncWallet() { S.wallet = await api.wallet(); emit('wallet'); }
 export async function syncShowdown() {
@@ -83,7 +86,8 @@ export async function syncShowdown() {
   S.bossId = bossId; S.showdown = { date: day, best: Number(status?.best) || 0, claimed: status?.claimed || [] };
   emit('showdown');
 }
-export async function syncClaims() { S.claims = (await api.achievementClaims()) || []; emit('claims'); }
+export async function syncAchievements() { S.achievements = (await api.achievements()) || []; emit('achievements'); }
+export const claimable = () => S.achievements.filter((a) => !a.claimed && a.progress >= a.goal).length;
 export async function syncTitles() { S.titles = await api.titles(S.user.id); emit('titles'); }
 export async function syncSocial() { S.social = await api.socialList(); emit('social'); }
 
@@ -96,11 +100,11 @@ export async function signedIn(user) {
   S.synced = true;
   emit('profile', 'prefs', 'session');
   // Secondary data: never block first paint on these.
-  Promise.allSettled([syncShowdown(), syncClaims(), syncTitles(), syncSocial()]).then((r) =>
+  Promise.allSettled([syncShowdown(), syncAchievements(), syncTitles(), syncSocial()]).then((r) =>
     r.filter((x) => x.status === 'rejected').forEach((x) => console.warn('CARDEX sync', x.reason)));
 }
 export function signedOut() {
-  Object.assign(S, { user: null, profile: null, wallet: null, cards: [], prefs: sanitizePrefs(), claims: [], titles: null, synced: false,
+  Object.assign(S, { user: null, profile: null, wallet: null, cards: [], prefs: sanitizePrefs(), achievements: [], titles: null, synced: false,
     social: { friends: [], incoming: [], outgoing: [], notifications: [] } });
   revision = 0; dirty = false;
   emit('session', 'wallet', 'cards', 'prefs', 'social');

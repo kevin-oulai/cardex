@@ -2,6 +2,7 @@ import * as api from '../api.js';
 import { CARS } from '../catalog.js';
 import { card, empty, icon } from '../ui.js';
 import { esc, num, friendly } from '../util.js';
+import { titleBadge } from '../titles.js';
 import { paint } from '../photos.js';
 import { relationButtons, socialClick } from './community.js';
 import { filterBar, bindFilters, applyFilters } from './garage.js';
@@ -10,7 +11,7 @@ export function cover({ name, avatar, bio, theme, title, stats = [], actions = '
   return `<section class="cover theme-${esc(theme || 'heritage')}">
     <div class="cover-art" aria-hidden="true"></div>
     <div class="cover-id"><span class="avatar xl">${esc(avatar || '🏎️')}</span>
-      <div><h1>${esc(name || 'Collector')}</h1>${title ? `<span class="title-badge">${esc(title)}</span>` : ''}${bio ? `<p class="bio">${esc(bio)}</p>` : ''}</div>
+      <div><h1>${esc(name || 'Collector')}</h1>${title ? `<div class="cover-title">${titleBadge(title, { size: 'md' })}</div>` : ''}${bio ? `<p class="bio">${esc(bio)}</p>` : ''}</div>
       <div class="cover-actions">${actions}</div></div>
     ${stats.length ? `<div class="cover-stats">${stats.map(([v, l]) => `<div><b class="mono">${v}</b><span>${l}</span></div>`).join('')}</div>` : ''}
   </section>`;
@@ -26,7 +27,7 @@ export default {
     let p = null, garage = null;
     el.innerHTML = '<div class="cover skel"></div>';
     const titleOf = async () => {
-      try { const t = await api.titles(id); return t?.titles?.find((x) => x.id === t.equipped && x.unlocked)?.label || null; } catch { return null; }
+      try { const t = await api.titles(id); return t?.titles?.find((x) => x.id === t.equipped && x.unlocked) || null; } catch { return null; }
     };
     async function load() {
       try {

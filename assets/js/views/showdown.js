@@ -6,6 +6,7 @@ import { esc, num, friendly, utcDay, msToUtcMidnight, timeLeft, sleep, reducedMo
 import { paint } from '../photos.js';
 import { burstAt, confetti, countTo } from '../fx.js';
 import { play } from '../sfx.js';
+import { tutorialEvent } from '../tutorial.js';
 
 const thumb = (id) => `<span class="thumb"><img data-photo="${id}" alt=""></span>`;
 
@@ -152,6 +153,7 @@ export default {
         toast(`Scored ${res.score}%${res.best > prevBest ? ' · new best' : ''}${got ? ' · ' + got : ''}`, got ? 'reward' : 'success', 4200);
         loadBoard();
         syncInventory().catch(() => {});
+        tutorialEvent('raced');
       });
     }
   },
