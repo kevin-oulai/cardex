@@ -26,7 +26,8 @@ const dupes = ids.filter((x, i) => ids.indexOf(x) !== i);
 if (dupes.length) fail('duplicate ids in index.html: ' + dupes.join(', '));
 try {
   const cars = JSON.parse(readFileSync(join(root, 'car-images.json'), 'utf8')).cars;
-  if (cars.length !== 192) fail('car-images.json should list 192 cars');
+  const catalog = (readFileSync(join(root, 'assets/js/catalog-data.js'), 'utf8').match(/^\[".*\],?$/gm) || []).length;
+  if (cars.length !== catalog || cars.some((e, i) => e.id !== i)) fail(`car-images.json must list ids 0..${catalog - 1} (has ${cars.length})`);
 } catch (e) { fail('car-images.json: ' + e.message); }
 if (failed) process.exit(1);
 console.log(`CARDEX check passed: ${modules.length} modules, index.html references OK`);

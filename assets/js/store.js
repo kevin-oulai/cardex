@@ -37,9 +37,9 @@ function sanitizePrefs(raw = {}) {
       bio: typeof c.bio === 'string' ? c.bio.slice(0, 90) : '',
       theme: c.theme in PROFILE_THEMES ? c.theme : 'heritage',
       showcase: (Array.isArray(c.showcase) ? c.showcase : []).slice(0, 3).map((x) => (Number.isInteger(x) && CARS[x] ? x : null)),
-      wishlist: ids(c.wishlist, 192),
+      wishlist: ids(c.wishlist, CARS.length),
     },
-    favorites: ids(raw.favorites, 192),
+    favorites: ids(raw.favorites, CARS.length),
   };
 }
 const flush = debounce(async () => {

@@ -12,7 +12,7 @@ CARDEX is an independent, unofficial car-card collecting project. The static fro
 
 ### Boosters
 
-- **192 car models**, eight rarity tiers (Common, Uncommon, Rare, Super Rare, Ultra Rare, Legendary, Exotic, Limited).
+- **174 car models**, eight rarity tiers (Common, Uncommon, Rare, Super Rare, Ultra Rare, Legendary, Exotic, Limited).
 - Four booster themes: **World Mix, JDM Legends, European Icons, Motorsport**.
 - **Five cards per booster**, with the final draw guaranteed **Rare or better**; Legendary pity protection applies.
 - Open one booster card by card, or open **5 or 10** in one server transaction with a combined summary. A failed batch rolls back rather than issuing a partial batch.
@@ -24,7 +24,7 @@ Base rarity weights are defined by the server's authoritative draw implementatio
 ### Garage
 
 - Search, filter and sort owned cars; mark favourites and stack duplicate model/finish copies.
-- **Cardex** view: all 192 models with the ones you're missing greyed out, plus a wishlist.
+- **Cardex** view: all 174 models with the ones you're missing greyed out, plus a wishlist.
 - Recycle eligible spare copies for virtual credits. Server recycling preserves one copy per model/finish and protects cards referenced by Showdown history.
 - Each issued card has a globally issued record and model-scoped serial number.
 
@@ -82,7 +82,7 @@ node scripts/check.mjs
 | `assets/js/main.js` | Boot, hash router, wallet header, inbox, session handling |
 | `assets/js/api.js` | Supabase client and every RPC / table call |
 | `assets/js/store.js` | Session state, preference saving, derived data |
-| `assets/js/catalog.js`, `catalog-data.js` | 192-car catalog and game rules mirrored from the server (display only) |
+| `assets/js/catalog.js`, `catalog-data.js` | 174-car catalog and game rules mirrored from the server (display only) |
 | `assets/js/reveal.js` | Booster opening sequence |
 | `assets/js/fx.js`, `sfx.js` | Particles / shake / tilt, and synthesised sound effects (no audio files) |
 | `assets/js/photos.js` | Wikipedia photo lookup with a 7-day local cache |

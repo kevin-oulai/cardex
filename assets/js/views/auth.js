@@ -1,5 +1,6 @@
 import * as api from '../api.js';
 import { card } from '../ui.js';
+import { CARS } from '../catalog.js';
 import { busy } from '../ui.js';
 import { friendly } from '../util.js';
 import { paint } from '../photos.js';
@@ -10,11 +11,11 @@ export default {
     let mode = 'in';
     el.innerHTML = `<section class="auth">
       <div class="auth-fan" aria-hidden="true">
-        ${card(25, { finish: 'Holographic', size: 'md' })}${card(79, { finish: 'Foil', size: 'md' })}${card(0, { size: 'md' })}
+        ${card(25, { finish: 'Holographic', size: 'md' })}${card(74, { finish: 'Foil', size: 'md' })}${card(0, { size: 'md' })}
       </div>
       <div class="auth-panel">
         <div class="logo xl"><span>CAR</span><em>DEX</em></div>
-        <p class="lead">Rip boosters. Collect 192 real cars. Trade them, then race the daily boss.</p>
+        <p class="lead">Rip boosters. Collect ${CARS.length} real cars. Trade them, then race the daily boss.</p>
         <form class="stack" novalidate>
           <label class="field"><span>Email</span><input class="input" name="email" type="email" autocomplete="email" required></label>
           <label class="field"><span>Password</span><input class="input" name="password" type="password" autocomplete="current-password" minlength="8" required></label>
