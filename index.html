@@ -1,23 +1,56 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090d15"><title>CARDEX — Collector's Edition</title><link rel="stylesheet" href="./assets/styles.css?v=market1"></head><body>
-<header class="top"><div class="logo">CAR<em>DEX</em></div><div class="wallet"><span class="pill">✦ Lv <b id="level">1</b></span><span class="pill">🪙 <b id="credits">0</b></span><span class="pill">🎟 <b id="packCount">10</b></span></div><div class="top-social-actions"><button id="topCommunity" title="Community" aria-label="Open community"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></button><button id="topInbox" title="Inbox" aria-label="Open inbox" aria-expanded="false" aria-controls="socialInboxPopover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg><span id="socialNavBadge" class="social-nav-badge" hidden></span></button><div id="socialInboxPopover" class="social-inbox-popover" hidden><div class="social-popover-header"><strong>Notifications</strong><button id="socialPopoverReadAll" type="button">Mark all read</button></div><div id="socialPopoverList" class="social-popover-list"><p class="muted">No notifications yet.</p></div></div></div></header>
-<div class="layout"><nav class="nav" aria-label="Game navigation"><button class="active" data-page="boosters">Boosters</button><button data-page="garage">Garage</button><button data-page="market">Market</button><button data-page="duel">Showdown</button><button data-page="profile">Profile</button></nav><main class="content">
-<div id="pageHost"></div></main></div><footer class="site-legal-footer"><p>CARDEX is an independent, unofficial car-collecting game. Not affiliated with or endorsed by vehicle manufacturers. Vehicle marks and photographs belong to their respective owners.</p><nav aria-label="Legal information"><a href="./legal.html">Legal notice</a><a href="./privacy.html">Privacy</a><a href="./terms.html">Terms &amp; image credits</a></nav></footer><dialog id="deleteAccountDialog" class="collector-modal" aria-label="Delete CARDEX account"><div style="padding:23px;max-width:440px"><h2>Delete your account?</h2><p class="muted">This permanently removes your account and collection, including your cards, credits, and Showdown history. It cannot be undone.</p><label for="deleteAccountPassword">Confirm your password</label><input id="deleteAccountPassword" type="password" autocomplete="current-password" style="width:100%;margin:8px 0 15px;padding:12px;background:#101b2b;color:white;border:1px solid #ffffff55;border-radius:10px"><label for="deleteAccountPhrase">Type DELETE MY ACCOUNT</label><input id="deleteAccountPhrase" autocomplete="off" style="width:100%;margin:8px 0 12px;padding:12px;background:#101b2b;color:white;border:1px solid #ffffff55;border-radius:10px"><p id="deleteAccountStatus" role="status" class="sub"></p><div style="display:flex;gap:10px;flex-wrap:wrap"><button id="cancelDeleteAccount">Cancel</button><button id="confirmDeleteAccount" style="background:#912d3a;color:white">Permanently delete account</button></div></div></dialog><dialog id="collectorDialog" class="collector-modal" aria-label="Collector profile"><header><div><div class="eyebrow">PUBLIC COLLECTOR PROFILE</div><h2 id="collectorDialogName">Collector</h2></div><button id="collectorDialogClose" type="button" aria-label="Close collector profile">✕</button></header><div id="collectorDialogContent" aria-live="polite"></div></dialog><div class="modal" id="carModal" role="dialog" aria-modal="true" aria-label="Car details"><div class="modal-inner" id="carDetails"></div></div><div class="modal" id="revealModal" role="dialog" aria-modal="true" aria-label="Booster reveal"><div class="modal-inner"><div class="eyebrow" id="revealHeading">Card 1 of 5</div><div id="revealCard"></div><div class="modal-actions"><button id="skipReveal">Reveal all</button><button class="primary" id="nextReveal">Reveal card</button></div><p class="sub" id="revealStatus"></p><div id="packSummary" hidden></div></div></div><div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div><div id="accountGate" style="display:none;position:fixed;inset:0;background:#090d15f5;z-index:900;align-items:center;justify-content:center;padding:22px"><div class="panel" style="max-width:430px;width:100%;text-align:center"><h1>CARDEX</h1><p class="muted">Sign in to access your collection. Accounts are now required for cloud saves.</p><p class="sub" id="gateStatus">Checking your session…</p><button class="primary" id="gateOpenProfile">Go to sign in</button></div></div><script>document.getElementById('gateOpenProfile').addEventListener('click',()=>{document.getElementById('accountGate').style.display='none';page('auth')});</script><script type="module">
-const host=document.getElementById('pageHost');
-const ids=['boosters','garage','duel','profile','auth','social','market'];
-try{
- const sections=await Promise.all(ids.map(async id=>{
-  const response=await fetch('./pages/'+id+'.html');
-  if(!response.ok)throw new Error('Could not load '+id+' ('+response.status+')');
-  return response.text();
- }));
- host.innerHTML=sections.join('\n');
- await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='./assets/game.js?v=market1';script.onload=resolve;script.onerror=()=>reject(new Error('Game script failed to load'));document.body.append(script)});
- await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='./assets/social.js?v=market1';script.onload=resolve;script.onerror=()=>reject(new Error('Social UI failed to load'));document.body.append(script)});
- await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='./assets/market.js?v=market1';script.onload=resolve;script.onerror=()=>reject(new Error('Market script failed to load'));document.body.append(script)});
- const client=document.createElement('script');client.type='module';client.src='./backend/client.js?v=market1';document.body.append(client);
-}catch(error){
- console.error('CARDEX startup',error);
- host.innerHTML='<section class="panel"><h1>Unable to start CARDEX</h1><p id="startupError"></p><button onclick="location.reload()">Retry</button></section>';
- document.getElementById('startupError').textContent=error.message;
-}
-</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0a0b0e">
+  <meta name="description" content="CARDEX — open boosters, collect 192 real-world cars, trade them and race the daily Showdown.">
+  <title>CARDEX</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffb000'/%3E%3Cpath d='M9 22l5-12h9l-2 4h-5l-1 3h5l-2 5z' fill='%230a0b0e'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://svqaunlehadayyyctvuo.supabase.co">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,700..900&family=JetBrains+Mono:wght@500;700&display=swap">
+  <link rel="stylesheet" href="./assets/css/app.css?v=3">
+  <script type="module" src="./assets/js/main.js?v=3"></script>
+</head>
+<body>
+  <div id="app">
+    <header class="topbar" hidden>
+      <a class="logo" href="#/packs" aria-label="CARDEX home"><span>CAR</span><em>DEX</em></a>
+      <div class="wallet" aria-label="Wallet">
+        <button class="chip level" data-go="profile" title="Player level">
+          <svg viewBox="0 0 36 36" class="ring" aria-hidden="true"><circle cx="18" cy="18" r="15"/><circle cx="18" cy="18" r="15" class="ring-fill" id="xpRing"/></svg>
+          <b id="levelNum">1</b>
+        </button>
+        <span class="chip" title="Credits"><i class="coin-dot" aria-hidden="true"></i><b id="credits" class="mono">0</b><span class="sr-only">credits</span></span>
+        <span class="chip tickets" title="Booster tickets"><i class="ticket-dot" aria-hidden="true"></i><b id="tickets" class="mono">0</b><small id="ticketTimer" class="mono"></small><span class="sr-only">tickets</span></span>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn" id="soundBtn" aria-label="Toggle sound"></button>
+        <button class="icon-btn" data-go="community" aria-label="Community" id="communityBtn"></button>
+        <div class="inbox-wrap">
+          <button class="icon-btn" id="inboxBtn" aria-label="Notifications" aria-expanded="false" aria-controls="inbox"><span class="badge" id="inboxBadge" hidden></span></button>
+          <div class="popover" id="inbox" hidden></div>
+        </div>
+      </div>
+    </header>
+    <nav class="tabbar" aria-label="Main" hidden>
+      <a href="#/packs" data-tab="packs"><span class="tab-ico" data-icon="packs"></span><span>Packs</span></a>
+      <a href="#/garage" data-tab="garage"><span class="tab-ico" data-icon="garage"></span><span>Garage</span></a>
+      <a href="#/showdown" data-tab="showdown"><span class="tab-ico" data-icon="flag"></span><span>Showdown</span></a>
+      <a href="#/market" data-tab="market"><span class="tab-ico" data-icon="market"></span><span>Market</span></a>
+      <a href="#/profile" data-tab="profile"><span class="tab-ico" data-icon="user"></span><span>Profile</span></a>
+    </nav>
+    <main id="view" tabindex="-1">
+      <div class="boot"><div class="boot-logo"><span>CAR</span><em>DEX</em></div><div class="boot-bar"><i></i></div></div>
+    </main>
+    <footer class="legal" hidden>
+      <span>Unofficial fan project. Not affiliated with any manufacturer; marks and photos belong to their owners.</span>
+      <nav><a href="./legal.html">Legal</a><a href="./privacy.html">Privacy</a><a href="./terms.html">Terms &amp; credits</a></nav>
+    </footer>
+  </div>
+  <div id="toasts" aria-live="polite"></div>
+  <noscript><p style="padding:2rem;color:#fff">CARDEX needs JavaScript.</p></noscript>
+</body>
+</html>

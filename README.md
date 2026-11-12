@@ -12,7 +12,7 @@ CARDEX is an independent, unofficial car-card collecting project. The static fro
 
 ### Boosters
 
-- **192 car models**, eight rarity tiers (Common, Uncommon, Rare, Super Rare, Ultra Rare, Legendary, Exotic, Limited).
+- **174 car models**, eight rarity tiers (Common, Uncommon, Rare, Super Rare, Ultra Rare, Legendary, Exotic, Limited).
 - Four booster themes: **World Mix, JDM Legends, European Icons, Motorsport**.
 - **Five cards per booster**, with the final draw guaranteed **Rare or better**; Legendary pity protection applies.
 - Open one booster card by card, or open **5 or 10** in one server transaction with a combined summary. A failed batch rolls back rather than issuing a partial batch.
@@ -23,7 +23,8 @@ Base rarity weights are defined by the server's authoritative draw implementatio
 
 ### Garage
 
-- Search, filter and sort owned cars; mark favorites and group duplicate model/finish copies.
+- Search, filter and sort owned cars; mark favourites and stack duplicate model/finish copies.
+- **Cardex** view: all 174 models with the ones you're missing greyed out, plus a wishlist.
 - Recycle eligible spare copies for virtual credits. Server recycling preserves one copy per model/finish and protects cards referenced by Showdown history.
 - Each issued card has a globally issued record and model-scoped serial number.
 
@@ -36,9 +37,9 @@ Base rarity weights are defined by the server's authoritative draw implementatio
 
 ### Collector profiles, achievements and titles
 
-- Customize your display name, avatar, bio and profile theme; showcase three owned cars and maintain a wishlist.
+- Customize your display name, avatar, bio and profile theme; showcase three owned cars (shown on your public profile) and wishlist missing cars from the Garage's Cardex view.
 - Claim ten server-verified achievements.
-- Earn **35 cosmetic collector titles** through collection size, rarity, regional/motorsport themes, claimed achievements and historical Showdown placements. Equip one title from the collapsible Profile title manager. Titles have no gameplay bonus.
+- Earn **35 cosmetic collector titles** through collection size, rarity, regional/motorsport themes, claimed achievements and historical Showdown placements. Equip one from Profile. Titles have no gameplay bonus.
 - Signed-in users can view public collector profiles; you can hide collection details and Showdown history from other players. **Leaderboard identity and results remain visible**.
 - Historical podium/title counts are calculated from stored leaderboard standings and are **not yet finalized, immutable daily awards**. Inventory-dependent titles can become locked after recycling.
 
@@ -66,40 +67,38 @@ python -m http.server 8000
 
 Open http://localhost:8000. Some authentication redirect behavior depends on your Supabase project's configured redirect URLs. The published Supabase client uses a public/publishable key; **never commit a service-role secret**.
 
-Validate the HTML structure with:
+Run the static checks (module syntax, import paths, asset references):
 
 ```bash
-node scripts/validate-pages.mjs
+node scripts/check.mjs
 ```
-
-A GitHub Actions workflow also checks page-fragment structural nesting and duplicate IDs. This does not replace browser or security testing.
 
 ## Project structure
 
 | Path | Responsibility |
 | --- | --- |
-| `index.html` | Shared app shell, navigation, dialogs, page-fragment loader |
-| `pages/boosters.html` | Booster page markup |
-| `pages/garage.html` | Garage page markup |
-| `pages/duel.html` | Showdown page markup |
-| `pages/profile.html` | Profile, achievements, titles, showroom |
-| `pages/auth.html` | Sign-in and account synchronization UI |
-| `assets/styles.css` | Shared styling |
-| `assets/game.js` | Catalog, game UI, rendering and interactions |
-| `backend/client.js` | Supabase client, auth, synchronization and RPC calls |
-| `backend/*.sql` | Database schema, migrations and authoritative game functions |
+| `index.html` | App shell (top bar, tab bar, toast host) |
+| `assets/css/app.css` | Design system, card component, all page styles |
+| `assets/js/main.js` | Boot, hash router, wallet header, inbox, session handling |
+| `assets/js/api.js` | Supabase client and every RPC / table call |
+| `assets/js/store.js` | Session state, preference saving, derived data |
+| `assets/js/catalog.js`, `catalog-data.js` | 174-car catalog and game rules mirrored from the server (display only) |
+| `assets/js/reveal.js` | Booster opening sequence |
+| `assets/js/fx.js`, `sfx.js` | Particles / shake / tilt, and synthesised sound effects (no audio files) |
+| `assets/js/photos.js` | Wikipedia photo lookup with a 7-day local cache |
+| `assets/js/views/*.js` | Packs, Garage (incl. Cardex + wishlist), Showdown, Market, Community, Collector, Profile, Auth |
+| `backend/*.sql` | Schema, migrations and authoritative game functions (`2026-11-audit-fixes.sql` is the latest) |
 | `car-images.json` | Provisional car image references |
-| `scripts/validate-pages.mjs` | Static structural HTML checks |
-| `docs/` | Architecture, audits, feature notes |
-| `privacy.html`, `terms.html`, `legal.html` | Public-facing policy and legal drafts |
+| `scripts/check.mjs` | Static checks run in CI |
+| `docs/` | Architecture, audit, feature notes |
 
-See [Frontend Architecture](docs/frontend-architecture.md).
+See [Frontend Architecture](docs/frontend-architecture.md) and the [November 2026 audit](docs/audit-2026-11.md).
 
 ## Deployment
 
 The site is published at https://kevin-oulai.github.io/cardex/ through GitHub Pages. The app loads page fragments over HTTP and relies on a separately deployed Supabase backend. Publishing frontend files alone **does not create database tables, apply SQL migrations or deploy Edge Functions**.
 
-Use GitHub Actions to monitor deployment and validation checks. After changing shared JavaScript or CSS, update the cache-busting query string in `index.html` when necessary.
+Use GitHub Actions to monitor deployment and validation checks. After changing JavaScript or CSS, bump the `?v=` query string in `index.html` so returning players don't run a stale cached build.
 
 ## Vehicle images and intellectual property
 
